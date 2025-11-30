@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="OSAHANEAT - Đặt món ăn online">
+    <meta name="author" content="OSAHANEAT">
+    <link rel="icon" type="image/png" href="img/logo.png" />
+    <title>OSAHANEAT - Đặt món ăn online</title>
+    <!-- Custom fonts for this template-->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <!-- Custom styles for this template-->
+    <link href="css/osahan.css" rel="stylesheet">
+    <!-- Font CSS -->
+    <link href="font/stylesheet.css" rel="stylesheet">
+    <!-- Mdi icons for this template-->
+    <link href="vendor/mdi-icons/css/materialdesignicons.min.css" rel="stylesheet">
+    <!-- Custom styles for this template-->
+    <link href="css/custom.css" rel="stylesheet">
+    <!-- Search Suggestions CSS -->
+    <link href="css/search-suggestions.css" rel="stylesheet">
+    <!-- Inline Chat Widget CSS -->
+    <link href="css/inline-chat.css?v=1.2" rel="stylesheet">
+    <!-- Stripe.js -->
+    <script src="https://js.stripe.com/v3/"></script>
+</head>
+
+<body id="page-top">
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+        <!-- Sidebar -->
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center" href="index.html">
+                <div class="sidebar-brand-icon">
+                    <img src="img/logo.png" class="img-fluid">
+                </div>
+            </a>
+            <!-- Nav Item - Home -->
+            <li class="nav-item active">
+                <a class="nav-link" href="index.html">
+                    <i class="mdi mdi-home-variant-outline"></i>
+                    <span>Trang chủ</span></a>
+            </li>
+            <!-- Nav Item - Explore -->
+            <li class="nav-item">
+                <a class="nav-link" href="explore.html">
+                    <i class="mdi mdi-grid-large"></i>
+                    <span>Khám phá</span></a>
+            </li>
+            <!-- Nav Item - Favourities -->
+            <li class="nav-item">
+                <a class="nav-link" href="favourities.html">
+                    <i class="mdi mdi-bookmark-outline"></i>
+                    <span>Yêu thích</span></a>
+            </li>
+            <!-- Nav Item - Orders -->
+            <li class="nav-item">
+                <a class="nav-link" href="orders.html">
+                    <i class="mdi mdi-book-open"></i>
+                    <span>Đơn hàng</span></a>
+            </li>
+            <!-- Nav Item - Messages (removed) -->
+            <!-- <li class="nav-item">
+                <a class="nav-link d-flex" href="#" onclick="return false;">
+                    <i class="mdi mdi-message-text-outline mr-2"></i>
+                    <span>Tin nhắn</span>
+                    <span class="rounded-circle bg-white text-primary ml-auto px-2 py-1 notification-badge">0</span></a>
+            </li> -->
+            <!-- Nav Item - Settings -->
+            <li class="nav-item">
+                <a class="nav-link" href="settings.html">
+                    <i class="mdi mdi-cog"></i>
+                    <span>Cài đặt</span></a>
+            </li>
+            <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                    <i class="fas fa-fw fa-cog"></i>
+                    <span>Trang khác</span>
+                </a>
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Trang:</h6>
+                        <a class="collapse-item" href="detail.html">Chi tiết</a>
+                        <a class="collapse-item" href="listing.html">Danh sách</a>
+                        <!-- <a class="collapse-item" href="#" onclick="return false;">Tin nhắn</a> -->
+                        <a class="collapse-item" href="search.html">Tìm kiếm</a>
+                        <a class="collapse-item" href="buttons.html">Thành phần</a>
+                        <a class="collapse-item" href="404.html">Không tìm thấy</a>
+                        <h6 class="collapse-header">Tài khoản:</h6>
+                        <a class="collapse-item" href="signin.html">Đăng nhập</a>
+                        <a class="collapse-item" href="signup.html">Đăng ký</a>
+                        <a class="collapse-item" href="forgot.html">Quên mật khẩu</a>
+                    </div>
+                </div>
+            </li>
+            <!-- offers -->
+            <div class="bg-white m-3 p-3 sidebar-alert rounded text-center alert fade show d-none d-md-inline" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                <i class="mdi mdi-food mb-3"></i>
+                <p class="text-black mb-1">Miễn phí giao hàng cho<br>đơn hàng trên <span class="text-primary">250.000đ</span></p>
+                <p class="small">Đây là ưu đãi có thời hạn, sẽ hết hạn sớm.</p>
+                <a href="explore.html" class="btn btn-primary btn-block btn-sm">Đặt ngay <i class="pl-3 fas fa-long-arrow-alt-right"></i></a>
+            </div>
+            <!-- User -->
+            <div class="d-none d-md-block">
+                <div class="user d-flex align-items-center p-3">
+                    <div class="pr-3"><i class="mdi mdi-account-circle-outline text-white h3 mb-0"></i></div>
+                    <div>
+                        <p class="mb-0 text-white">Đang tải...</p>
+                        <p class="mb-0 text-white-50 small">Đang tải...</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Divider -->
+            <hr class="sidebar-divider d-none d-md-block">
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+        </ul>
+        <!-- End of Sidebar -->
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+            <!-- Main Content -->
+            <div id="content">
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow-sm osahan-nav-top">
+                    <!-- Sidebar Toggle (Topbar) -->
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                  <i class="fa fa-bars"></i>
+                  </button>
+                    <!-- Topbar Navbar -->
+                    <ul class="navbar-nav">
+                        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+                        <li class="nav-item dropdown no-arrow d-sm-none">
+                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-search fa-fw"></i>
+                            </a>
+                            <!-- Dropdown - Messages -->
+                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
+                                <form class="form-inline mr-auto w-100 navbar-search">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control bg-light" placeholder="Tìm kiếm..." aria-label="Search" aria-describedby="basic-addon2">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" type="button">
+                                    <i class="mdi mdi-magnify"></i>
+                                    </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </li>
+                        <!-- Nav Item - location -->
+                        <li class="nav-item dropdown no-arrow mx-2 osahan-t-loc">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" data-toggle="modal" data-target="#addressModal">
+                                <span class="mdi mdi-crosshairs-gps"></span><span class="ml-2">Chọn địa chỉ</span>
+                            </a>
+                        </li>
+                        <!-- Nav Item - pickup -->
+                        <li class="nav-item dropdown no-arrow mx-2 osahan-t-pu">
+                            <a class="nav-link dropdown-toggle text-dark" href="orders.html">
+                                <i class="mdi mdi-shopping text-danger"></i><span class="ml-2">Lấy tại cửa hàng</span>
+                            </a>
+                        </li>
+                        <!-- Nav Item - deals -->
+                        <li class="nav-item dropdown no-arrow mx-2 osahan-t-bd">
+                            <a class="nav-link dropdown-toggle text-dark" data-toggle="modal" data-target="#mycoupansModal" href="#">
+                                <i class="mdi mdi-sack-percent text-warning"></i><span class="ml-2">Ưu đãi tốt nhất</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- Topbar Search -->
+                    <div class="ml-auto position-relative">
+                        <form class="d-none d-sm-inline-block form-inline mx-2 my-2 my-md-0 mw-100 navbar-search" id="home-search-form" onsubmit="return false;">
+                            <div class="input-group position-relative">
+                                <input type="text" id="home-search-input" class="form-control bg-light" placeholder="Tìm kiếm..." aria-label="Search" aria-describedby="basic-addon2" autocomplete="off">
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary" type="button" id="home-search-btn">
+                                 <i class="mdi mdi-magnify"></i>
+                                 </button>
+                                </div>
+                                <!-- Search Suggestions Dropdown -->
+                                <div id="search-suggestions" class="search-suggestions" style="display: none;">
+                                    <div class="suggestions-header">
+                                        <small class="text-muted">Gợi ý tìm kiếm</small>
+                                    </div>
+                                    <div id="search-suggestions-list" class="suggestions-list">
+                                        <!-- Suggestions will be rendered here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <a href="#" class="btn btn-primary " data-toggle="modal" data-target="#filtersModal"><i class="mdi mdi-filter-variant"></i></a>
+                        <a href="#" class="btn btn-danger" data-toggle="modal" data-target="#cartModal"><i class="mdi mdi-shopping-outline"></i></a>
+                    </div>
+                </nav>
+                <!-- End of Topbar -->
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+                    <!-- Search Results Section (hidden by default) -->
+                    <div id="search-results-section" style="display: none;">
+                        <div class="d-flex align-items-center justify-content-between mb-3 mt-2">
+                            <h5 class="mb-0">Kết quả tìm kiếm</h5>
+                            <button class="btn btn-sm btn-secondary" id="clear-search-btn">
+                                <i class="mdi mdi-close"></i> Xóa tìm kiếm
+                            </button>
+                        </div>
+                        <div id="search-results-container">
+                            <!-- Search results will be rendered here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Default Content Section -->
+                    <div id="default-content-section">
+                    <!-- Page Heading -->
+                    <div class="d-flex align-items-center justify-content-between mb-3 mt-2">
+                        <h5 class="mb-0">Khám phá danh mục</h5>
+                        <div class="d-flex align-items-center">
+                            <select id="category-filter" class="form-control form-control-sm mr-2" style="max-width: 200px;">
+                                <option value="">Tất cả danh mục</option>
+                                <!-- Categories will be loaded dynamically -->
+                            </select>
+                            <a href="listing.html" class="small font-weight-bold text-dark">Xem tất cả <i class="mdi mdi-chevron-right mr-2"></i></a>
+                        </div>
+                    </div>
+                        <!-- Content Row -->
+                        <!-- Categories will be loaded dynamically from API -->
+                        <div class="row">
+                            <!-- Categories will be rendered here by index.js -->
+                        </div>
+                        <!-- Page Heading -->
+                        <div class="d-flex align-items-center justify-content-between mb-3 mt-2">
+                            <h5 class="mb-0">Nhà hàng nổi bật</h5>
+                            <a href="listing.html" class="small font-weight-bold text-dark">Xem tất cả <i class="mdi mdi-chevron-right mr-2"></i></a>
+                        </div>
+                        <!-- Content Row -->
+                        <!-- Restaurants will be loaded dynamically from API -->
+                        <div class="row">
+                            <!-- Restaurants will be rendered here by index.js -->
+                        </div>
+                        <!-- Asian food section removed - will be loaded from API if needed -->
+                    </div>
+                </div>
+                <!-- /.container-fluid -->
+            </div>
+            <!-- End of Main Content -->
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; OSAHANEAT 2024</span>
+                    </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
+        </div>
+        <!-- End of Content Wrapper -->
+    </div>
+    <!-- End of Page Wrapper -->
+    
+    <!-- Inline Chat Widget -->
+    <div id="inline-chat-widget" class="inline-chat-widget" style="display: block !important; visibility: visible !important; opacity: 1 !important; position: fixed !important; z-index: 99999 !important; bottom: 20px !important; right: 20px !important;">
+        <!-- Chat Button -->
+        <button id="inline-chat-toggle" class="inline-chat-toggle" title="Chat với admin">
+            <i class="mdi mdi-message-text"></i>
+            <span id="inline-chat-badge" class="inline-chat-badge" style="display: none;">0</span>
+        </button>
+        
+        <!-- Chat Box -->
+        <div id="inline-chat-box" class="inline-chat-box">
+            <!-- Header -->
+            <div class="inline-chat-header">
+                <div class="inline-chat-header-icon">
+                    <i class="mdi mdi-message-text-outline"></i>
+                </div>
+                <div class="inline-chat-header-info">
+                    <p class="inline-chat-header-email">admin@gmail.com</p>
+                    <p class="inline-chat-header-status">Đang online</p>
+                </div>
+                <div class="inline-chat-header-actions">
+                    <button id="inline-chat-close" class="inline-chat-close-btn" title="Đóng">
+                        <i class="mdi mdi-close"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Messages Area -->
+            <div class="inline-chat-messages">
+                <div class="text-center py-3 text-muted">
+                    <p class="small mb-0">Đang tải tin nhắn...</p>
+                </div>
+            </div>
+            
+            <!-- Input Area -->
+            <div class="inline-chat-input-container">
+                <textarea id="inline-chat-input" class="inline-chat-input" placeholder="Nhập tin nhắn của bạn..." rows="1"></textarea>
+                <button id="inline-chat-send" class="inline-chat-send-btn" title="Gửi">
+                    <i class="mdi mdi-send"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+    <!-- My items Modal-->
+    <div class="modal fade" id="myitemsModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog border-bottom">
+            <div class="modal-content osahan-item-detail-pop">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="exampleModalLabel">Lựa chọn cơm</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body px-3 py-0">
+                    <div class="pb-3 position-relative">
+                        <div class="position-absolute heart-fav">
+                            <a href="#"><i class="mdi mdi-heart"></i></a>
+                        </div>
+                        <img src="img/food-banner.png" class="img-fluid col-md-12 p-0 rounded food-image" style="height: 250px; object-fit: cover;">
+                    </div>
+
+                    <h4 class="mb-2 food-title"></h4>
+                    <p class="food-description mb-2"></p>
+                    
+                    <div class="d-flex align-items-center mb-2">
+                        <span class="food-time-ship text-muted small"></span>
+                        <span class="food-free-ship ml-auto"></span>
+                    </div>
+                    
+                    <div class="d-flex align-items-center mb-3">
+                        <label class="text-dark mb-0 mr-2">Số lượng:</label>
+                        <input type="number" class="form-control form-control-sm food-quantity" value="1" min="1" max="10" style="width: 80px;">
+                    </div>
+                    
+                    <p class="mb-0"><a href="#" class="text-decoration-none text-primary"><i class="fas fa-plus mr-2 bg-light rounded p-2"></i> Thêm yêu cầu đặc biệt</a></p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary btn-block add-to-cart-modal-btn">
+                        <span class="food-price">0 ₫</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Filters -->
+    <div class="modal fade" id="filtersModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Bộ lọc tìm kiếm</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-dark mb-2 small">Sắp xếp theo</p>
+                    <div class="btn-group btn-group-toggle mb-3" data-toggle="buttons">
+                        <label class="btn osahan-radio btn-light btn-sm active rounded">
+                     <input type="radio" name="options" id="option1" checked> <i class="mdi mdi-fire"></i> Phổ biến nhất
+                     </label>
+                        <label class="btn osahan-radio btn-light btn-sm rounded">
+                     <input type="radio" name="options" id="option2"> <i class="mdi mdi-clock-outline"></i> Thời gian giao hàng
+                     </label>
+                        <label class="btn osahan-radio btn-light btn-sm rounded">
+                     <input type="radio" name="options" id="option3"> <i class="mdi mdi-star"></i> Đánh giá
+                     </label>
+                    </div>
+                    <p class="text-dark mb-2 small mt-3">Khoảng giá</p>
+                    <div class="btn-group btn-group-toggle mb-3" data-toggle="buttons">
+                        <label class="btn osahan-radio btn-light active btn-sm rounded">
+                     <input type="radio" name="options" id="option1" checked> $
+                     </label>
+                        <label class="btn osahan-radio btn-light btn-sm rounded">
+                     <input type="radio" name="options" id="option2"> $$
+                     </label>
+                        <label class="btn osahan-radio btn-light btn-sm rounded">
+                     <input type="radio" name="options" id="option3"> $$$
+                     </label>
+                    </div>
+                    <p class="text-dark mb-2 small mt-3">Danh mục</p>
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="btn osahan-radio btn-light active btn-sm rounded">
+                     <input type="radio" name="options" id="option1" checked> Burger
+                     </label>
+                        <label class="btn osahan-radio btn-light btn-sm rounded">
+                     <input type="radio" name="options" id="option2"> Đồ ăn nhanh
+                     </label>
+                        <label class="btn osahan-radio btn-light btn-sm rounded">
+                     <input type="radio" name="options" id="option3"> Món Mỹ
+                     </label>
+                        <label class="btn osahan-radio btn-light btn-sm rounded">
+                     <input type="radio" name="options" id="option4"> Pizza
+                     </label>
+                        <label class="btn osahan-radio btn-light btn-sm rounded">
+                     <input type="radio" name="options" id="option5"> Món Á
+                     </label>
+                        <label class="btn osahan-radio btn-light btn-sm rounded">
+                     <input type="radio" name="options" id="option6"> Tráng miệng
+                     </label>
+                        <label class="btn osahan-radio btn-light btn-sm rounded">
+                     <input type="radio" name="options" id="option7"> Món Mexico
+                     </label>
+                        <label class="btn osahan-radio btn-light btn-sm rounded">
+                     <input type="radio" name="options" id="option8"> Bữa sáng
+                     </label>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-start">
+                    <a href="listing.html" class="btn btn-primary btn-block mt-2">Áp dụng bộ lọc</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Cart -->
+    <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Giỏ hàng của tôi <span class="small">(2 món)</span></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body osahan-my-cart">
+                    <a href="#" class="text-dark d-flex align-items-center mb-3" data-toggle="modal" data-target="#myaddressModal">
+                        <div>
+                            <p class="mb-0 text-danger">Giao đến</p>
+                            <p class="mb-0 small">300 Post Street San Francico, CA</p>
+                        </div>
+                        <div class="ml-auto">
+                            <p class="mb-0 text-info">Sửa<i class="mdi h6 m-0 mdi-chevron-right"></i></p>
+                        </div>
+                    </a>
+                    <div class="details-page border-top pt-3 osahan-my-cart-item">
+                        <!-- Cart items will be dynamically loaded here by cart.js -->
+                        <!-- Static sample items removed - will be replaced by API data -->
+                        <div class="my-3"><a href="explore.html" class="text-primary"><i class="mdi mdi-plus mr-2"></i> Thêm món</a></div>
+                        <a href="#" class="d-flex align-items-center mb-3" data-toggle="modal" data-target="#mycoupansModal">
+                            <div class="mr-3 bg-light rounded p-2 osahan-icon"><i class="mdi mdi-motorbike"></i></div>
+                            <div>
+                                <p class="mb-0 text-dark">Giao hàng</p>
+                                <p class="mb-0 small text-black-50">0₫</p>
+                            </div>
+                        </a>
+                        <a href="#" class="d-flex align-items-center mb-3" data-toggle="modal" data-target="#mycoupansModal">
+                            <div class="mr-3 bg-light rounded p-2 osahan-icon"><i class="mdi mdi-percent"></i></div>
+                            <div>
+                                <p class="mb-0 text-dark">Mã khuyến mãi</p>
+                                <p class="mb-0 small text-black-50" id="cart-promo-code-display">Chưa có mã</p>
+                            </div>
+                            <div class="ml-auto"><button class="btn btn-primary"><i class="mdi mdi-plus"></i></button></div>
+                        </a>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-start osahan-my-cart-footer">
+                    <div class="row w-100">
+                        <div class="col-2 px-0"><button class="btn btn-warning btn-block" data-toggle="modal" data-target="#mysplitModal"><i class="mdi mdi-account-plus-outline"></i></button></div>
+                        <div class="col-10 pr-0"><button class="btn btn-primary btn-block" data-toggle="modal" data-target="#checkoutModal">Thanh toán (1.325.000₫)</button></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Checkout Model -->
+    <div class="modal fade" id="checkoutModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Thanh toán</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-dark mb-2 small">Phương thức thanh toán</p>
+                    <div class="btn-group btn-group-toggle mb-3" data-toggle="buttons">
+                        <label class="btn osahan-radio btn-light btn-sm rounded active" onclick="switchPaymentMethod('CARD')">
+                     <input type="radio" name="paymentMethod" value="CARD" checked> <i class="mdi mdi-credit-card-outline"></i> Thẻ
+                     </label>
+                        <label class="btn osahan-radio btn-light btn-sm rounded" onclick="switchPaymentMethod('COD')">
+                     <input type="radio" name="paymentMethod" value="COD"> <i class="mdi mdi-currency-usd"></i> COD
+                     </label>
+                        <label class="btn osahan-radio btn-light btn-sm rounded" onclick="switchPaymentMethod('PAYPAL')">
+                     <input type="radio" name="paymentMethod" value="PAYPAL"> <i class="fab fa-paypal"></i> Paypal
+                     </label>
+                    </div>
+                    <!-- Payment Method Content (dynamically loaded) -->
+                    <div id="payment-method-content">
+                        <!-- Cards section (shown when Thẻ is selected) -->
+                        <div id="cards-section">
+                            <h6 class="mb-3">Thẻ của tôi <span class="small">(<span id="cards-count">0</span>)</span></h6>
+                            <div id="cards-list" class="btn-group btn-group-toggle osahan-card" data-toggle="buttons">
+                                <div class="text-center py-3">
+                                    <i class="mdi mdi-loading spinner-border spinner-border-sm"></i> Đang tải thẻ...
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- COD section (shown when COD is selected) -->
+                        <div id="cod-section" style="display: none;">
+                            <div class="alert alert-info">
+                                <i class="mdi mdi-information-outline mr-2"></i>
+                                <strong>Thanh toán khi nhận hàng (COD)</strong>
+                                <p class="mb-0 mt-2 small">Bạn sẽ thanh toán bằng tiền mặt khi nhận được đơn hàng. Phí vận chuyển sẽ được tính thêm khi giao hàng.</p>
+                            </div>
+                        </div>
+                        
+                        <!-- PayPal/QR Code section (shown when PayPal is selected) -->
+                        <div id="paypal-section" style="display: none;">
+                            <div class="alert alert-warning">
+                                <i class="fab fa-paypal mr-2"></i>
+                                <strong>Thanh toán qua ngân hàng</strong>
+                                <p class="mb-0 mt-2 small">Quét mã QR code để thanh toán qua ngân hàng.</p>
+                            </div>
+                            <div class="text-center my-3">
+                                <div id="qr-code-container">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="sr-only">Đang tạo QR code...</span>
+                                    </div>
+                                    <p class="mt-2 small text-muted">Đang tạo mã QR code...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#" data-toggle="modal" data-target="#paymentsModal" class="btn btn-light btn-block" id="add-card-btn" style="display: none;"><i class="mdi mdi-plus"></i> Thêm</a>
+                    
+                    <!-- Voucher Section -->
+                    <hr class="my-3">
+                    <h6 class="mb-2"><i class="fas fa-tag mr-1"></i> Mã khuyến mãi</h6>
+                    <div class="input-group mb-2">
+                        <input type="text" class="form-control" id="voucher-code-input" placeholder="Nhập mã voucher..." style="text-transform: uppercase;">
+                        <div class="input-group-append">
+                            <button class="btn btn-success" type="button" id="apply-voucher-btn" onclick="applyVoucher()">
+                                <i class="fas fa-check mr-1"></i> Áp dụng
+                            </button>
+                       </div>
+                       </div>
+                    <div id="voucher-message" class="small mb-2"></div>
+                    <div id="voucher-discount-info" class="alert alert-success d-none">
+                        <i class="fas fa-check-circle mr-1"></i>
+                        <span id="voucher-discount-text"></span>
+                        <button type="button" class="close ml-2" onclick="removeVoucher()">
+                            <span>&times;</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-start">
+                    <div class="w-100">
+                        <div class="d-flex justify-content-between mb-2" id="voucher-summary" style="display: none !important;">
+                            <span>Tổng tiền:</span>
+                            <span id="cart-total-original"></span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2" id="voucher-discount-summary" style="display: none !important;">
+                            <span>Giảm giá:</span>
+                            <span class="text-success" id="voucher-discount-amount">-0 ₫</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2 font-weight-bold">
+                            <span>Thành tiền:</span>
+                            <span id="cart-total-final"></span>
+                        </div>
+                        <a href="orders.html" class="btn btn-primary btn-block" id="confirm-payment-btn">Xác nhận thanh toán</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- My address-->
+    <div class="modal fade" id="myaddressModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Địa chỉ giao hàng</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Address list will be dynamically loaded here by cart-address.js -->
+                    <div class="text-center py-4">
+                        <i class="mdi mdi-loading mdi-spin text-muted" style="font-size: 24px;"></i>
+                        <p class="text-muted mt-2">Đang tải địa chỉ...</p>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button data-dismiss="modal" aria-label="Close" class="btn btn-secondary btn-sm">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- My Coupan-->
+    <div class="modal fade" id="mycoupansModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Nhập mã khuyến mãi</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Promo codes will be loaded dynamically from API -->
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="sr-only">Đang tải...</span>
+                        </div>
+                        <p class="text-muted mt-2">Đang tải mã khuyến mãi...</p>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button data-dismiss="modal" aria-label="Close" class="btn btn-primary btn-block">Xác nhận</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- My split order-->
+    <div class="modal fade" id="mysplitModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Chia đơn hàng</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body split-list">
+                    <a href="#" data-dismiss="modal" aria-label="Close" class="text-decoration-none d-flex border rounded p-2 bg-light align-items-center mb-2">
+                        <div class="mr-2"><img src="img/user1.png" class="img-fluid rounded-circle"></div>
+                        <div class="ml-2">
+                            <p class="mb-0 text-dark">Kate Simpson</p>
+                            <span class="mb-0 small text-black-50">katesimpson@outlook.com</span>
+                        </div>
+                    </a>
+                    <a href="#" data-dismiss="modal" aria-label="Close" class="text-decoration-none d-flex border rounded p-2 bg-light align-items-center mb-2">
+                        <div class="mr-2"><img src="img/user2.png" class="img-fluid rounded-circle"></div>
+                        <div class="ml-2">
+                            <p class="mb-0 text-dark">Andrew smith</p>
+                            <span class="mb-0 small text-black-50">andrew@out.com</span>
+                        </div>
+                    </a>
+                    <a href="#" data-dismiss="modal" aria-label="Close" class="text-decoration-none d-flex border rounded p-2 bg-light align-items-center mb-2">
+                        <div class="mr-2"><img src="img/user3.png" class="img-fluid rounded-circle"></div>
+                        <div class="ml-2">
+                            <p class="mb-0 text-dark">Gurdeep Osahan</p>
+                            <span class="mb-0 small text-black-50">iamosahan@out.com</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="modal-footer border-0">
+                    <button data-dismiss="modal" aria-label="Close" class="btn btn-primary btn-block">Lưu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Saved address Modal-->
+    <div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Địa chỉ đã lưu</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <ul class="nav nav-tabs border-0 mb-3" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link active border-0 bg-primary text-white rounded small" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Nhà (<span id="homeCountDynamic">0</span>)</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link border-0 bg-light text-dark rounded ml-3 small" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Cơ quan (<span id="workCountDynamic">0</span>)</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                            <!-- Addresses will be loaded dynamically from API -->
+                            <div class="text-center py-3">
+                                <div class="spinner-border spinner-border-sm text-primary"></div>
+                                <p class="mt-2 text-muted small">Đang tải...</p>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                            <!-- Addresses will be loaded dynamically from API -->
+                            <div class="text-center py-3">
+                                <div class="spinner-border spinner-border-sm text-primary"></div>
+                                <p class="mt-2 text-muted small">Đang tải...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-primary btn-block">Lưu thay đổi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap core JavaScript-->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <!-- API Service -->
+    <script src="js/api.js?v=2.2"></script>
+    <!-- Address Sync System - Đồng bộ địa chỉ giữa các page -->
+    <script src="js/address-sync.js"></script>
+    <!-- Custom scripts for all pages-->
+    <script src="js/osahan.min.js"></script>
+    <script src="js/custom.js"></script>
+    <!-- User Info Sync - must load after api.js -->
+    <script src="js/user-sync.js?v=1.0"></script>
+    <!-- Cart Sync - must load before cart scripts -->
+    <script src="js/cart-sync.js?v=1.0"></script>
+    <!-- Cart script - must load after api.js -->
+    <script src="js/cart.js?v=1.0"></script>
+    <script src="js/cart-address.js?v=1.0"></script>
+    <!-- Promo/Voucher script - must load before checkout -->
+    <script src="js/promo.js?v=1.1"></script>
+    <script src="js/checkout.js?v=1.1"></script>
+    <!-- Food Modal script - must load after api.js and before page-specific scripts -->
+    <script src="js/food-modal.js?v=1.0"></script>
+    <!-- Index page specific -->
+    <script src="js/index.js?v=2.1"></script>
+    
+    <!-- Inline Chat Script -->
+    <script src="js/inline-chat.js?v=1.7"></script>
+</body>
+
+</html>

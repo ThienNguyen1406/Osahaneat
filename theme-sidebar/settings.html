@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="OSAHANEAT - Đặt món ăn online">
+    <meta name="author" content="OSAHANEAT">
+    <link rel="icon" type="image/png" href="img/logo.png">
+    <title>OSAHANEAT - Cài đặt</title>
+    <!-- Custom fonts for this template-->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <!-- Custom styles for this template-->
+    <link href="css/osahan.css" rel="stylesheet">
+    <!-- Font CSS -->
+    <link href="font/stylesheet.css" rel="stylesheet">
+    <!-- Mdi icons for this template-->
+    <link href="vendor/mdi-icons/css/materialdesignicons.min.css" rel="stylesheet">
+    <!-- Custom styles for this template-->
+    <link href="css/custom.css" rel="stylesheet">
+    <!-- Leaflet CSS for Vietmap -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
+          crossorigin="" />
+</head>
+
+<body id="page-top">
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+        <!-- Sidebar -->
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center" href="index.html">
+                <div class="sidebar-brand-icon">
+                    <img src="img/logo.png" class="img-fluid">
+                </div>
+            </a>
+            <!-- Nav Item - Home -->
+            <li class="nav-item">
+                <a class="nav-link" href="index.html">
+                    <i class="mdi mdi-home-variant-outline"></i>
+                    <span>Trang chủ</span></a>
+            </li>
+            <!-- Nav Item - Explore -->
+            <li class="nav-item">
+                <a class="nav-link" href="explore.html">
+                    <i class="mdi mdi-grid-large"></i>
+                    <span>Khám phá</span></a>
+            </li>
+            <!-- Nav Item - Favourities -->
+            <li class="nav-item">
+                <a class="nav-link" href="favourities.html">
+                    <i class="mdi mdi-bookmark-outline"></i>
+                    <span>Yêu thích</span></a>
+            </li>
+            <!-- Nav Item - Orders -->
+            <li class="nav-item">
+                <a class="nav-link" href="orders.html">
+                    <i class="mdi mdi-book-open"></i>
+                    <span>Đơn hàng</span></a>
+            </li>
+            <!-- Nav Item - Messages (removed) -->
+            <!-- <li class="nav-item">
+                <a class="nav-link d-flex align-items-center" href="#" onclick="return false;">
+                    <i class="mdi mdi-message-text-outline mr-2"></i>
+                    <span>Tin nhắn</span>
+                    <span class="rounded-circle bg-white text-primary ml-auto px-2 py-1 notification-badge">0</span></a>
+            </li> -->
+            <!-- Nav Item - Settings -->
+            <li class="nav-item active">
+                <a class="nav-link" href="settings.html">
+                    <i class="mdi mdi-cog"></i>
+                    <span>Cài đặt</span></a>
+            </li>
+            <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                    <i class="fas fa-fw fa-cog"></i>
+                    <span>Trang khác</span>
+                </a>
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Trang:</h6>
+                        <a class="collapse-item" href="detail.html">Chi tiết</a>
+                        <a class="collapse-item" href="listing.html">Danh sách</a>
+                        <!-- <a class="collapse-item" href="#" onclick="return false;">Tin nhắn</a> -->
+                        <a class="collapse-item" href="search.html">Tìm kiếm</a>
+                        <a class="collapse-item" href="buttons.html">Thành phần</a>
+                        <a class="collapse-item" href="404.html">Không tìm thấy</a>
+                        <h6 class="collapse-header">Tài khoản:</h6>
+                        <a class="collapse-item" href="signin.html">Đăng nhập</a>
+                        <a class="collapse-item" href="signup.html">Đăng ký</a>
+                        <a class="collapse-item" href="forgot.html">Quên mật khẩu</a>
+                    </div>
+                </div>
+            </li>
+            <!-- offers -->
+            <div class="bg-white m-3 p-3 sidebar-alert rounded text-center alert fade show d-none d-md-inline" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                <i class="mdi mdi-food mb-3"></i>
+                <p class="text-black mb-1">Miễn phí giao hàng<br>cho đơn hàng trên <span class="text-primary">500.000₫</span></p>
+                <p class="small">Đây là ưu đãi có thời hạn và sẽ hết hạn sớm.</p>
+                <a href="explore.html" class="btn btn-primary btn-block btn-sm">Đặt ngay <i class="pl-3 fas fa-long-arrow-alt-right"></i></a>
+            </div>
+            <!-- User -->
+            <div class="d-none d-md-block">
+                <div class="user d-flex align-items-center p-3">
+                    <div class="pr-3"><i class="mdi mdi-account-circle-outline text-white h3 mb-0"></i></div>
+                    <div>
+                        <p class="mb-0 text-white">Đang tải...</p>
+                        <p class="mb-0 text-white-50 small">Đang tải...</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Divider -->
+            <hr class="sidebar-divider d-none d-md-block">
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+        </ul>
+        <!-- End of Sidebar -->
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+            <!-- Main Content -->
+            <div id="content">
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow-sm osahan-nav-top">
+                    <!-- Sidebar Toggle (Topbar) -->
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                  <i class="fa fa-bars"></i>
+                  </button>
+                    <!-- Topbar Navbar -->
+                    <ul class="navbar-nav">
+                        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+                        <li class="nav-item dropdown no-arrow d-sm-none">
+                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-search fa-fw"></i>
+                            </a>
+                            <!-- Dropdown - Messages -->
+                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
+                                <form class="form-inline mr-auto w-100 navbar-search">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control bg-light" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" type="button">
+                                    <i class="mdi mdi-magnify"></i>
+                                    </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </li>
+                        <!-- Nav Item - location -->
+                        <li class="nav-item dropdown no-arrow mx-2 osahan-t-loc">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" data-toggle="modal" data-target="#addressModal">
+                                <span class="mdi mdi-crosshairs-gps"></span><span class="ml-2">San Frnciso, california</span>
+                            </a>
+                        </li>
+                        <!-- Nav Item - pickup -->
+                        <li class="nav-item dropdown no-arrow mx-2 osahan-t-pu">
+                            <a class="nav-link dropdown-toggle text-dark" href="orders.html">
+                                <i class="mdi mdi-shopping text-danger"></i><span class="ml-2">Pick up</span>
+                            </a>
+                        </li>
+                        <!-- Nav Item - deals -->
+                        <li class="nav-item dropdown no-arrow mx-2 osahan-t-bd">
+                            <a class="nav-link dropdown-toggle text-dark" data-toggle="modal" data-target="#mycoupansModal" href="#">
+                                <i class="mdi mdi-sack-percent text-warning"></i><span class="ml-2">Best Deals</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- Topbar Search -->
+                    <div class="ml-auto">
+                        <a href="search.html">
+                            <form class="d-none d-sm-inline-block form-inline mx-2 my-2 my-md-0 mw-100 navbar-search">
+                                <div class="input-group">
+                                    <input type="text" class="form-control bg-light" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-primary" type="button">
+                                 <i class="mdi mdi-magnify"></i>
+                                 </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </a>
+                        <a href="#" class="btn btn-primary " data-toggle="modal" data-target="#filtersModal"><i class="mdi mdi-filter-variant"></i></a>
+                        <a href="#" class="btn btn-danger" data-toggle="modal" data-target="#cartModal"><i class="mdi mdi-shopping-outline"></i></a>
+                    </div>
+                </nav>
+                <!-- End of Topbar -->
+                <!-- Begin Page Content -->
+                <div class="container-fluid pb-4">
+                    <!-- Page Heading -->
+                    <div class="d-flex align-items-center justify-content-between mb-3 mt-2">
+                        <h5 class="mb-0">Cài đặt</h5>
+                    </div>
+                    <!-- general -->
+                    <p class="mb-2">Chung</p>
+                    <a href="#" class="text-decoration-none text-dark d-flex align-items-center rounded bg-white shadow-sm p-3 mb-1" data-toggle="modal" data-target="#personalModal">
+                        <p class="mb-0 h5 text-primary"><i class="mdi mdi-account-outline"></i></p>
+                        <p class="ml-3 mb-0">Thông tin cá nhân</p>
+                        <p class="mb-0 h5 ml-auto"><i class="mdi mdi-chevron-right"></i></p>
+                    </a>
+                    <a href="#" class="text-decoration-none text-dark d-flex align-items-center rounded bg-white shadow-sm p-3 mb-1" data-toggle="modal" data-target="#addressModal">
+                        <p class="mb-0 h5 text-danger"><i class="mdi mdi-bookmark-outline"></i></p>
+                        <p class="ml-3 mb-0">Địa chỉ đã lưu</p>
+                        <p class="mb-0 h5 ml-auto"><i class="mdi mdi-chevron-right"></i></p>
+                    </a>
+                    <a href="#" class="text-decoration-none text-dark d-flex align-items-center rounded bg-white shadow-sm p-3 mb-1" data-toggle="modal" data-target="#marketingModal">
+                        <p class="mb-0 h5 text-warning"><i class="mdi mdi-email-outline"></i></i>
+                        </p>
+                        <p class="ml-3 mb-0">Tùy chọn tiếp thị</p>
+                        <p class="mb-0 h5 ml-auto"><i class="mdi mdi-chevron-right"></i></p>
+                    </a>
+                    <!-- payments -->
+                    <p class="mt-4 mb-2">Thanh toán</p>
+                    <a href="#" class="text-decoration-none text-dark d-flex align-items-center rounded bg-white shadow-sm p-3 mb-1" data-toggle="modal" data-target="#paymentsModal">
+                        <p class="mb-0 h5 text-primary"><i class="mdi mdi-wallet"></i></p>
+                        <p class="ml-3 mb-0">Phương thức thanh toán</p>
+                        <p class="mb-0 h5 ml-auto"><i class="mdi mdi-chevron-right"></i></p>
+                    </a>
+                    <a href="#" class="text-decoration-none text-dark d-flex align-items-center rounded bg-white shadow-sm p-3 mb-1" data-toggle="modal" data-target="#mycardsModal">
+                        <p class="mb-0 h5 text-danger"><i class="mdi mdi-credit-card-outline"></i></p>
+                        <p class="ml-3 mb-0">Thẻ của tôi</p>
+                        <p class="mb-0 h5 ml-auto"><i class="mdi mdi-chevron-right"></i></p>
+                    </a>
+                    <!-- Other -->
+                    <p class="mt-4 mb-2">Khác</p>
+                    <a href="#" class="text-decoration-none text-dark d-flex align-items-center rounded bg-white shadow-sm p-3 mb-1" data-toggle="modal" data-target="#supportModal">
+                        <p class="mb-0 h5 text-primary"><i class="mdi mdi-progress-question"></i></p>
+                        <p class="ml-3 mb-0">Hỗ trợ</p>
+                        <p class="mb-0 h5 ml-auto"><i class="mdi mdi-chevron-right"></i></p>
+                    </a>
+                    <a href="#" class="text-decoration-none text-dark d-flex align-items-center rounded bg-white shadow-sm p-3 mb-1" data-toggle="modal" data-target="#inviteModal">
+                        <p class="mb-0 h5 text-danger"><i class="mdi mdi-account-plus-outline"></i></p>
+                        <p class="ml-3 mb-0">Mời bạn bè</p>
+                        <p class="mb-0 h5 ml-auto"><i class="mdi mdi-chevron-right"></i></p>
+                    </a>
+                    <a href="#" class="text-decoration-none text-dark d-flex align-items-center rounded bg-white shadow-sm p-3 mb-1" data-toggle="modal" data-target="#discountsModal">
+                        <p class="mb-0 h5 text-warning"><i class="mdi mdi-currency-usd-circle"></i></p>
+                        <p class="ml-3 mb-0">Giảm giá</p>
+                        <p class="mb-0 h5 ml-auto"><i class="mdi mdi-chevron-right"></i></p>
+                    </a>
+                </div>
+                <!-- /.container-fluid -->
+            </div>
+            <!-- End of Main Content -->
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; OSAHANEAT 2024</span>
+                    </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
+        </div>
+        <!-- End of Content Wrapper -->
+    </div>
+    <!-- End of Page Wrapper -->
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+    <!-- Personal Modal-->
+    <div class="modal fade" id="personalModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Thông tin cá nhân</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-dark mb-2 small">Ảnh đại diện</p>
+                    <div class="d-flex align-items-center mb-4">
+                        <img id="profileAvatar" src="img/user1.png" class="img-fluid mr-3 rounded-circle" style="width: 80px; height: 80px; object-fit: cover;" alt="Ảnh đại diện">
+                        <div>
+                            <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+                            <button type="button" id="uploadAvatarBtn" class="btn btn-primary mr-2 btn-sm px-3">Tải lên</button>
+                            <button type="button" id="deleteAvatarBtn" class="btn btn-outline-danger btn-sm px-3">Xóa</button>
+                            <div id="avatarUploadStatus" class="mt-2 small text-muted" style="display: none;"></div>
+                        </div>
+                    </div>
+                    <p class="text-dark mb-2 small">Chi tiết hồ sơ</p>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="mr-3 bg-light rounded p-2 osahan-icon"><i class="mdi mdi-account-outline"></i></div>
+                        <div class="w-100">
+                            <p class="mb-0 small font-weight-bold text-dark">Họ và tên</p>
+                            <input type="text" id="profileFullName" class="form-control form-control-sm p-0 border-input border-0 rounded-0" placeholder="Nhập họ và tên">
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="mr-3 bg-light rounded p-2 osahan-icon"><i class="mdi mdi-email-outline"></i></div>
+                        <div class="w-100">
+                            <p class="mb-0 small font-weight-bold text-dark">Địa chỉ Email</p>
+                            <input type="email" id="profileEmail" class="form-control form-control-sm p-0 border-input border-0 rounded-0" placeholder="Nhập email">
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="mr-3 bg-light rounded p-2 osahan-icon"><i class="fas fa-phone-alt"></i></div>
+                        <div class="w-100">
+                            <p class="mb-0 small font-weight-bold text-dark">Số điện thoại</p>
+                            <input type="text" id="profilePhone" class="form-control form-control-sm p-0 border-input border-0 rounded-0" placeholder="Nhập số điện thoại">
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="mr-3 bg-light rounded p-2 osahan-icon"><i class="mdi mdi-map-marker-outline"></i></div>
+                        <div class="w-100">
+                            <p class="mb-0 small font-weight-bold text-dark">Địa chỉ</p>
+                            <input type="text" id="profileAddress" class="form-control form-control-sm p-0 border-input border-0 rounded-0" placeholder="Nhập địa chỉ">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" id="updateProfileBtn" class="btn btn-primary btn-block">CẬP NHẬT HỒ SƠ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Saved address Modal-->
+    <div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Địa chỉ đã lưu</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <ul class="nav nav-tabs border-0 mb-3" id="addressTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link active border-0 bg-primary text-white rounded small" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Nhà (<span id="homeCount">0</span>)</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link border-0 bg-light text-dark rounded ml-3 small" id="office-tab" data-toggle="tab" href="#office" role="tab" aria-controls="office" aria-selected="false">Cơ quan (<span id="officeCount">0</span>)</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="addressTabContent">
+                        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                            <div id="homeAddressList">
+                                <!-- Addresses will be loaded here -->
+                                </div>
+                            </div>
+                        <div class="tab-pane fade" id="office" role="tabpanel" aria-labelledby="office-tab">
+                            <div id="officeAddressList">
+                                <!-- Addresses will be loaded here -->
+                                </div>
+                            </div>
+                        </div>
+                                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary" id="addAddressBtn">
+                        <i class="mdi mdi-plus"></i> Thêm địa chỉ
+                    </button>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+
+    <!-- Add/Edit Address Modal -->
+    <div class="modal fade" id="addressFormModal" tabindex="-1" aria-labelledby="addressFormModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addressFormModalLabel">Thêm địa chỉ</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+                <div class="modal-body">
+                    <form id="addressForm">
+                        <input type="hidden" id="addressId" value="">
+                        <div class="form-group">
+                            <label for="addressTitle">Tiêu đề <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="addressTitle" placeholder="Ví dụ: Nhà, Cơ quan, Home 1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="addressType">Loại địa chỉ <span class="text-danger">*</span></label>
+                            <select class="form-control" id="addressType" required>
+                                <option value="HOME">Nhà</option>
+                                <option value="OFFICE">Cơ quan</option>
+                                <option value="OTHER">Khác</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="addressText">Địa chỉ <span class="text-danger">*</span></label>
+                            <div class="input-group mb-2">
+                                <textarea class="form-control" id="addressText" rows="2" placeholder="Nhập địa chỉ đầy đủ hoặc chọn trên bản đồ" required></textarea>
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-outline-primary" id="openMapBtn" title="Chọn vị trí trên bản đồ">
+                                        <i class="mdi mdi-map-marker"></i> Bản đồ
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="mapContainer" style="display: none; width: 100%; height: 400px; border: 1px solid #ddd; border-radius: 4px; margin-top: 10px; position: relative; z-index: 1;"></div>
+                            <input type="hidden" id="addressLat" value="">
+                            <input type="hidden" id="addressLng" value="">
+                            <small class="text-muted">
+                                <i class="mdi mdi-information-outline"></i> 
+                                Click vào nút "Bản đồ" để chọn vị trí trên bản đồ hoặc nhập địa chỉ thủ công
+                            </small>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="addressIsDefault">
+                                <label class="form-check-label" for="addressIsDefault">
+                                    Đặt làm địa chỉ mặc định
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" id="saveAddressBtn">
+                        <i class="mdi mdi-content-save"></i> Lưu
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Marketing preferences Modal-->
+    <div class="modal fade" id="marketingModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Tùy chọn tiếp thị</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <div class="custom-control custom-checkbox mb-2">
+                        <input type="checkbox" class="custom-control-input" id="customCheck1">
+                        <label class="custom-control-label" for="customCheck1">Email khuyến mãi</label>
+                    </div>
+                    <div class="custom-control custom-checkbox mb-2">
+                        <input type="checkbox" class="custom-control-input" id="customCheck2" checked>
+                        <label class="custom-control-label font-weight-bold text-dark" for="customCheck2">Bản tin hàng tháng</label>
+                    </div>
+                    <div class="custom-control custom-checkbox mb-2">
+                        <input type="checkbox" class="custom-control-input" id="customCheck3">
+                        <label class="custom-control-label" for="customCheck3">Thu thập phản hồi</label>
+                    </div>
+                    <div class="custom-control custom-checkbox mb-2">
+                        <input type="checkbox" class="custom-control-input" id="customCheck4" checked>
+                        <label class="custom-control-label font-weight-bold text-dark" for="customCheck4">Giảm giá & ưu đãi</label>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" data-dismiss="modal" aria-label="Close" class="btn btn-primary btn-block">Cập nhật tùy chọn</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Payment Methods Modal-->
+    <!-- Payment methods Modal (Add/Edit Card)-->
+    <div class="modal fade" id="paymentsModal" tabindex="-1" aria-labelledby="paymentsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="paymentsModalLabel">Thêm thẻ mới</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <form id="paymentMethodForm">
+                        <input type="hidden" id="paymentMethodId" value="">
+                        <div class="form-group">
+                            <label for="cardNumber">Số thẻ <span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                <input type="text" class="form-control" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" required>
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-outline-secondary" disabled>
+                                        <i class="fa fa-credit-card"></i>
+                                          </button>
+                                                </div>
+                                            </div>
+                            <small class="text-muted">CHÚNG TÔI CHẤP NHẬN ( Master Card / Visa Card / Rupay )</small>
+                                        </div>
+                        <div class="form-row">
+                            <div class="col-md-8 form-group">
+                                <label for="cardExpiry">Hạn sử dụng (MM/YY) <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="cardExpiry" placeholder="MM/YY" maxlength="5" required>
+                                        </div>
+                            <div class="col-md-4 form-group">
+                                <label for="cardCVV">CVV <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="cardCVV" placeholder="123" maxlength="4" required>
+                                    </div>
+                            </div>
+                        <div class="form-group">
+                            <label for="cardHolderName">Tên trên thẻ <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="cardHolderName" placeholder="NGUYEN VAN A" required>
+                        </div>
+                        <div class="form-group">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="setAsDefault">
+                                <label class="custom-control-label" for="setAsDefault">
+                                    Đặt làm phương thức thanh toán mặc định
+                                 </label>
+                                        </div>
+                                    </div>
+                                </form>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" id="savePaymentMethodBtn">
+                        <i class="mdi mdi-content-save"></i> Lưu thẻ
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- My cards Modal-->
+    <div class="modal fade" id="mycardsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Thẻ của tôi <span class="small">(<span id="cardsCount">0</span>)</span></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <div id="paymentMethodsList">
+                        <!-- Payment methods will be loaded here -->
+                        <div class="text-center py-4">
+                            <i class="mdi mdi-loading spinner-border spinner-border-sm"></i> Đang tải...
+                    </div>
+                       </div>
+                    <button type="button" class="btn btn-light btn-block mt-3" id="addCardBtn" data-toggle="modal" data-target="#paymentsModal">
+                        <i class="mdi mdi-plus"></i> Thêm thẻ mới
+                    </button>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Support Modal-->
+    <div class="modal fade" id="supportModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Hỗ trợ</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="mr-3 bg-light rounded p-2 osahan-icon"><i class="mdi mdi-email-outline"></i></i>
+                        </div>
+                        <div>
+                            <p class="small font-weight-bold text-dark mb-0">CHAT TRỰC TIẾP</p>
+                            <P class="mb-0 small">Thời gian chờ: <span class="font-weight-bold text-dark">5 phút</span></P>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="mr-3 bg-light rounded p-2 osahan-icon"><i class="mdi mdi-book-open"></i></div>
+                        <div>
+                            <p class="small font-weight-bold text-dark mb-0">FAQ</p>
+                            <P class="mb-0 small">182 Cletus Estates Suite 423</P>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="mr-3 bg-light rounded p-2 osahan-icon"><i class="fas fa-phone-alt"></i></div>
+                        <div>
+                            <p class="small font-weight-bold text-dark mb-0">SỐ ĐIỆN THOẠI</p>
+                            <P class="mb-0 small">+1 (987) 1234 098</P>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button data-dismiss="modal" aria-label="Close" class="btn btn-primary btn-block">XONG</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Invite Modal-->
+    <div class="modal fade" id="inviteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Mời bạn bè</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <button class="btn btn-light text-primary btn-sm"><i class="mdi mdi-plus"></i></button>
+                    <span class="ml-2 smal text-primary">Gửi lời mời cho bạn bè</span>
+                    <p class="mt-3 small">Bạn bè đã mời (2)</p>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="mr-3"><img src="img/user1.png" class="img-fluid rounded-circle"></div>
+                        <div>
+                            <p class="small font-weight-bold text-dark mb-0">Kate Simpson</p>
+                            <P class="mb-0 small">katesimpson@outbook.com</P>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="mr-3"><img src="img/user2.png" class="img-fluid rounded-circle"></div>
+                        <div>
+                            <p class="small font-weight-bold text-dark mb-0">Andrew Smith</p>
+                            <P class="mb-0 small">andrewsmith@ui8.com</P>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button data-dismiss="modal" aria-label="Close" class="btn btn-primary btn-block">DONE?</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Discounts Modal-->
+    <div class="modal fade" id="discountsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Giảm giá</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <div class="bg-light rounded border d-flex justify-content-between align-items-center flex-column px-4 py-3 mb-2">
+                        <h1 class="text-primary mb-0">KL7L24</h1>
+                        <P class="mb-0 smal">* có hiệu lực đến 30/09/2020</P>
+                    </div>
+                    <div class="bg-light rounded border d-flex justify-content-between align-items-center flex-column px-4 py-3 mb-2">
+                        <h1 class="text-danger mb-0">AQ1P70</h1>
+                        <P class="mb-0 smal">* có hiệu lực đến 15/11/2020</P>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button data-dismiss="modal" aria-label="Close" class="btn btn-primary btn-block">XONG</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Filters -->
+    <div class="modal fade" id="filtersModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Bộ lọc tìm kiếm</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-dark mb-2 small">Sắp xếp theo</p>
+                    <div class="btn-group btn-group-toggle mb-3" data-toggle="buttons">
+                        <label class="btn osahan-radio btn-light btn-sm active rounded">
+                     <input type="radio" name="options" id="option1" checked> <i class="mdi mdi-fire"></i> Phổ biến nhất
+                     </label>
+                        <label class="btn osahan-radio btn-light btn-sm rounded">
+                     <input type="radio" name="options" id="option2"> <i class="mdi mdi-clock-outline"></i> Thời gian giao hàng
+                     </label>
+                        <label class="btn osahan-radio btn-light btn-sm rounded">
+                     <input type="radio" name="options" id="option3"> <i class="mdi mdi-star"></i> Đánh giá
+                     </label>
+                    </div>
+                    <p class="text-dark mb-2 small mt-3">Khoảng giá</p>
+                    <div class="btn-group btn-group-toggle mb-3" data-toggle="buttons">
+                        <label class="btn osahan-radio btn-light active btn-sm rounded">
+                     <input type="radio" name="options" id="option1" checked> $
+                     </label>
+                        <label class="btn osahan-radio btn-light btn-sm rounded">
+                     <input type="radio" name="options" id="option2"> $$
+                     </label>
+                        <label class="btn osahan-radio btn-light btn-sm rounded">
+                     <input type="radio" name="options" id="option3"> $$$
+                     </label>
+                    </div>
+                    <p class="text-dark mb-2 small mt-3">Danh mục</p>
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="btn osahan-radio btn-light active btn-sm rounded">
+                     <input type="radio" name="options" id="option1" checked> Burger
+                     </label>
+                        <label class="btn osahan-radio btn-light btn-sm rounded">
+                     <input type="radio" name="options" id="option2"> Fast food
+                     </label>
+                        <label class="btn osahan-radio btn-light btn-sm rounded">
+                     <input type="radio" name="options" id="option3"> American food
+                     </label>
+                        <label class="btn osahan-radio btn-light btn-sm rounded">
+                     <input type="radio" name="options" id="option4"> Pizza
+                     </label>
+                        <label class="btn osahan-radio btn-light btn-sm rounded">
+                     <input type="radio" name="options" id="option5"> Asian
+                     </label>
+                        <label class="btn osahan-radio btn-light btn-sm rounded">
+                     <input type="radio" name="options" id="option6"> Desert
+                     </label>
+                        <label class="btn osahan-radio btn-light btn-sm rounded">
+                     <input type="radio" name="options" id="option7"> Mexican
+                     </label>
+                        <label class="btn osahan-radio btn-light btn-sm rounded">
+                     <input type="radio" name="options" id="option8"> Breakfast
+                     </label>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-start">
+                    <a href="listing.html" class="btn btn-primary btn-block mt-2">Áp dụng bộ lọc</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Cart -->
+    <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Giỏ hàng của tôi <span class="small">(0 món)</span></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body osahan-my-cart">
+                    <a href="#" class="text-dark d-flex align-items-center mb-3" data-toggle="modal" data-target="#myaddressModal">
+                        <div>
+                            <p class="mb-0 text-danger">Giao đến</p>
+                            <p class="mb-0 small">300 Post Street San Francico, CA</p>
+                        </div>
+                        <div class="ml-auto">
+                            <p class="mb-0 text-info">Sửa<i class="mdi h6 m-0 mdi-chevron-right"></i></p>
+                        </div>
+                    </a>
+                    <div class="details-page border-top pt-3 osahan-my-cart-item">
+                        <!-- Cart items will be loaded dynamically from API by cart.js -->
+                        <div class="my-3"><a href="explore.html" class="text-primary"><i class="mdi mdi-plus mr-2"></i> Thêm món</a></div>
+                        <a href="#" class="d-flex align-items-center mb-3" data-toggle="modal" data-target="#mycoupansModal">
+                            <div class="mr-3 bg-light rounded p-2 osahan-icon"><i class="mdi mdi-motorbike"></i></div>
+                            <div>
+                                <p class="mb-0 text-dark">Giao hàng</p>
+                                <p class="mb-0 small text-black-50">0₫</p>
+                            </div>
+                        </a>
+                        <a href="#" class="d-flex align-items-center mb-3" data-toggle="modal" data-target="#mycoupansModal">
+                            <div class="mr-3 bg-light rounded p-2 osahan-icon"><i class="mdi mdi-percent"></i></div>
+                            <div>
+                                <p class="mb-0 text-dark">Mã khuyến mãi</p>
+                                <p class="mb-0 small text-black-50">HFXWO</p>
+                            </div>
+                            <div class="ml-auto"><button class="btn btn-primary"><i class="mdi mdi-plus"></i></button></div>
+                        </a>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-start osahan-my-cart-footer">
+                    <div class="row w-100">
+                        <div class="col-2 px-0"><button class="btn btn-warning btn-block" data-toggle="modal" data-target="#mysplitModal"><i class="mdi mdi-account-plus-outline"></i></button></div>
+                        <div class="col-10 pr-0"><button class="btn btn-primary btn-block" data-toggle="modal" data-target="#checkoutModal">Thanh toán (0 ₫)</button></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Checkout Model -->
+    <div class="modal fade" id="checkoutModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Thanh toán</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-dark mb-2 small">Payment methods</p>
+                    <div class="btn-group btn-group-toggle mb-3" data-toggle="buttons">
+                        <label class="btn osahan-radio btn-light btn-sm rounded active">
+                     <input type="radio" name="options" id="option1" checked> <i class="mdi mdi-credit-card-outline"></i> Card
+                     </label>
+                        <label class="btn osahan-radio btn-light btn-sm rounded">
+                     <input type="radio" name="options" id="option2"> <i class="mdi mdi-currency-usd"></i> COD
+                     </label>
+                        <label class="btn osahan-radio btn-light btn-sm rounded">
+                     <input type="radio" name="options" id="option3"> <i class="fab fa-paypal"></i> Paypal
+                     </label>
+                    </div>
+                    <h6 class="mb-3">My cards <span class="small">(2)</span></h6>
+                    <div class="btn-group btn-group-toggle osahan-card" data-toggle="buttons">
+                        <label class="btn osahan-radio osahan-card-pay btn-light btn-sm rounded mb-2 active w-100">
+                       <input type="radio" name="options" id="option1" checked>
+                       <div class="d-flex align-items-center card-detials small mb-3">
+                          <p class="small"><i class="mdi mdi-chip"></i></p>
+                          <p class="ml-auto d-flex align-items-center">
+                             <span class="card-no mr-2"><i class="mdi mdi-circle"></i> <i class="mdi mdi-circle"></i> <i class="mdi mdi-circle"></i> <i class="mdi mdi-circle"></i></span>
+                             <span class="small">1211</span>
+                          </p>
+                       </div>
+                       <h1 class="mb-0">Mastercard</h1>
+                       <p class="small mb-1">Platinum</p>
+                       <p class="text-right mb-0"><i class="fab fa-cc-mastercard text-warning"></i></p>
+                    </label>
+                        <label class="btn osahan-radio osahan-card-pay btn-light btn-sm rounded mb-2 w-100">
+                       <input type="radio" name="options" id="option2">
+                       <div class="d-flex align-items-center card-detials small mb-3">
+                          <p class="small"><i class="mdi mdi-chip"></i></p>
+                          <p class="ml-auto d-flex align-items-center">
+                             <span class="card-no mr-2"><i class="mdi mdi-circle"></i> <i class="mdi mdi-circle"></i> <i class="mdi mdi-circle"></i> <i class="mdi mdi-circle"></i></span>
+                             <span class="small">2277</span>
+                          </p>
+                       </div>
+                       <h1 class="mb-0">Visa Debit</h1>
+                       <p class="small mb-1">Plantinum</p>
+                       <p class="text-right mb-0"><i class="fab fa-cc-visa"></i></p>
+                    </label>
+                    </div>
+                    <a href="#" data-toggle="modal" data-target="#paymentsModal" class="btn btn-light btn-block"><i class="mdi mdi-plus"></i> Thêm</a>
+                </div>
+                <div class="modal-footer justify-content-start">
+                    <a href="orders.html" class="btn btn-primary btn-block">Xác nhận thanh toán (1.325.000₫)</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- My address-->
+    <div class="modal fade" id="myaddressModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Delivered address</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="inputAddress" class="small font-weight-bold text-dark mb-0">Tên đường</label>
+                            <input type="text" class="form-control form-control-sm border-0 p-0 border-input rounded-0" id="inputAddress" placeholder="" value="300 Post Street">
+                        </div>
+                        <div class="form-group">
+                            <label for="inputAddress" class="small font-weight-bold text-dark mb-0">Thành phố</label>
+                            <input type="text" class="form-control form-control-sm border-0 p-0 border-input rounded-0" id="inputAddress" placeholder="" value="San Francisco">
+                        </div>
+                        <div class="form-group">
+                            <label for="inputAddress" class="small font-weight-bold text-dark mb-0">Tỉnh/Thành phố</label>
+                            <input type="text" class="form-control form-control-sm border-0 p-0 border-input rounded-0" id="inputAddress" placeholder="" value="California">
+                        </div>
+                        <div class="form-group">
+                            <label for="inputAddress" class="small font-weight-bold text-dark mb-0">Mã bưu điện</label>
+                            <input type="text" class="form-control form-control-sm border-0 p-0 border-input rounded-0" id="inputAddress" placeholder="" value="123456">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-0">
+                    <button data-dismiss="modal" aria-label="Close" class="btn btn-primary btn-block">Xác nhận</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- My Coupan-->
+    <div class="modal fade" id="mycoupansModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Enter promo code</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Promo codes will be loaded dynamically from API -->
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="sr-only">Đang tải...</span>
+                        </div>
+                        <p class="text-muted mt-2">Đang tải mã khuyến mãi...</p>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button data-dismiss="modal" aria-label="Close" class="btn btn-primary btn-block">Xác nhận</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- My split order-->
+    <div class="modal fade" id="mysplitModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Split order</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body split-list">
+                    <a href="#" data-dismiss="modal" aria-label="Close" class="text-decoration-none d-flex border rounded p-2 bg-light align-items-center mb-2">
+                        <div class="mr-2"><img src="img/user1.png" class="img-fluid rounded-circle"></div>
+                        <div class="ml-2">
+                            <p class="mb-0 text-dark">Kate Simpson</p>
+                            <span class="mb-0 small text-black-50">katesimpson@outlook.com</span>
+                        </div>
+                    </a>
+                    <a href="#" data-dismiss="modal" aria-label="Close" class="text-decoration-none d-flex border rounded p-2 bg-light align-items-center mb-2">
+                        <div class="mr-2"><img src="img/user2.png" class="img-fluid rounded-circle"></div>
+                        <div class="ml-2">
+                            <p class="mb-0 text-dark">Andrew smith</p>
+                            <span class="mb-0 small text-black-50">andrew@out.com</span>
+                        </div>
+                    </a>
+                    <a href="#" data-dismiss="modal" aria-label="Close" class="text-decoration-none d-flex border rounded p-2 bg-light align-items-center mb-2">
+                        <div class="mr-2"><img src="img/user3.png" class="img-fluid rounded-circle"></div>
+                        <div class="ml-2">
+                            <p class="mb-0 text-dark">Gurdeep Osahan</p>
+                            <span class="mb-0 small text-black-50">iamosahan@out.com</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="modal-footer border-0">
+                    <button data-dismiss="modal" aria-label="Close" class="btn btn-primary btn-block">Lưu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap core JavaScript-->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- Leaflet JS for Vietmap -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
+            crossorigin=""></script>
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <!-- API Service -->
+    <script src="js/api.js"></script>
+    <!-- User Info Sync - must load after api.js -->
+    <script src="js/user-sync.js?v=1.0"></script>
+    <!-- Cart Sync - must load before cart scripts -->
+    <script src="js/cart-sync.js?v=1.0"></script>
+    <!-- Settings Page Scripts -->
+    <script src="js/settings.js"></script>
+    <!-- Address Sync System - Đồng bộ địa chỉ giữa các page -->
+    <script src="js/address-sync.js"></script>
+    <!-- Custom scripts for all pages-->
+    <script src="js/osahan.min.js"></script>
+
+    <!-- Floating Chat Box -->
+    <script src="js/floating-chat-html.js?v=1.0"></script>
+    <script src="js/floating-chat.js?v=1.0"></script>
+</body>
+
+</html>
