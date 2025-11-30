@@ -518,7 +518,7 @@
                     statusIcon = 'times-circle';
                 } else if (isApproved === true && isActive === true) {
                     // Được duyệt và đang hoạt động
-                    statusText = 'Hoạt động';
+                    statusText = 'Đang hoạt động';
                     statusBadgeClass = 'success';
                     statusIcon = 'check-circle';
                 } else if (isApproved === true && isActive === false) {
@@ -528,7 +528,7 @@
                     statusIcon = 'pause-circle';
                 } else {
                     // Fallback - nếu isApproved = true nhưng isActive không rõ, coi như đang hoạt động
-                    statusText = 'Hoạt động';
+                    statusText = 'Đang hoạt động';
                     statusBadgeClass = 'success';
                     statusIcon = 'check-circle';
                 }

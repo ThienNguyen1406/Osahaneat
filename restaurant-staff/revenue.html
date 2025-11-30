@@ -230,27 +230,37 @@
                 return;
             }
             
-            StaffApiService.getDailyRevenue()
+            console.log("Loading revenue for date:", date);
+            StaffApiService.getDailyRevenue(date)
                 .done(function(response) {
+                    console.log("Revenue response:", response);
                     if (response && (response.success || response.isSuccess) && response.data) {
                         const revenue = response.data;
+                        console.log("Revenue data:", revenue);
                         $('#revenue-amount').text(formatVND(revenue.revenue || 0));
                         $('#revenue-orders').text(revenue.orderCount || 0);
                         $('#revenue-average').text(formatVND(revenue.averageOrderValue || 0));
                         
                         renderRevenueDetails(revenue);
+                    } else {
+                        console.warn("Invalid response format:", response);
+                        alert('Không thể lấy dữ liệu doanh thu. Vui lòng thử lại.');
                     }
                 })
                 .fail(function(xhr) {
+                    console.error('Error loading revenue:', xhr);
                     // Handle 403 errors silently (user doesn't have permission)
                     if (xhr.status === 403) {
                         console.warn("⚠️ Access denied - user does not have RESTAURANT_STAFF role");
-                        // Don't spam console with 403 errors
+                        alert('Bạn không có quyền xem doanh thu. Vui lòng đăng nhập với tài khoản staff.');
                         return;
                     }
                     // Only log other errors
-                    console.error('Error loading revenue:', xhr);
-                    alert('Lỗi khi tải doanh thu');
+                    let errorMsg = 'Lỗi khi tải doanh thu';
+                    if (xhr.responseJSON && xhr.responseJSON.desc) {
+                        errorMsg = xhr.responseJSON.desc;
+                    }
+                    alert(errorMsg);
                 });
         }
 

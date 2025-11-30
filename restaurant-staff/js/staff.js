@@ -75,10 +75,14 @@ const StaffApiService = {
     },
     
     // Lấy doanh thu ngày
-    getDailyRevenue: function() {
+    getDailyRevenue: function(date = null) {
+        let url = `${this.API_BASE_URL}/restaurant/staff/revenue/daily`;
+        if (date) {
+            url += `?date=${encodeURIComponent(date)}`;
+        }
         return $.ajax({
             method: 'GET',
-            url: `${this.API_BASE_URL}/restaurant/staff/revenue/daily`,
+            url: url,
             headers: this.getHeaders(),
             dataType: 'json'
         });
@@ -594,22 +598,34 @@ function sendChatMessage() {
 }
 
 function loadDailyRevenue() {
-    StaffApiService.getDailyRevenue()
+    // Get today's date in yyyy-MM-dd format
+    const today = new Date();
+    const dateStr = today.getFullYear() + '-' + 
+                   String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                   String(today.getDate()).padStart(2, '0');
+    
+    console.log("Loading today's revenue for date:", dateStr);
+    StaffApiService.getDailyRevenue(dateStr)
         .done(function(response) {
+            console.log("Today's revenue response:", response);
             if (response && (response.success || response.isSuccess) && response.data) {
                 const revenue = response.data.revenue || response.data.total || 0;
                 $('#today-revenue').text(formatVND(revenue));
+            } else {
+                console.warn("Invalid response format:", response);
+                $('#today-revenue').text('0 ₫');
             }
         })
         .fail(function(xhr, status, error) {
             // Handle 403 errors silently (user doesn't have permission)
             if (xhr.status === 403) {
                 console.warn("⚠️ Access denied - user does not have RESTAURANT_STAFF role");
-                // Don't spam console with 403 errors
+                $('#today-revenue').text('0 ₫');
                 return;
             }
             // Only log other errors
             console.error("Error loading revenue:", error);
+            $('#today-revenue').text('0 ₫');
         });
 }
 
