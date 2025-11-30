@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="OSAHANEAT - Hồ sơ cá nhân" />
+    <meta name="author" content="OSAHANEAT" />
+    <title>OSAHANEAT - Hồ sơ</title>
+    <link rel="icon" type="image/png" href="../admin/img/favicon.png">
+    <link href="../admin/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Fontawesome Icon - CDN for better compatibility -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Fallback to local -->
+    <link href="../admin/vendor/fontawesome/css/fontawesome.min.css" rel="stylesheet" type="text/css">
+    <link href="css/shipper.css" rel="stylesheet" />
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark shipper-navbar">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-motorcycle mr-2"></i>
+                <strong>OSAHANEAT</strong> <span class="badge badge-warning ml-2">SHIPPER</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-home"></i> Trang chủ
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="orders.html">
+                            <i class="fas fa-shopping-bag"></i> Đơn hàng
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="history.html">
+                            <i class="fas fa-history"></i> Lịch sử
+                        </a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="profile.html">
+                            <i class="fas fa-user"></i> Hồ sơ
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="login.html" onclick="shipperLogout(); return false;">
+                            <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <div class="col-lg-4 mb-4">
+                <!-- Profile Card -->
+                <div class="card">
+                    <div class="card-body text-center">
+                        <img src="../admin/img/profile-img.jpg" alt="Avatar" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                        <h4 id="profile-fullname">-</h4>
+                        <p class="text-muted mb-4" id="profile-email">-</p>
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <i class="fas fa-shopping-bag fa-2x text-primary mb-2"></i>
+                                <h5 id="total-deliveries">0</h5>
+                                <small class="text-muted">Tổng đơn</small>
+                            </div>
+                            <div class="col-6">
+                                <i class="fas fa-star fa-2x text-warning mb-2"></i>
+                                <h5 id="average-rating">0.0</h5>
+                                <small class="text-muted">Đánh giá</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistics Card -->
+                <div class="card mt-4">
+                    <div class="card-header shipper-card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chart-bar mr-2"></i>Thống kê
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="stat-item mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span><i class="fas fa-clipboard-list mr-2 text-primary"></i>Đơn hôm nay</span>
+                                <strong id="stat-today-orders">0</strong>
+                            </div>
+                        </div>
+                        <div class="stat-item mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span><i class="fas fa-money-bill-wave mr-2 text-success"></i>Thu nhập hôm nay</span>
+                                <strong id="stat-today-earnings">0 ₫</strong>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span><i class="fas fa-star mr-2 text-warning"></i>Đánh giá trung bình</span>
+                                <strong id="stat-rating">0.0</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <!-- Profile Form -->
+                <div class="card">
+                    <div class="card-header shipper-card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-user-edit mr-2"></i>
+                            Thông tin cá nhân
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="profile-form">
+                            <div class="form-group">
+                                <label><i class="fas fa-id-card mr-1"></i>Họ và tên</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                                    </div>
+                                    <input type="text" class="form-control" id="profile-fullname-input" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-envelope mr-1"></i>Email</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                    </div>
+                                    <input type="email" class="form-control" id="profile-email-input" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-phone mr-1"></i>Số điện thoại</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                    </div>
+                                    <input type="tel" class="form-control" id="profile-phone-input" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-map-marker-alt mr-1"></i>Địa chỉ</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                                    </div>
+                                    <textarea class="form-control" id="profile-address-input" rows="3"></textarea>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-warning">
+                                <i class="fas fa-save mr-2"></i>Cập nhật thông tin
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Change Password -->
+                <div class="card mt-4">
+                    <div class="card-header shipper-card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-lock mr-2"></i>
+                            Đổi mật khẩu
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="password-form">
+                            <div class="form-group">
+                                <label><i class="fas fa-lock mr-1"></i>Mật khẩu hiện tại</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                    </div>
+                                    <input type="password" class="form-control" id="current-password" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-key mr-1"></i>Mật khẩu mới</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-key"></i></span>
+                                    </div>
+                                    <input type="password" class="form-control" id="new-password" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-check-circle mr-1"></i>Xác nhận mật khẩu mới</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-check-circle"></i></span>
+                                    </div>
+                                    <input type="password" class="form-control" id="confirm-password" />
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-warning">
+                                <i class="fas fa-key mr-2"></i>Đổi mật khẩu
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../admin/vendor/jquery/jquery.min.js"></script>
+    <script src="../admin/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../admin/js/api.js"></script>
+    <script src="js/shipper.js"></script>
+    <script>
+        $(document).ready(function() {
+            if (!isAuthenticated()) {
+                alert('Vui lòng đăng nhập!');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            loadProfile();
+            loadStatistics();
+            
+            $('#profile-form').on('submit', function(e) {
+                e.preventDefault();
+                updateProfile();
+            });
+            
+            $('#password-form').on('submit', function(e) {
+                e.preventDefault();
+                changePassword();
+            });
+        });
+
+        function loadProfile() {
+            AdminApiService.getMyInfo()
+                .done(function(response) {
+                    if (response && (response.success || response.isSuccess) && response.data) {
+                        const user = response.data;
+                        $('#profile-fullname').text(user.fullName || '-');
+                        $('#profile-email').text(user.email || '-');
+                        $('#profile-fullname-input').val(user.fullName || '');
+                        $('#profile-email-input').val(user.email || '');
+                        $('#profile-phone-input').val(user.phoneNumber || '');
+                        $('#profile-address-input').val(user.address || '');
+                    }
+                })
+                .fail(function(xhr) {
+                    console.error('Error loading profile:', xhr);
+                });
+        }
+
+        function loadStatistics() {
+            ShipperApiService.getStatistics()
+                .done(function(response) {
+                    if (response && (response.success || response.isSuccess) && response.data) {
+                        const stats = response.data;
+                        $('#total-deliveries').text(stats.totalDeliveries || 0);
+                        $('#average-rating').text((stats.averageRating || 0).toFixed(1));
+                        $('#stat-today-orders').text(stats.todayOrders || 0);
+                        $('#stat-today-earnings').text(formatVND(stats.todayEarnings || 0));
+                        $('#stat-rating').text((stats.averageRating || 0).toFixed(1));
+                    }
+                })
+                .fail(function(xhr) {
+                    console.error('Error loading statistics:', xhr);
+                });
+        }
+
+        function updateProfile() {
+            const data = {
+                fullName: $('#profile-fullname-input').val(),
+                email: $('#profile-email-input').val(),
+                phoneNumber: $('#profile-phone-input').val(),
+                address: $('#profile-address-input').val()
+            };
+            
+            AdminApiService.updateProfile(data)
+                .done(function(response) {
+                    if (response && (response.success || response.isSuccess)) {
+                        alert('Cập nhật thông tin thành công!');
+                        loadProfile();
+                    } else {
+                        alert('Lỗi: ' + (response.desc || 'Không thể cập nhật thông tin'));
+                    }
+                })
+                .fail(function(xhr) {
+                    alert('Lỗi khi cập nhật thông tin');
+                    console.error(xhr);
+                });
+        }
+
+        function changePassword() {
+            const currentPassword = $('#current-password').val();
+            const newPassword = $('#new-password').val();
+            const confirmPassword = $('#confirm-password').val();
+            
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                alert('Vui lòng điền đầy đủ thông tin!');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                alert('Mật khẩu mới và xác nhận không khớp!');
+                return;
+            }
+            
+            if (newPassword.length < 6) {
+                alert('Mật khẩu mới phải có ít nhất 6 ký tự!');
+                return;
+            }
+            
+            // TODO: Implement change password API
+            alert('Tính năng đổi mật khẩu đang được phát triển');
+        }
+
+        function formatVND(amount) {
+            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+        }
+    </script>
+</body>
+</html>
+

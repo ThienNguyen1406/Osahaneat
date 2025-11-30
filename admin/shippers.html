@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="vi">
+   <head>
+      <meta charset="utf-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+      <meta name="description" content="OSAHANEAT - Hệ thống quản lý đặt món ăn" />
+      <meta name="author" content="OSAHANEAT" />
+      <title>OSAHANEAT - Quản lý shipper</title>
+      <!-- Favicon Icon -->
+      <link rel="icon" type="image/png" href="img/favicon.png?v=2.0">
+      <!-- Feather Icon-->
+      <link href="vendor/icons/feather.css?v=2.0" rel="stylesheet" type="text/css">
+      <!-- Fontawesome Icon-->
+      <link href="vendor/fontawesome/css/fontawesome.min.css?v=2.0" rel="stylesheet" type="text/css">
+      <!-- Bootstrap Css -->
+      <link href="vendor/bootstrap/css/bootstrap.min.css?v=2.0" rel="stylesheet">
+      <!-- Custom Css -->
+      <link href="css/styles.css?v=2.0" rel="stylesheet" />
+      <!-- Datatables css -->
+      <link href="vendor/dataTables/dataTables/css/dataTables.bootstrap4.min.css?v=2.0" rel="stylesheet">
+   </head>
+   <body class="sb-nav-fixed">
+      <nav class="sb-topnav navbar navbar-expand navbar-light bg-white shadow-sm">
+         <a class="navbar-brand" href="index.html"><img alt="logo" src="img/logo.png"></a>
+         <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#"><i class="fas fa-bars"></i></button>
+         <!-- Navbar Search-->
+         <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0" id="searchForm">
+            <div class="input-group">
+               <input class="form-control" type="text" id="searchInput" placeholder="Tìm kiếm shipper..." aria-label="Search" aria-describedby="basic-addon2" />
+               <div class="input-group-append">
+                  <button class="btn btn-primary" type="button" id="searchBtn"><i class="feather-search"></i></button>
+               </div>
+            </div>
+         </form>
+         <!-- Navbar-->
+         <ul class="navbar-nav ml-auto ml-md-0">
+            <li class="nav-item dropdown no-arrow d-sm-none">
+               <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+               <i class="feather-search mr-2"></i>
+               </a>
+               <!-- Dropdown - Messages -->
+               <div class="dropdown-menu dropdown-menu-right p-3 shadow-sm animated--grow-in" aria-labelledby="searchDropdown">
+                  <form class="form-inline mr-auto w-100 navbar-search">
+                     <div class="input-group">
+                        <input type="text" class="form-control border-0 shadow-none" id="mobileSearchInput" placeholder="Tìm kiếm shipper..." aria-label="Search" aria-describedby="basic-addon2">
+                        <div class="input-group-append">
+                           <button class="btn" type="button" id="mobileSearchBtn">
+                           <i class="feather-search"></i>
+                           </button>
+                        </div>
+                     </div>
+                  </form>
+               </div>
+            </li>
+            <!-- Nav Item - User Information -->
+            <li class="nav-item dropdown no-arrow ml-1 osahan-profile-dropdown">
+               <a class="nav-link dropdown-toggle pr-0" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+               <img class="img-profile rounded-circle" src="img/user/1.png">
+               </a>
+               <!-- Dropdown - User Information -->
+               <div class="dropdown-menu dropdown-menu-right shadow-sm">
+                  <div class="p-3 d-flex align-items-center">
+                     <div class="dropdown-list-image mr-3">
+                        <img class="rounded-circle" src="img/user/1.png" alt="">
+                        <div class="status-indicator bg-success"></div>
+                     </div>
+                     <div class="font-weight-bold">
+                        <div class="text-truncate">Quản trị viên</div>
+                        <div class="small text-gray-500">Quản lý hệ thống</div>
+                     </div>
+                  </div>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="my-profile.html"><i class="feather-edit"></i> Tài khoản của tôi</a>
+                  <a class="dropdown-item" href="my-profile.html"><i class="feather-settings"></i> Cài đặt tài khoản</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="login.html" onclick="adminLogout(); return false;"><i class="feather-log-out"></i> Đăng xuất</a>
+               </div>
+            </li>
+         </ul>
+      </nav>
+      <div id="layoutSidenav">
+         <div id="layoutSidenav_nav">
+            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+               <div class="sb-sidenav-menu">
+                  <div class="nav">
+                     <div class="sb-sidenav-menu-heading">Chức năng</div>
+                     <a class="nav-link" href="index.html">
+                        <div class="sb-nav-link-icon"><i class="feather-home"></i></div>
+                        Bảng điều khiển
+                     </a>
+                     <a class="nav-link" href="listings.html">
+                        <div class="sb-nav-link-icon"><i class="feather-list"></i></div>
+                        Quản lý nhà hàng
+                     </a>
+                     <a class="nav-link" href="users.html">
+                        <div class="sb-nav-link-icon"><i class="feather-users"></i></div>
+                        Quản lý người dùng
+                     </a>
+                     <a class="nav-link active" href="shippers.html">
+                        <div class="sb-nav-link-icon"><i class="feather-truck"></i></div>
+                        Quản lý shipper
+                     </a>
+                     <a class="nav-link" href="permissions.html">
+                        <div class="sb-nav-link-icon"><i class="feather-shield"></i></div>
+                        Quản lý phân quyền
+                     </a>
+                  </div>
+               </div>
+               <div class="sb-sidenav-footer">
+                  <div class="small">Đăng nhập với:</div>
+                  Quản trị viên
+               </div>
+            </nav>
+         </div>
+         <div id="layoutSidenav_content">
+            <main>
+               <div class="container-fluid">
+                  <h1 class="mt-4"><i class="feather-truck mr-2"></i>Quản lý shipper</h1>
+                  <ol class="breadcrumb mb-4">
+                     <li class="breadcrumb-item"><a href="index.html">Bảng điều khiển</a></li>
+                     <li class="breadcrumb-item active">Quản lý shipper</li>
+                  </ol>
+                  <div class="row">
+                     <div class="col-xl-12">
+                        <div class="card mb-4">
+                           <div class="card-header d-flex justify-content-between align-items-center">
+                              <div>
+                                 <i class="fas fa-table mr-1"></i>
+                                 Danh sách shipper
+                              </div>
+                              <button class="btn btn-primary btn-sm" onclick="showAddShipperModal()">
+                                 <i class="feather-plus mr-1"></i>Thêm shipper
+                              </button>
+                           </div>
+                           <div class="card-body">
+                              <div class="table-responsive">
+                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                       <tr>
+                                          <th><i class="feather-hash mr-1"></i>ID</th>
+                                          <th><i class="feather-user mr-1"></i>Tên đăng nhập</th>
+                                          <th><i class="feather-user mr-1"></i>Họ tên</th>
+                                          <th><i class="feather-phone mr-1"></i>Số điện thoại</th>
+                                          <th><i class="feather-mail mr-1"></i>Email</th>
+                                          <th><i class="feather-check-circle mr-1"></i>Trạng thái</th>
+                                          <th><i class="feather-shield mr-1"></i>Duyệt</th>
+                                          <th><i class="feather-settings mr-1"></i>Thao tác</th>
+                                       </tr>
+                                    </thead>
+                                    <tbody>
+                                       <tr>
+                                          <td colspan="8" class="text-center py-4">
+                                             <i class="feather-loader"></i> Đang tải...
+                                          </td>
+                                       </tr>
+                                    </tbody>
+                                 </table>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </main>
+            <footer class="py-4 bg-light mt-auto">
+               <div class="container-fluid">
+                  <div class="d-flex align-items-center justify-content-between small">
+                     <div class="text-muted">Copyright &copy; OSAHANEAT 2024</div>
+                  </div>
+               </div>
+            </footer>
+         </div>
+      </div>
+      <!-- Scripts -->
+      <script src="vendor/jquery/jquery.min.js"></script>
+      <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+      <script src="js/api.js"></script>
+      <script src="js/admin.js"></script>
+      <script src="js/admin-users.js"></script>
+      <script>
+         // Override loadUsers to load shippers instead
+         function loadUsers(keyword = '') {
+             console.log("Loading shippers with keyword:", keyword);
+             
+             const tbody = $('#dataTable tbody');
+             tbody.html('<tr><td colspan="8" class="text-center py-4"><i class="feather-loader"></i> Đang tải...</td></tr>');
+             
+             AdminApiService.getDrivers(keyword)
+                 .done(function(response) {
+                     console.log("Shippers response:", response);
+                     
+                     if (response && (response.isSuccess || response.success) && response.data) {
+                         const shippers = Array.isArray(response.data) ? response.data : [];
+                         renderShippers(shippers);
+                     } else {
+                        tbody.html('<tr><td colspan="8" class="text-center py-4 text-muted">Không có dữ liệu</td></tr>');
+                     }
+                 })
+                 .fail(function(xhr) {
+                    console.error("Error loading shippers:", xhr);
+                    tbody.html('<tr><td colspan="8" class="text-center py-4 text-danger">Lỗi khi tải dữ liệu</td></tr>');
+                 });
+         }
+         
+         function renderShippers(shippers) {
+             const tbody = $('#dataTable tbody');
+             
+             if (shippers.length === 0) {
+                tbody.html('<tr><td colspan="8" class="text-center py-4 text-muted"><i class="feather-truck mr-2"></i>Chưa có shipper nào</td></tr>');
+                return;
+            }
+            
+            let html = '';
+            shippers.forEach(function(shipper) {
+                const statusBadge = shipper.isActive !== false 
+                    ? '<span class="badge badge-success"><i class="feather-check-circle mr-1"></i>Hoạt động</span>'
+                    : '<span class="badge badge-danger"><i class="feather-x-circle mr-1"></i>Không hoạt động</span>';
+                
+                const isApproved = shipper.isApproved !== false && shipper.isApproved !== null;
+                const approvalBadge = isApproved
+                    ? '<span class="badge badge-success"><i class="feather-check-circle mr-1"></i>Đã duyệt</span>'
+                    : '<span class="badge badge-warning"><i class="feather-clock mr-1"></i>Chờ duyệt</span>';
+                
+                const titleEscaped = (shipper.fullName || shipper.userName || '').replace(/'/g, "\\'");
+                
+                html += `
+                    <tr>
+                        <td>${shipper.id || 'N/A'}</td>
+                        <td>${shipper.userName || 'N/A'}</td>
+                        <td>${shipper.fullName || 'N/A'}</td>
+                        <td>${shipper.phoneNumber || 'N/A'}</td>
+                        <td>${shipper.email || shipper.userName || 'N/A'}</td>
+                        <td>${statusBadge}</td>
+                        <td>${approvalBadge}</td>
+                        <td>
+                            ${!isApproved ? `
+                                <button class="btn btn-sm btn-success mr-1" onclick="approveShipper(${shipper.id}, '${titleEscaped}')" title="Duyệt">
+                                    <i class="feather-check"></i>
+                                </button>
+                            ` : ''}
+                            <button class="btn btn-sm btn-info mr-1" onclick="resetPassword(${shipper.id}, '${titleEscaped}')" title="Cấp lại mật khẩu">
+                                <i class="feather-key"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteShipper(${shipper.id}, '${titleEscaped}')" title="Xóa">
+                                <i class="feather-trash-2"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+             
+             tbody.html(html);
+         }
+         
+         function showAddShipperModal() {
+             alert('Chức năng thêm shipper đang được phát triển');
+         }
+         
+         function editShipper(id) {
+             alert('Chức năng sửa shipper đang được phát triển');
+         }
+         
+         function approveShipper(id, name) {
+            if (!confirm(`Bạn có chắc chắn muốn duyệt shipper "${name}"?`)) {
+                return;
+            }
+            
+            $.ajax({
+                method: 'PUT',
+                url: `${AdminApiService.API_BASE_URL || 'http://localhost:82'}/admin/shipper/${id}/approve`,
+                headers: AdminApiService.getHeaders ? AdminApiService.getHeaders() : {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                },
+                dataType: 'json'
+            })
+            .done(function(response) {
+                if (response && (response.success || response.isSuccess)) {
+                    alert('Duyệt shipper thành công!');
+                    loadUsers();
+                } else {
+                    alert('Lỗi: ' + (response?.desc || 'Không thể duyệt shipper'));
+                }
+            })
+            .fail(function(xhr) {
+                const errorMsg = xhr.responseJSON?.desc || 'Lỗi khi duyệt shipper';
+                alert(errorMsg);
+            });
+        }
+        
+        function resetPassword(id, name) {
+            if (!confirm(`Bạn có chắc chắn muốn cấp lại mật khẩu cho shipper "${name}"?\n\nMật khẩu mặc định sẽ là: 123456`)) {
+                return;
+            }
+            
+            $.ajax({
+                method: 'PUT',
+                url: `${AdminApiService.API_BASE_URL || 'http://localhost:82'}/admin/shipper/${id}/reset-password`,
+                headers: AdminApiService.getHeaders ? AdminApiService.getHeaders() : {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                },
+                dataType: 'json'
+            })
+            .done(function(response) {
+                if (response && (response.success || response.isSuccess)) {
+                    const newPassword = response.desc?.match(/123456/) ? '123456' : '123456';
+                    alert(`Cấp lại mật khẩu thành công!\n\nMật khẩu mới: ${newPassword}`);
+                    loadUsers();
+                } else {
+                    alert('Lỗi: ' + (response?.desc || 'Không thể cấp lại mật khẩu'));
+                }
+            })
+            .fail(function(xhr) {
+                const errorMsg = xhr.responseJSON?.desc || 'Lỗi khi cấp lại mật khẩu';
+                alert(errorMsg);
+            });
+        }
+        
+        function deleteShipper(id, name) {
+            if (!confirm(`Bạn có chắc chắn muốn xóa shipper "${name}"?\n\nHành động này không thể hoàn tác!`)) {
+                return;
+            }
+            
+            $.ajax({
+                method: 'DELETE',
+                url: `${AdminApiService.API_BASE_URL || 'http://localhost:82'}/admin/shipper/${id}`,
+                headers: AdminApiService.getHeaders ? AdminApiService.getHeaders() : {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                },
+                dataType: 'json'
+            })
+            .done(function(response) {
+                if (response && (response.success || response.isSuccess)) {
+                    alert('Xóa shipper thành công!');
+                    loadUsers();
+                } else {
+                    alert('Lỗi: ' + (response?.desc || 'Không thể xóa shipper'));
+                }
+            })
+            .fail(function(xhr) {
+                const errorMsg = xhr.responseJSON?.desc || 'Lỗi khi xóa shipper';
+                alert(errorMsg);
+            });
+        }
+         
+         // Setup search
+         $('#searchBtn, #mobileSearchBtn').on('click', function() {
+             const keyword = $('#searchInput').val() || $('#mobileSearchInput').val() || '';
+             loadUsers(keyword);
+         });
+         
+         $('#searchInput, #mobileSearchInput').on('keypress', function(e) {
+             if (e.which === 13) {
+                 e.preventDefault();
+                 const keyword = $(this).val() || '';
+                 loadUsers(keyword);
+             }
+         });
+      </script>
+   </body>
+</html>
+

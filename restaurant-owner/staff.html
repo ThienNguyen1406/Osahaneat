@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="OSAHANEAT - Quản lý nhân viên" />
+    <meta name="author" content="OSAHANEAT" />
+    <title>OSAHANEAT - Quản lý nhân viên</title>
+    <link rel="icon" type="image/png" href="../admin/img/favicon.png">
+    <link href="../admin/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Fontawesome Icon - CDN for better compatibility -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Fallback to local -->
+    <link href="../admin/vendor/fontawesome/css/fontawesome.min.css" rel="stylesheet" type="text/css">
+    <link href="css/owner.css" rel="stylesheet" />
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark owner-navbar">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-store mr-2"></i>
+                <strong>OSAHANEAT</strong> <span class="badge badge-light ml-2">OWNER</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-chart-line"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="restaurants.html">
+                            <i class="fas fa-store"></i> Cửa hàng
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="menu.html">
+                            <i class="fas fa-utensils"></i> Menu
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="orders.html">
+                            <i class="fas fa-shopping-bag"></i> Đơn hàng
+                        </a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="staff.html">
+                            <i class="fas fa-users"></i> Nhân viên
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="promo.html">
+                            <i class="fas fa-tags"></i> Khuyến mãi
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../admin/login.html" onclick="ownerLogout(); return false;">
+                            <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid mt-4">
+        <div class="row mb-4">
+            <div class="col-12 d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="owner-page-title">
+                        <i class="fas fa-users mr-2"></i>Quản lý nhân viên
+                    </h2>
+                    <p class="text-muted">
+                        <i class="fas fa-user-tie mr-1"></i>Quản lý nhân viên của cửa hàng
+                    </p>
+                </div>
+                <button class="btn btn-owner btn-owner-primary" data-toggle="modal" data-target="#addStaffModal">
+                    <i class="fas fa-user-plus mr-2"></i>Thêm nhân viên
+                </button>
+            </div>
+        </div>
+
+        <!-- Restaurant Selector -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <label><i class="fas fa-store mr-1"></i>Chọn cửa hàng</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-store"></i></span>
+                    </div>
+                    <select class="form-control" id="restaurant-select">
+                        <option value="">Chọn cửa hàng...</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Staff List -->
+        <div class="card owner-card">
+            <div class="card-header owner-card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-users mr-2"></i>
+                    Danh sách nhân viên
+                </h5>
+            </div>
+            <div class="card-body">
+                <div id="staff-list">
+                    <div class="text-center py-5">
+                        <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">Chọn cửa hàng để xem nhân viên</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Staff Modal -->
+    <div class="modal fade" id="addStaffModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header owner-card-header">
+                    <h5 class="modal-title">Thêm nhân viên</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="add-staff-form">
+                        <div class="form-group">
+                            <label><i class="fas fa-store mr-1"></i>Chọn cửa hàng <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-store"></i></span>
+                                </div>
+                                <select class="form-control" id="add-staff-restaurant" required>
+                                    <option value="">Chọn cửa hàng...</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-user mr-1"></i>Tên đăng nhập (Username) <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                </div>
+                                <input type="text" class="form-control" id="add-staff-username" 
+                                       placeholder="VD: staff001" required />
+                            </div>
+                            <small class="form-text text-muted">Tên đăng nhập phải duy nhất</small>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-lock mr-1"></i>Mật khẩu <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                </div>
+                                <input type="password" class="form-control" id="add-staff-password" 
+                                       placeholder="Tối thiểu 8 ký tự" required minlength="8" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-id-card mr-1"></i>Họ và tên <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                                </div>
+                                <input type="text" class="form-control" id="add-staff-fullname" 
+                                       placeholder="VD: Nguyễn Văn A" required />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-phone mr-1"></i>Số điện thoại</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                </div>
+                                <input type="text" class="form-control" id="add-staff-phone" 
+                                       placeholder="VD: 0123456789" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-owner btn-owner-primary" onclick="addStaff()">
+                        <i class="fas fa-user-plus mr-2"></i>Thêm nhân viên
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../admin/vendor/jquery/jquery.min.js"></script>
+    <script src="../admin/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../admin/js/api.js"></script>
+    <script src="js/owner.js"></script>
+    <script>
+        $(document).ready(function() {
+            if (!isAuthenticated()) {
+                alert('Vui lòng đăng nhập!');
+                window.location.href = '../admin/login.html';
+                return;
+            }
+            
+            loadRestaurants();
+            
+            // Load tất cả nhân viên khi trang load
+            loadAllStaff();
+            
+            $('#restaurant-select').on('change', function() {
+                const restaurantId = $(this).val();
+                if (restaurantId) {
+                    loadStaff(restaurantId);
+                } else {
+                    loadAllStaff();
+                }
+            });
+        });
+
+        function loadRestaurants() {
+            console.log('=== loadRestaurants() called ===');
+            console.log('OwnerApiService:', typeof OwnerApiService !== 'undefined' ? 'defined' : 'NOT DEFINED');
+            
+            if (typeof OwnerApiService === 'undefined') {
+                console.error('OwnerApiService is not defined!');
+                alert('Lỗi: API Service chưa được load. Vui lòng refresh trang.');
+                return;
+            }
+            
+            OwnerApiService.getMyRestaurants()
+                .done(function(response) {
+                    console.log('=== getMyRestaurants Response ===');
+                    console.log('Full response:', response);
+                    console.log('Response.success:', response?.success);
+                    console.log('Response.isSuccess:', response?.isSuccess);
+                    console.log('Response.status:', response?.status);
+                    console.log('Response.data:', response?.data);
+                    
+                    let restaurants = [];
+                    if (response && (response.success || response.isSuccess || response.status === 200) && response.data) {
+                        restaurants = Array.isArray(response.data) ? response.data : [];
+                        console.log('Restaurants extracted:', restaurants.length);
+                    } else {
+                        console.warn('Response format invalid or no data:', response);
+                        if (response && response.desc) {
+                            console.warn('Error message:', response.desc);
+                        }
+                    }
+                    
+                    const $select = $('#restaurant-select');
+                    const $modalSelect = $('#add-staff-restaurant');
+                    
+                    // Clear existing options
+                    $select.empty().append('<option value="">Chọn cửa hàng...</option>');
+                    $modalSelect.empty().append('<option value="">Chọn cửa hàng...</option>');
+                    
+                    if (restaurants.length === 0) {
+                        console.warn('No restaurants found for owner');
+                        $select.append('<option value="">Bạn chưa có cửa hàng nào</option>');
+                        $modalSelect.append('<option value="">Bạn chưa có cửa hàng nào</option>');
+                        alert('Bạn chưa có cửa hàng nào. Vui lòng tạo cửa hàng trước khi thêm nhân viên.');
+                    } else {
+                        restaurants.forEach(function(restaurant) {
+                            $select.append(`<option value="${restaurant.id}">${restaurant.title || 'N/A'}</option>`);
+                            $modalSelect.append(`<option value="${restaurant.id}">${restaurant.title || 'N/A'}</option>`);
+                        });
+                    }
+                })
+                .fail(function(xhr, status, error) {
+                    console.error('=== Error loading restaurants ===');
+                    console.error('XHR:', xhr);
+                    console.error('Status:', status);
+                    console.error('Error:', error);
+                    console.error('Status code:', xhr.status);
+                    console.error('Response text:', xhr.responseText);
+                    
+                    let errorMsg = 'Không thể tải danh sách cửa hàng';
+                    if (xhr.responseJSON && xhr.responseJSON.desc) {
+                        errorMsg = xhr.responseJSON.desc;
+                    } else if (xhr.status === 401 || xhr.status === 403) {
+                        errorMsg = 'Bạn chưa đăng nhập hoặc không có quyền truy cập. Vui lòng đăng nhập lại.';
+                        setTimeout(function() {
+                            window.location.href = '../admin/login.html';
+                        }, 2000);
+                    }
+                    
+                    alert(errorMsg);
+                });
+        }
+
+        function loadStaff(restaurantId) {
+            OwnerApiService.getRestaurantStaff(restaurantId)
+                .done(function(response) {
+                    let staff = [];
+                    if (response && (response.success || response.isSuccess) && response.data) {
+                        staff = Array.isArray(response.data) ? response.data : [];
+                    }
+                    
+                    renderStaff(staff, false); // false = không hiển thị cột restaurant
+                })
+                .fail(function(xhr) {
+                    console.error('Error loading staff:', xhr);
+                    $('#staff-list').html('<div class="alert alert-danger">Lỗi khi tải danh sách nhân viên</div>');
+                });
+        }
+
+        function loadAllStaff() {
+            OwnerApiService.getAllStaff()
+                .done(function(response) {
+                    let staff = [];
+                    if (response && (response.success || response.isSuccess) && response.data) {
+                        staff = Array.isArray(response.data) ? response.data : [];
+                    }
+                    renderStaff(staff, true); // true = hiển thị tất cả, có cột restaurant
+                })
+                .fail(function(xhr) {
+                    console.error('Error loading all staff:', xhr);
+                    $('#staff-list').html('<div class="alert alert-danger">Lỗi khi tải danh sách nhân viên</div>');
+                });
+        }
+
+        function renderStaff(staff, showRestaurant = false) {
+            const $list = $('#staff-list');
+            
+            if (staff.length === 0) {
+                $list.html('<div class="text-center py-5"><i class="fas fa-user-slash fa-3x text-muted mb-3"></i><p class="text-muted">Chưa có nhân viên nào</p></div>');
+                return;
+            }
+            
+            // Map status tiếng Việt
+            const statusMap = {
+                'WORKING': 'Đang làm việc',
+                'ON_LEAVE': 'Nghỉ phép',
+                'RESIGNED': 'Đã nghỉ việc',
+                'TRUONG_CUA_HANG': 'Trưởng cửa hàng',
+                'NHAN_VIEN_CHINH_THUC': 'Nhân viên chính thức',
+                'NHAN_VIEN_BAN_THOI_GIAN': 'Nhân viên bán thời gian'
+            };
+            
+            let html = '<div class="table-responsive"><table class="table table-hover"><thead><tr><th><i class="fas fa-hashtag mr-1"></i>ID</th><th><i class="fas fa-user mr-1"></i>Họ tên</th><th><i class="fas fa-envelope mr-1"></i>Email</th><th><i class="fas fa-phone mr-1"></i>Số điện thoại</th>';
+            
+            if (showRestaurant) {
+                html += '<th><i class="fas fa-store mr-1"></i>Cửa hàng</th>';
+            }
+            
+            html += '<th><i class="fas fa-briefcase mr-1"></i>Trạng thái</th><th><i class="fas fa-cog mr-1"></i>Thao tác</th></tr></thead><tbody>';
+            
+            staff.forEach(function(member) {
+                const currentStatus = member.status || 'WORKING';
+                const statusText = statusMap[currentStatus] || currentStatus;
+                const statusClass = currentStatus === 'RESIGNED' ? 'danger' : 
+                                   currentStatus === 'TRUONG_CUA_HANG' ? 'primary' :
+                                   currentStatus === 'NHAN_VIEN_CHINH_THUC' ? 'success' :
+                                   currentStatus === 'NHAN_VIEN_BAN_THOI_GIAN' ? 'info' : 'secondary';
+                
+                html += `
+                    <tr>
+                        <td>${member.id || 'N/A'}</td>
+                        <td>${escapeHtml(member.fullName || 'N/A')}</td>
+                        <td>${escapeHtml(member.email || member.userName || 'N/A')}</td>
+                        <td>${member.phoneNumber || 'N/A'}</td>
+                        ${showRestaurant ? `<td><i class="fas fa-store mr-1"></i>${escapeHtml(member.restaurantName || 'N/A')}</td>` : ''}
+                        <td>
+                            <select class="form-control form-control-sm" onchange="updateStaffStatus(${member.restaurantId}, ${member.userId}, this.value, '${escapeHtml(member.fullName || '')}')">
+                                <option value="WORKING" ${currentStatus === 'WORKING' ? 'selected' : ''}>Đang làm việc</option>
+                                <option value="TRUONG_CUA_HANG" ${currentStatus === 'TRUONG_CUA_HANG' ? 'selected' : ''}>Trưởng cửa hàng</option>
+                                <option value="NHAN_VIEN_CHINH_THUC" ${currentStatus === 'NHAN_VIEN_CHINH_THUC' ? 'selected' : ''}>Nhân viên chính thức</option>
+                                <option value="NHAN_VIEN_BAN_THOI_GIAN" ${currentStatus === 'NHAN_VIEN_BAN_THOI_GIAN' ? 'selected' : ''}>Nhân viên bán thời gian</option>
+                                <option value="ON_LEAVE" ${currentStatus === 'ON_LEAVE' ? 'selected' : ''}>Nghỉ phép</option>
+                                <option value="RESIGNED" ${currentStatus === 'RESIGNED' ? 'selected' : ''}>Đã nghỉ việc</option>
+                            </select>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-danger" onclick="removeStaff(${member.restaurantId}, ${member.userId}, '${escapeHtml(member.fullName || '')}')">
+                                <i class="fas fa-user-times mr-1"></i>Xóa
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += '</tbody></table></div>';
+            $list.html(html);
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.toString().replace(/[&<>"']/g, m => map[m]);
+        }
+        
+        function updateStaffStatus(restaurantId, userId, status, staffName) {
+            if (!confirm(`Bạn có chắc muốn thay đổi trạng thái của nhân viên "${staffName}"?`)) {
+                // Reload để reset dropdown
+                const restaurantIdSelect = $('#restaurant-select').val();
+                if (restaurantIdSelect) {
+                    loadStaff(restaurantIdSelect);
+                } else {
+                    loadAllStaff();
+                }
+                return;
+            }
+            
+            OwnerApiService.updateStaffStatus(restaurantId, userId, status)
+                .done(function(response) {
+                    if (response && (response.success || response.isSuccess)) {
+                        alert('Cập nhật trạng thái nhân viên thành công!');
+                        // Reload danh sách
+                        const restaurantIdSelect = $('#restaurant-select').val();
+                        if (restaurantIdSelect) {
+                            loadStaff(restaurantIdSelect);
+                        } else {
+                            loadAllStaff();
+                        }
+                    } else {
+                        alert('Lỗi: ' + (response.desc || 'Không thể cập nhật trạng thái nhân viên'));
+                        // Reload để reset dropdown
+                        const restaurantIdSelect = $('#restaurant-select').val();
+                        if (restaurantIdSelect) {
+                            loadStaff(restaurantIdSelect);
+                        } else {
+                            loadAllStaff();
+                        }
+                    }
+                })
+                .fail(function(xhr) {
+                    alert('Lỗi khi cập nhật trạng thái nhân viên');
+                    console.error(xhr);
+                    // Reload để reset dropdown
+                    const restaurantIdSelect = $('#restaurant-select').val();
+                    if (restaurantIdSelect) {
+                        loadStaff(restaurantIdSelect);
+                    } else {
+                        loadAllStaff();
+                    }
+                });
+        }
+
+        function addStaff() {
+            const restaurantId = $('#add-staff-restaurant').val();
+            const username = $('#add-staff-username').val().trim();
+            const password = $('#add-staff-password').val();
+            const fullName = $('#add-staff-fullname').val().trim();
+            const phoneNumber = $('#add-staff-phone').val().trim();
+            
+            console.log("=== addStaff() called ===");
+            console.log("Restaurant ID:", restaurantId);
+            console.log("Username:", username);
+            console.log("Full Name:", fullName);
+            console.log("Phone Number:", phoneNumber);
+            
+            if (!restaurantId) {
+                alert('Vui lòng chọn cửa hàng!');
+                return;
+            }
+            
+            if (!username) {
+                alert('Vui lòng nhập tên đăng nhập!');
+                return;
+            }
+            
+            if (!password || password.length < 8) {
+                alert('Mật khẩu phải có ít nhất 8 ký tự!');
+                return;
+            }
+            
+            if (!fullName) {
+                alert('Vui lòng nhập họ và tên!');
+                return;
+            }
+            
+            const data = {
+                userName: username,
+                password: password,
+                fullName: fullName,
+                phoneNumber: phoneNumber || null
+            };
+            
+            console.log("Sending data:", data);
+            console.log("API URL:", `${OwnerApiService.API_BASE_URL}/restaurant/owner/${restaurantId}/staff/create`);
+            
+            // Disable button
+            const $btn = $('#addStaffModal .btn-owner-primary');
+            const originalText = $btn.html();
+            $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-2"></i>Đang tạo...');
+            
+            OwnerApiService.createStaffAccount(restaurantId, data)
+                .done(function(response) {
+                    console.log("=== Create Staff Response ===");
+                    console.log("Full response:", response);
+                    console.log("Response success:", response?.success);
+                    console.log("Response isSuccess:", response?.isSuccess);
+                    console.log("Response status:", response?.status);
+                    console.log("Response desc:", response?.desc);
+                    console.log("Response data:", response?.data);
+                    
+                    $btn.prop('disabled', false).html(originalText);
+                    
+                    if (response && (response.success || response.isSuccess || response.status === 200)) {
+                        alert('Tạo tài khoản nhân viên thành công!');
+                        $('#addStaffModal').modal('hide');
+                        $('#add-staff-form')[0].reset();
+                        loadStaff(restaurantId);
+                    } else {
+                        const errorMsg = response?.desc || response?.message || 'Không thể tạo tài khoản nhân viên';
+                        alert('Lỗi: ' + errorMsg);
+                        console.error("Create staff failed:", response);
+                    }
+                })
+                .fail(function(xhr, status, error) {
+                    console.error("=== Create Staff Error ===");
+                    console.error("XHR:", xhr);
+                    console.error("Status:", status);
+                    console.error("Error:", error);
+                    console.error("Status code:", xhr.status);
+                    console.error("Response text:", xhr.responseText);
+                    console.error("Response JSON:", xhr.responseJSON);
+                    
+                    $btn.prop('disabled', false).html(originalText);
+                    
+                    let errorMsg = 'Lỗi khi tạo tài khoản nhân viên';
+                    
+                    if (xhr.responseJSON) {
+                        errorMsg = xhr.responseJSON.desc || xhr.responseJSON.message || errorMsg;
+                    } else if (xhr.status === 401 || xhr.status === 403) {
+                        errorMsg = 'Bạn chưa đăng nhập hoặc không có quyền tạo nhân viên. Vui lòng đăng nhập lại.';
+                    } else if (xhr.status === 400) {
+                        errorMsg = 'Dữ liệu không hợp lệ. Vui lòng kiểm tra lại thông tin.';
+                    } else if (xhr.status === 0) {
+                        errorMsg = 'Không thể kết nối đến server. Vui lòng kiểm tra kết nối mạng.';
+                    }
+                    
+                    alert(errorMsg);
+                });
+        }
+
+        function removeStaff(restaurantId, userId, staffName) {
+            if (!confirm(`Bạn có chắc muốn xóa nhân viên "${staffName}" khỏi cửa hàng?`)) {
+                return;
+            }
+            
+            OwnerApiService.removeStaffFromRestaurant(restaurantId, userId)
+                .done(function(response) {
+                    if (response && (response.success || response.isSuccess)) {
+                        alert('Xóa nhân viên thành công!');
+                        // Reload danh sách
+                        const restaurantIdSelect = $('#restaurant-select').val();
+                        if (restaurantIdSelect) {
+                            loadStaff(restaurantIdSelect);
+                        } else {
+                            loadAllStaff();
+                        }
+                    } else {
+                        alert('Lỗi: ' + (response.desc || 'Không thể xóa nhân viên'));
+                    }
+                })
+                .fail(function(xhr) {
+                    alert('Lỗi khi xóa nhân viên');
+                    console.error(xhr);
+                });
+        }
+    </script>
+</body>
+</html>
+

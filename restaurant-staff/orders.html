@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="OSAHANEAT - Quản lý đơn hàng" />
+    <meta name="author" content="OSAHANEAT" />
+    <title>OSAHANEAT - Quản lý đơn hàng</title>
+    <link rel="icon" type="image/png" href="../admin/img/favicon.png">
+    <link href="../admin/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Fontawesome Icon - CDN for better compatibility -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Fallback to local -->
+    <link href="../admin/vendor/fontawesome/css/fontawesome.min.css" rel="stylesheet" type="text/css">
+    <link href="css/staff.css" rel="stylesheet" />
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark staff-navbar">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-utensils mr-2"></i>
+                <strong>OSAHANEAT</strong> <span class="badge badge-light ml-2">STAFF</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-home"></i> Trang chủ
+                        </a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="orders.html">
+                            <i class="fas fa-clipboard-list"></i> Đơn hàng
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="menu.html">
+                            <i class="fas fa-utensils"></i> Menu
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="revenue.html">
+                            <i class="fas fa-chart-line"></i> Doanh thu
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../admin/login.html" onclick="staffLogout(); return false;">
+                            <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid mt-4">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2 class="staff-page-title">
+                    <i class="fas fa-clipboard-list mr-2"></i>Quản lý đơn hàng
+                </h2>
+                <p class="text-muted">
+                    <i class="fas fa-info-circle mr-1"></i>Kanban board - Kéo thả đơn hàng giữa các cột
+                </p>
+            </div>
+        </div>
+
+        <!-- Kanban Board -->
+        <div class="row">
+            <!-- New Orders Column -->
+            <div class="col-lg-4 mb-4">
+                <div class="card order-column">
+                    <div class="card-header staff-card-header bg-warning">
+                        <h5 class="mb-0">
+                            <i class="fas fa-bell mr-2"></i>
+                            Đơn mới
+                            <span class="badge badge-light ml-2" id="new-count">0</span>
+                        </h5>
+                    </div>
+                    <div class="card-body order-list" id="new-orders-list" style="min-height: 500px;">
+                        <div class="text-center py-3">
+                            <i class="fas fa-spinner fa-spin text-muted"></i>
+                            <p class="mt-2 text-muted small">Đang tải...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Processing Orders Column -->
+            <div class="col-lg-4 mb-4">
+                <div class="card order-column">
+                    <div class="card-header staff-card-header bg-info">
+                        <h5 class="mb-0">
+                            <i class="fas fa-spinner fa-spin mr-2"></i>
+                            Đang chế biến
+                            <span class="badge badge-light ml-2" id="processing-count">0</span>
+                        </h5>
+                    </div>
+                    <div class="card-body order-list" id="processing-orders-list" style="min-height: 500px;">
+                        <div class="text-center py-3">
+                            <i class="fas fa-spinner fa-2x text-muted mb-2"></i>
+                            <p class="text-muted small">Chưa có đơn hàng</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ready Orders Column -->
+            <div class="col-lg-4 mb-4">
+                <div class="card order-column">
+                    <div class="card-header staff-card-header bg-success">
+                        <h5 class="mb-0">
+                            <i class="fas fa-check-circle mr-2"></i>
+                            Sẵn sàng
+                            <span class="badge badge-light ml-2" id="ready-count">0</span>
+                        </h5>
+                    </div>
+                    <div class="card-body order-list" id="ready-orders-list" style="min-height: 500px;">
+                        <div class="text-center py-3">
+                            <i class="fas fa-check-circle fa-2x text-muted mb-2"></i>
+                            <p class="text-muted small">Chưa có đơn hàng</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../admin/vendor/jquery/jquery.min.js"></script>
+    <script src="../admin/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../admin/js/api.js"></script>
+    <script src="js/staff.js"></script>
+    <script>
+        // Helper function to decode JWT token
+        function decodeToken(token) {
+            try {
+                if (!token) return null;
+                const parts = token.split('.');
+                if (parts.length !== 3) return null;
+                const payload = parts[1];
+                const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+                const paddedBase64 = base64 + '='.repeat((4 - base64.length % 4) % 4);
+                const decoded = JSON.parse(atob(paddedBase64));
+                return decoded;
+            } catch (e) {
+                console.error('Error decoding token:', e);
+                return null;
+            }
+        }
+
+        // Helper function to check if user has RESTAURANT_STAFF role
+        function hasStaffRole() {
+            const token = localStorage.getItem('token');
+            if (!token) return false;
+            
+            try {
+                const decoded = decodeToken(token);
+                if (!decoded) return false;
+                
+                const scope = decoded.scope || decoded.scopes || '';
+                const scopes = scope.split(' ').filter(s => s.trim() !== '');
+                
+                return scopes.includes('ROLE_RESTAURANT_STAFF') || scopes.includes('RESTAURANT_STAFF');
+            } catch (e) {
+                console.error('Error checking staff role:', e);
+                return false;
+            }
+        }
+
+        $(document).ready(function() {
+            if (!isAuthenticated()) {
+                alert('Vui lòng đăng nhập!');
+                window.location.href = '../admin/login.html';
+                return;
+            }
+            
+            // Check if user has RESTAURANT_STAFF role
+            if (!hasStaffRole()) {
+                console.error("❌ User does not have RESTAURANT_STAFF role");
+                alert('Bạn không có quyền truy cập trang nhân viên nhà hàng!\n\nVui lòng đăng nhập với tài khoản nhân viên.');
+                window.location.href = '../theme-sidebar/index.html';
+                return;
+            }
+            
+            loadOrdersPage();
+            
+            // Auto refresh every 10 seconds
+            setInterval(function() {
+                loadOrdersPage();
+            }, 10000);
+        });
+
+        function loadOrdersPage() {
+            StaffApiService.getRestaurantOrders()
+                .done(function(response) {
+                    let orders = [];
+                    if (response && (response.success || response.isSuccess) && response.data) {
+                        orders = Array.isArray(response.data) ? response.data : [];
+                    }
+                    
+                    renderKanbanBoard(orders);
+                })
+                .fail(function(xhr) {
+                    // Handle 403 errors silently (user doesn't have permission)
+                    if (xhr.status === 403) {
+                        console.warn("⚠️ Access denied - user does not have RESTAURANT_STAFF role");
+                        // Don't spam console with 403 errors
+                        return;
+                    }
+                    // Only log other errors
+                    console.error('Error loading orders:', xhr);
+                });
+        }
+
+        function renderKanbanBoard(orders) {
+            console.log('=== renderKanbanBoard ===');
+            console.log('Total orders:', orders.length);
+            console.log('Orders:', orders);
+            
+            // Filter orders by status - chỉ hiển thị đơn hàng của nhà hàng mà staff thuộc về
+            const newOrders = orders.filter(o => {
+                const status = (o.status || '').toLowerCase();
+                return status === 'created' || status === 'new' || status === 'pending';
+            });
+            
+            const processingOrders = orders.filter(o => {
+                const status = (o.status || '').toLowerCase();
+                return status === 'processing' || status === 'preparing';
+            });
+            
+            const readyOrders = orders.filter(o => {
+                const status = (o.status || '').toLowerCase();
+                return status === 'ready' || status === 'prepared';
+            });
+            
+            const completedOrders = orders.filter(o => {
+                const status = (o.status || '').toLowerCase();
+                return status === 'completed' || status === 'delivered';
+            });
+            
+            const cancelledOrders = orders.filter(o => {
+                const status = (o.status || '').toLowerCase();
+                return status === 'cancelled' || status === 'canceled';
+            });
+            
+            console.log('New orders:', newOrders.length);
+            console.log('Processing orders:', processingOrders.length);
+            console.log('Ready orders:', readyOrders.length);
+            console.log('Completed orders:', completedOrders.length);
+            console.log('Cancelled orders:', cancelledOrders.length);
+            
+            $('#new-count').text(newOrders.length);
+            $('#processing-count').text(processingOrders.length);
+            $('#ready-count').text(readyOrders.length);
+            
+            renderOrderColumn(newOrders, '#new-orders-list', 'created');
+            renderOrderColumn(processingOrders, '#processing-orders-list', 'processing');
+            renderOrderColumn(readyOrders, '#ready-orders-list', 'ready');
+        }
+
+        function renderOrderColumn(orders, container, currentStatus) {
+            const $container = $(container);
+            
+            if (orders.length === 0) {
+                const emptyIcons = {
+                    'created': 'fa-bell',
+                    'processing': 'fa-spinner',
+                    'ready': 'fa-check-circle'
+                };
+                const icon = emptyIcons[currentStatus] || 'fa-inbox';
+                $container.html(`<div class="text-center py-3"><i class="fas ${icon} fa-2x text-muted mb-2"></i><p class="text-muted small">Chưa có đơn hàng</p></div>`);
+                return;
+            }
+            
+            let html = '';
+            orders.forEach(function(order) {
+                // Đảm bảo chỉ hiển thị đơn hàng có restaurant
+                if (!order.restaurantId && !order.restaurant) {
+                    console.warn('Order ' + order.id + ' has no restaurant, skipping...');
+                    return;
+                }
+                
+                const restaurantName = order.restaurantName || order.restaurant?.title || 'Nhà hàng';
+                // Fix: OrderDTO uses 'items' field, not 'orderItems' or 'listOrderItems'
+                const orderItems = order.items || order.orderItems || order.listOrderItems || [];
+                const itemsCount = Array.isArray(orderItems) ? orderItems.length : 0;
+                
+                console.log("Order #" + order.id + " items:", orderItems);
+                console.log("Order #" + order.id + " items count:", itemsCount);
+                
+                // Calculate estimated time (default 35 minutes)
+                const estimatedMinutes = order.estimatedTime || 35;
+                const status = (order.status || '').toLowerCase();
+                const statusText = {
+                    'created': 'Chờ xác nhận',
+                    'new': 'Chờ xác nhận',
+                    'pending': 'Chờ xác nhận',
+                    'processing': 'Đang chế biến',
+                    'preparing': 'Đang chế biến',
+                    'ready': 'Sẵn sàng',
+                    'prepared': 'Sẵn sàng',
+                    'completed': 'Hoàn thành',
+                    'delivered': 'Hoàn thành',
+                    'cancelled': 'Đã hủy',
+                    'canceled': 'Đã hủy'
+                }[status] || 'Chờ xác nhận';
+                
+                const statusBadgeClass = {
+                    'created': 'warning',
+                    'new': 'warning',
+                    'pending': 'warning',
+                    'processing': 'info',
+                    'preparing': 'info',
+                    'ready': 'success',
+                    'prepared': 'success',
+                    'completed': 'success',
+                    'delivered': 'success',
+                    'cancelled': 'danger',
+                    'canceled': 'danger'
+                }[status] || 'secondary';
+                
+                // Format order items - Fix: OrderItemDTO uses 'foodTitle' field
+                let itemsHtml = '';
+                if (orderItems && orderItems.length > 0) {
+                    orderItems.forEach(function(item) {
+                        // Try multiple possible field names
+                        const foodName = item.foodTitle || 
+                                       item.food?.title || 
+                                       item.foodName || 
+                                       (item.food && item.food.name) ||
+                                       'N/A';
+                        const quantity = item.quantity || item.amount || 1;
+                        itemsHtml += `
+                            <div class="order-item-detail">
+                                <span class="item-quantity-badge">${quantity}</span>
+                                <span class="item-name-text">${escapeHtml(foodName)}</span>
+                            </div>
+                        `;
+                    });
+                } else {
+                    itemsHtml = '<div class="text-muted small">Không có món</div>';
+                }
+                
+                html += `
+                    <div class="order-card-enhanced mb-3" data-order-id="${order.id}" data-restaurant-id="${order.restaurantId || order.restaurant?.id || ''}">
+                        <div class="order-card-header-enhanced">
+                            <div class="order-estimated-time">
+                                <i class="fas fa-clock mr-2"></i>
+                                <span class="time-label">Thời gian dự kiến</span>
+                                <span class="time-value">${estimatedMinutes} phút</span>
+                            </div>
+                        </div>
+                        <div class="order-card-body-enhanced">
+                            <div class="restaurant-info-section">
+                                <div class="restaurant-name-row">
+                                    <span class="restaurant-name">${escapeHtml(restaurantName)}</span>
+                                    <span class="badge badge-${statusBadgeClass} status-badge">
+                                        <i class="fas fa-${statusBadgeClass === 'success' ? 'check-circle' : statusBadgeClass === 'warning' ? 'clock' : statusBadgeClass === 'info' ? 'spinner fa-spin' : 'times-circle'} mr-1"></i>${statusText}
+                                    </span>
+                                </div>
+                                <div class="order-date-time">
+                                    <i class="far fa-calendar-alt mr-1"></i>${formatDate(order.createDate)}
+                                </div>
+                            </div>
+                            
+                            <div class="order-items-section">
+                                ${itemsHtml}
+                            </div>
+                            
+                            <div class="order-actions-enhanced">
+                                <button class="btn btn-detail btn-sm" onclick="viewOrderDetail(${order.id})">
+                                    <i class="fas fa-info-circle mr-1"></i>CHI TIẾT
+                                </button>
+                                <button class="btn btn-support btn-sm" onclick="openSupportChat(${order.id})">
+                                    <i class="fas fa-headset mr-1"></i>HỖ TRỢ
+                                </button>
+                            </div>
+                            
+                            ${getStatusButtons(order, currentStatus)}
+                        </div>
+                    </div>
+                `;
+            });
+            $container.html(html);
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.toString().replace(/[&<>"']/g, m => map[m]);
+        }
+
+        function getStatusButtons(order, currentStatus) {
+            if (currentStatus === 'created') {
+                return `
+                    <div class="order-status-actions mt-3">
+                        <button class="btn btn-status btn-success btn-block" onclick="updateOrderStatus(${order.id}, 'processing')">
+                            <i class="fas fa-check mr-1"></i>Nhận đơn
+                        </button>
+                        <button class="btn btn-status btn-danger btn-block mt-2" onclick="cancelOrder(${order.id})">
+                            <i class="fas fa-times mr-1"></i>Hủy đơn
+                        </button>
+                    </div>
+                `;
+            } else if (currentStatus === 'processing') {
+                return `
+                    <div class="order-status-actions mt-3">
+                        <button class="btn btn-status btn-success btn-block" onclick="updateOrderStatus(${order.id}, 'ready')">
+                            <i class="fas fa-check mr-1"></i>Sẵn sàng
+                        </button>
+                    </div>
+                `;
+            } else if (currentStatus === 'ready') {
+                return `
+                    <div class="order-status-actions mt-3">
+                        <button class="btn btn-status btn-primary btn-block mb-2" onclick="updateOrderStatus(${order.id}, 'completed')">
+                            <i class="fas fa-check-double mr-1"></i>Hoàn tất
+                        </button>
+                        <button class="btn btn-status btn-info btn-block" onclick="openChatWithUser(${order.id}, ${order.userId || 0}, '${escapeHtml(order.userFullName || order.userName || 'Khách hàng')}')">
+                            <i class="fas fa-comments mr-1"></i>Liên hệ
+                        </button>
+                    </div>
+                `;
+            }
+            return '';
+        }
+        
+        function viewOrderDetail(orderId) {
+            // Navigate to order detail page or show modal
+            console.log('View order detail:', orderId);
+            alert('Xem chi tiết đơn hàng #' + orderId);
+        }
+        
+        function openSupportChat(orderId) {
+            // Open support chat for this order
+            console.log('Open support chat for order:', orderId);
+            alert('Mở chat hỗ trợ cho đơn hàng #' + orderId);
+        }
+        
+        function openChatWithUser(orderId, userId, userName) {
+            console.log('=== openChatWithUser ===');
+            console.log('Order ID:', orderId);
+            console.log('User ID:', userId);
+            console.log('User Name:', userName);
+            
+            if (!userId || userId <= 0) {
+                alert('Không thể lấy thông tin khách hàng!');
+                return;
+            }
+            
+            // Store order and user info for chat
+            window.currentChatOrderId = orderId;
+            window.currentChatUserId = userId;
+            window.currentChatUserName = userName;
+            
+            // Open chat modal or redirect to chat page
+            // For now, we'll open a simple chat interface
+            const chatModal = `
+                <div class="modal fade" id="chatModal" tabindex="-1" role="dialog">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header bg-primary text-white">
+                                <h5 class="modal-title">
+                                    <i class="fas fa-comments mr-2"></i>Chat với ${escapeHtml(userName)}
+                                </h5>
+                                <button type="button" class="close text-white" data-dismiss="modal">
+                                    <span>&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body" style="height: 400px; overflow-y: auto;" id="chatMessages">
+                                <div class="text-center py-3">
+                                    <i class="fas fa-spinner fa-spin"></i> Đang tải tin nhắn...
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="input-group w-100">
+                                    <input type="text" class="form-control" id="chatMessageInput" placeholder="Nhập tin nhắn...">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-primary" onclick="sendChatMessage()">
+                                            <i class="fas fa-paper-plane"></i> Gửi
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Remove existing modal if any
+            $('#chatModal').remove();
+            
+            // Add modal to body
+            $('body').append(chatModal);
+            
+            // Show modal
+            $('#chatModal').modal('show');
+            
+            // Load conversation
+            loadChatConversation(userId);
+            
+            // Handle Enter key
+            $('#chatMessageInput').on('keypress', function(e) {
+                if (e.which === 13) {
+                    sendChatMessage();
+                }
+            });
+        }
+        
+        function loadChatConversation(userId) {
+            console.log('Loading chat conversation with user:', userId);
+            
+            $.ajax({
+                method: 'GET',
+                url: `http://localhost:82/message/${userId}`,
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                },
+                dataType: 'json'
+            })
+            .done(function(response) {
+                console.log('Chat conversation response:', response);
+                const messages = response && response.data ? (Array.isArray(response.data) ? response.data : []) : [];
+                renderChatMessages(messages);
+            })
+            .fail(function(xhr) {
+                console.error('Error loading chat conversation:', xhr);
+                $('#chatMessages').html('<div class="alert alert-danger">Không thể tải tin nhắn!</div>');
+            });
+        }
+        
+        function renderChatMessages(messages) {
+            const container = $('#chatMessages');
+            if (messages.length === 0) {
+                container.html('<div class="text-center py-3 text-muted">Chưa có tin nhắn nào. Hãy bắt đầu cuộc trò chuyện!</div>');
+                return;
+            }
+            
+            // Get current user ID from token
+            const token = localStorage.getItem('token');
+            let currentUserId = 0;
+            if (token) {
+                const decoded = decodeToken(token);
+                if (decoded && decoded.userId) {
+                    currentUserId = decoded.userId;
+                } else if (decoded && decoded.sub) {
+                    // Try 'sub' field
+                    currentUserId = parseInt(decoded.sub) || 0;
+                }
+            }
+            
+            let html = '';
+            messages.forEach(function(msg) {
+                const isFromMe = msg.senderId === currentUserId;
+                const senderName = msg.senderName || msg.senderUserName || 'N/A';
+                const time = formatDate(msg.createDate);
+                
+                html += `
+                    <div class="mb-3 ${isFromMe ? 'text-right' : 'text-left'}">
+                        <div class="d-inline-block p-2 rounded ${isFromMe ? 'bg-primary text-white' : 'bg-light'}" style="max-width: 70%;">
+                            <div class="small ${isFromMe ? 'text-white-50' : 'text-muted'}">${escapeHtml(senderName)}</div>
+                            <div>${escapeHtml(msg.content || '')}</div>
+                            <div class="small ${isFromMe ? 'text-white-50' : 'text-muted'} mt-1">${time}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.html(html);
+            container.scrollTop(container[0].scrollHeight);
+        }
+        
+        function sendChatMessage() {
+            const input = $('#chatMessageInput');
+            const content = input.val().trim();
+            const userId = window.currentChatUserId;
+            
+            if (!content) {
+                return;
+            }
+            
+            if (!userId || userId <= 0) {
+                alert('Không thể gửi tin nhắn!');
+                return;
+            }
+            
+            console.log('Sending message to user:', userId, 'Content:', content);
+            
+            // Disable input
+            input.prop('disabled', true);
+            
+            $.ajax({
+                method: 'POST',
+                url: 'http://localhost:82/message',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                },
+                data: JSON.stringify({
+                    receiverId: userId,
+                    content: content
+                }),
+                dataType: 'json'
+            })
+            .done(function(response) {
+                console.log('Message sent successfully:', response);
+                input.val('').prop('disabled', false);
+                // Reload conversation
+                loadChatConversation(userId);
+            })
+            .fail(function(xhr) {
+                console.error('Error sending message:', xhr);
+                alert('Không thể gửi tin nhắn!');
+                input.prop('disabled', false);
+            });
+        }
+
+        function updateOrderStatus(orderId, status) {
+            console.log('=== updateOrderStatus ===');
+            console.log('Order ID:', orderId);
+            console.log('New Status:', status);
+            
+            const statusText = {
+                'processing': 'bắt đầu chế biến',
+                'ready': 'hoàn thành',
+                'completed': 'hoàn tất',
+                'cancelled': 'hủy'
+            }[status] || status;
+            
+            if (!confirm(`Xác nhận ${statusText} đơn hàng #${orderId}?`)) {
+                return;
+            }
+            
+            // Disable button to prevent double click
+            // Try multiple selectors to find the order card
+            let $orderCard = $(`.order-card-enhanced[data-order-id="${orderId}"]`);
+            if ($orderCard.length === 0) {
+                $orderCard = $(`.order-card[data-order-id="${orderId}"]`);
+            }
+            if ($orderCard.length === 0) {
+                $orderCard = $(`.order-card-staff[data-order-id="${orderId}"]`);
+            }
+            if ($orderCard.length === 0) {
+                // Try to find by order ID in any card
+                $orderCard = $(`[data-order-id="${orderId}"]`);
+            }
+            $orderCard.find('button').prop('disabled', true);
+            
+            StaffApiService.updateOrderStatus(orderId, status)
+                .done(function(response) {
+                    console.log('Update order status response:', response);
+                    if (response && (response.success || response.isSuccess)) {
+                        alert('Cập nhật trạng thái thành công!');
+                        // Reload orders after a short delay
+                        setTimeout(function() {
+                            loadOrdersPage();
+                        }, 500);
+                    } else {
+                        alert('Lỗi: ' + (response.desc || response.message || 'Không thể cập nhật trạng thái'));
+                        // Re-enable buttons
+                        let $orderCard = $(`.order-card-enhanced[data-order-id="${orderId}"]`);
+                        if ($orderCard.length === 0) {
+                            $orderCard = $(`.order-card[data-order-id="${orderId}"]`);
+                        }
+                        if ($orderCard.length === 0) {
+                            $orderCard = $(`.order-card-staff[data-order-id="${orderId}"]`);
+                        }
+                        if ($orderCard.length === 0) {
+                            $orderCard = $(`[data-order-id="${orderId}"]`);
+                        }
+                        $orderCard.find('button').prop('disabled', false);
+                    }
+                })
+                .fail(function(xhr) {
+                    console.error('Update order status error:', xhr);
+                    console.error('Status code:', xhr.status);
+                    console.error('Response:', xhr.responseText);
+                    let errorMsg = 'Lỗi khi cập nhật trạng thái';
+                    if (xhr.responseJSON) {
+                        errorMsg = xhr.responseJSON.desc || xhr.responseJSON.message || errorMsg;
+                    } else if (xhr.status === 403 || xhr.status === 401) {
+                        errorMsg = 'Bạn không có quyền cập nhật đơn hàng này. Đơn hàng có thể không thuộc về nhà hàng của bạn.';
+                    } else if (xhr.status === 0) {
+                        errorMsg = 'Không thể kết nối đến server. Vui lòng kiểm tra kết nối mạng.';
+                    }
+                    alert(errorMsg);
+                    // Re-enable buttons
+                    let $orderCard = $(`.order-card-enhanced[data-order-id="${orderId}"]`);
+                    if ($orderCard.length === 0) {
+                        $orderCard = $(`.order-card[data-order-id="${orderId}"]`);
+                    }
+                    if ($orderCard.length === 0) {
+                        $orderCard = $(`.order-card-staff[data-order-id="${orderId}"]`);
+                    }
+                    if ($orderCard.length === 0) {
+                        $orderCard = $(`[data-order-id="${orderId}"]`);
+                    }
+                    $orderCard.find('button').prop('disabled', false);
+                });
+        }
+
+        function cancelOrder(orderId) {
+            if (!confirm(`Bạn có chắc muốn hủy đơn hàng #${orderId}?`)) {
+                return;
+            }
+            
+            StaffApiService.updateOrderStatus(orderId, 'cancelled')
+                .done(function(response) {
+                    if (response && (response.success || response.isSuccess)) {
+                        alert('Hủy đơn hàng thành công!');
+                        loadOrdersPage();
+                    } else {
+                        alert('Lỗi: ' + (response.desc || 'Không thể hủy đơn hàng'));
+                    }
+                })
+                .fail(function(xhr) {
+                    alert('Lỗi khi hủy đơn hàng');
+                    console.error(xhr);
+                });
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            const date = new Date(dateString);
+            return date.toLocaleString('vi-VN');
+        }
+
+        function formatVND(amount) {
+            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+        }
+    </script>
+</body>
+</html>
+

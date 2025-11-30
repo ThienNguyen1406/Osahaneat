@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="OSAHANEAT - Quản lý menu" />
+    <meta name="author" content="OSAHANEAT" />
+    <title>OSAHANEAT - Quản lý menu</title>
+    <link rel="icon" type="image/png" href="../admin/img/favicon.png">
+    <link href="../admin/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Fontawesome Icon - CDN for better compatibility -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Fallback to local -->
+    <link href="../admin/vendor/fontawesome/css/fontawesome.min.css" rel="stylesheet" type="text/css">
+    <link href="css/staff.css" rel="stylesheet" />
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark staff-navbar">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-utensils mr-2"></i>
+                <strong>OSAHANEAT</strong> <span class="badge badge-light ml-2">STAFF</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-home"></i> Trang chủ
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="orders.html">
+                            <i class="fas fa-clipboard-list"></i> Đơn hàng
+                        </a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="menu.html">
+                            <i class="fas fa-utensils"></i> Menu
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="revenue.html">
+                            <i class="fas fa-chart-line"></i> Doanh thu
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../admin/login.html" onclick="staffLogout(); return false;">
+                            <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid mt-4">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2 class="staff-page-title">
+                    <i class="fas fa-utensils mr-2"></i>Quản lý menu
+                </h2>
+                <p class="text-muted">
+                    <i class="fas fa-toggle-on mr-1"></i>Bật/tắt món ăn có sẵn
+                </p>
+            </div>
+        </div>
+
+        <!-- Search and Filter -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    </div>
+                    <input type="text" class="form-control" id="search-menu" placeholder="Tìm kiếm món ăn..." />
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-filter"></i></span>
+                    </div>
+                    <select class="form-control" id="filter-availability">
+                        <option value="">Tất cả</option>
+                        <option value="available">Có sẵn</option>
+                        <option value="unavailable">Hết món</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                    </div>
+                    <select class="form-control" id="filter-category">
+                        <option value="">Tất cả danh mục</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menu Grid -->
+        <div class="row" id="menu-grid">
+            <div class="col-12 text-center py-5">
+                <i class="fas fa-spinner fa-spin fa-2x text-muted"></i>
+                <p class="mt-3 text-muted">Đang tải menu...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../admin/vendor/jquery/jquery.min.js"></script>
+    <script src="../admin/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../admin/js/api.js"></script>
+    <script src="js/staff.js"></script>
+    <script>
+        let allMenus = [];
+        let categories = [];
+
+        // Helper function to decode JWT token
+        function decodeToken(token) {
+            try {
+                if (!token) return null;
+                const parts = token.split('.');
+                if (parts.length !== 3) return null;
+                const payload = parts[1];
+                const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+                const paddedBase64 = base64 + '='.repeat((4 - base64.length % 4) % 4);
+                const decoded = JSON.parse(atob(paddedBase64));
+                return decoded;
+            } catch (e) {
+                console.error('Error decoding token:', e);
+                return null;
+            }
+        }
+
+        // Helper function to check if user has RESTAURANT_STAFF role
+        function hasStaffRole() {
+            const token = localStorage.getItem('token');
+            if (!token) return false;
+            
+            try {
+                const decoded = decodeToken(token);
+                if (!decoded) return false;
+                
+                const scope = decoded.scope || decoded.scopes || '';
+                const scopes = scope.split(' ').filter(s => s.trim() !== '');
+                
+                return scopes.includes('ROLE_RESTAURANT_STAFF') || scopes.includes('RESTAURANT_STAFF');
+            } catch (e) {
+                console.error('Error checking staff role:', e);
+                return false;
+            }
+        }
+
+        $(document).ready(function() {
+            if (!isAuthenticated()) {
+                alert('Vui lòng đăng nhập!');
+                window.location.href = '../admin/login.html';
+                return;
+            }
+            
+            // Check if user has RESTAURANT_STAFF role
+            if (!hasStaffRole()) {
+                console.error("❌ User does not have RESTAURANT_STAFF role");
+                alert('Bạn không có quyền truy cập trang nhân viên nhà hàng!\n\nVui lòng đăng nhập với tài khoản nhân viên.');
+                window.location.href = '../theme-sidebar/index.html';
+                return;
+            }
+            
+            loadCategories();
+            loadMenu();
+            
+            $('#search-menu').on('input', filterMenu);
+            $('#filter-availability').on('change', filterMenu);
+            $('#filter-category').on('change', filterMenu);
+        });
+
+        function loadCategories() {
+            console.log("=== loadCategories() called ===");
+            // Sử dụng API public để lấy categories
+            $.ajax({
+                method: 'GET',
+                url: 'http://localhost:82/category',
+                headers: {
+                    'Authorization': localStorage.getItem('token') ? `Bearer ${localStorage.getItem('token')}` : '',
+                    'Content-Type': 'application/json'
+                },
+                dataType: 'json'
+            })
+            .done(function(response) {
+                console.log("=== Categories API Response ===");
+                console.log("Full response:", response);
+                
+                const $select = $('#filter-category');
+                $select.empty();
+                $select.append('<option value="">Tất cả danh mục</option>');
+                
+                // Check multiple response formats
+                let categoriesData = [];
+                if (response && response.data && Array.isArray(response.data)) {
+                    categoriesData = response.data;
+                } else if (response && Array.isArray(response)) {
+                    categoriesData = response;
+                } else if (response && (response.success || response.isSuccess) && response.data && Array.isArray(response.data)) {
+                    categoriesData = response.data;
+                }
+                
+                // Store categories globally for filter
+                categories = categoriesData;
+                
+                console.log('✅ Loaded categories:', categoriesData.length);
+                console.log('Categories data:', categoriesData);
+                
+                if (categoriesData.length === 0) {
+                    console.warn('⚠️ No categories found in response');
+                    return;
+                }
+                
+                // Load TẤT CẢ categories vào dropdown
+                categoriesData.forEach(function(cat) {
+                    const categoryName = cat.name || cat.nameCate || 'N/A';
+                    const categoryId = cat.id || cat.cateId || '';
+                    if (categoryId) {
+                        $select.append(`<option value="${categoryId}">${escapeHtml(categoryName)}</option>`);
+                    }
+                });
+                
+                console.log(`✅ Loaded ${categoriesData.length} categories into dropdown`);
+            })
+            .fail(function(xhr) {
+                console.error('❌ Error loading categories:', xhr);
+                console.error('Status:', xhr.status);
+                console.error('Response:', xhr.responseText);
+            });
+        }
+
+        function loadMenu() {
+            StaffApiService.getRestaurantMenu()
+                .done(function(response) {
+                    console.log("=== Menu API Response ===");
+                    console.log("Full response:", response);
+                    if (response && (response.success || response.isSuccess) && response.data) {
+                        allMenus = Array.isArray(response.data) ? response.data : [];
+                        console.log("✅ Loaded menus from API:", allMenus.length);
+                        
+                        // Log menu image status
+                        const menusWithImages = allMenus.filter(hasValidImage);
+                        const menusWithoutImages = allMenus.filter(m => !hasValidImage(m));
+                        
+                        console.log(`📊 Menu Statistics:`);
+                        console.log(`  - Total: ${allMenus.length}`);
+                        console.log(`  - With images: ${menusWithImages.length}`);
+                        console.log(`  - Without images: ${menusWithoutImages.length}`);
+                        
+                        if (menusWithoutImages.length > 0) {
+                            console.log(`⚠️ Menus without images (will be filtered):`);
+                            menusWithoutImages.forEach(function(menu) {
+                                console.log(`    - ID: ${menu.id}, Title: ${menu.title}, Image: ${menu.image || 'null'}`);
+                            });
+                        }
+                        
+                        renderMenu(allMenus);
+                    } else {
+                        console.error("❌ Failed to load menu:", response);
+                        $('#menu-grid').html('<div class="col-12 alert alert-warning">Không có menu nào</div>');
+                    }
+                })
+                .fail(function(xhr, status, error) {
+                    console.error('❌ Error loading menu:', error);
+                    console.error('Status:', status);
+                    console.error('Response:', xhr.responseText);
+                    $('#menu-grid').html(`<div class="col-12 alert alert-danger">Lỗi khi tải menu: ${error || 'Không thể kết nối đến server'}</div>`);
+                });
+        }
+
+        /**
+         * Validate if menu has valid image
+         * Returns true if menu has image and it's not empty/null
+         */
+        function hasValidImage(menu) {
+            if (!menu || !menu.image) {
+                return false;
+            }
+            
+            const imagePath = menu.image.trim();
+            if (imagePath === '' || imagePath === 'null' || imagePath === 'undefined') {
+                return false;
+            }
+            
+            return true;
+        }
+        
+        /**
+         * Get image URL for menu item
+         */
+        function getMenuImageUrl(menu) {
+            if (!menu || !menu.image) {
+                return null; // Return null if no image
+            }
+            
+            const imagePath = menu.image.trim();
+            if (imagePath === '' || imagePath === 'null' || imagePath === 'undefined') {
+                return null;
+            }
+            
+            if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+                return imagePath;
+            } else if (imagePath.startsWith('/')) {
+                return `http://localhost:82${imagePath}`;
+            } else if (imagePath.startsWith('images/')) {
+                return `http://localhost:82/${imagePath}`;
+            } else {
+                return `http://localhost:82/menu/file/${imagePath}`;
+            }
+        }
+
+        function renderMenu(menus) {
+            const $grid = $('#menu-grid');
+            
+            // Filter out menus without valid images
+            const menusWithImages = menus.filter(function(menu) {
+                return hasValidImage(menu);
+            });
+            
+            console.log(`=== Rendering Menu ===`);
+            console.log(`Total menus: ${menus.length}`);
+            console.log(`Menus with valid images: ${menusWithImages.length}`);
+            console.log(`Menus without images (filtered out): ${menus.length - menusWithImages.length}`);
+            
+            if (menusWithImages.length === 0) {
+                $grid.html(`
+                    <div class="col-12 text-center py-5">
+                        <i class="fas fa-utensils fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">Chưa có món ăn nào có ảnh</p>
+                        <small class="text-muted">Các món không có ảnh đã được ẩn</small>
+                    </div>
+                `);
+                return;
+            }
+            
+            let html = '';
+            menusWithImages.forEach(function(menu) {
+                // MenuDTO có field isAvailable (boolean)
+                const isAvailable = menu.isAvailable !== false && menu.isAvailable !== null; // Default to true if not set
+                
+                // Get image URL - should not be null since we filtered
+                const imageUrl = getMenuImageUrl(menu);
+                if (!imageUrl) {
+                    console.warn(`⚠️ Menu ${menu.id} (${menu.title}) has no valid image, skipping...`);
+                    return; // Skip this menu
+                }
+                
+                html += `
+                    <div class="col-md-4 col-sm-6 mb-4 menu-item" data-menu-id="${menu.id}" data-available="${isAvailable}">
+                        <div class="card menu-card ${!isAvailable ? 'menu-unavailable' : ''} h-100 shadow-sm">
+                            <div class="menu-image-container" style="position: relative; height: 200px; overflow: hidden; background: #f8f9fa;">
+                                <img src="${imageUrl}" 
+                                     alt="${escapeHtml(menu.title || 'Menu')}" 
+                                     class="menu-image" 
+                                     style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;"
+                                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2U5ZTllOSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjE0IiBmaWxsPSIjOTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+PGZvcmVpZ25PYmplY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiPjxkaXYgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGh0bWwiIHN0eWxlPSJkaXNwbGF5OmZsZXg7IGFsaWduLWl0ZW1zOmNlbnRlcjsganVzdGlmeS1jb250ZW50OmNlbnRlcjsgaGVpZ2h0OjEwMCU7Ij48aSBjbGFzcz0iZmFzIGZhLXV0ZW5zaWxzIiBzdHlsZT0iZm9udC1zaXplOjQ4cHg7IGNvbG9yOiM5OTk7Ij48L2k+PC9kaXY+PC9mb3JlaWduT2JqZWN0PjwvdGV4dD48L3N2Zz4='">
+                                </img>
+                                <div class="menu-status-badge" style="position: absolute; top: 10px; right: 10px;">
+                                    <span class="badge badge-${isAvailable ? 'success' : 'danger'} badge-pill shadow">
+                                        <i class="fas fa-${isAvailable ? 'check-circle' : 'times-circle'} mr-1"></i>${isAvailable ? 'Có sẵn' : 'Hết món'}
+                                    </span>
+                                </div>
+                                ${menu.isFreeShip ? '<div class="menu-freeship-badge" style="position: absolute; top: 10px; left: 10px;"><span class="badge badge-info badge-pill shadow"><i class="fas fa-shipping-fast mr-1"></i>Miễn phí ship</span></div>' : ''}
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h6 class="mb-0" style="font-weight: 600; color: #333;">
+                                        <i class="fas fa-utensils mr-2 text-primary"></i>${escapeHtml(menu.title || 'N/A')}
+                                    </h6>
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input" id="toggle-${menu.id}" 
+                                               ${isAvailable ? 'checked' : ''} 
+                                               onchange="toggleMenuAvailability(${menu.id}, this.checked)">
+                                        <label class="custom-control-label" for="toggle-${menu.id}"></label>
+                                    </div>
+                                </div>
+                                <p class="text-muted small mb-2" style="min-height: 40px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+                                    <i class="fas fa-info-circle mr-1 text-info"></i>${escapeHtml(menu.description || 'Chưa có mô tả')}
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="text-primary font-weight-bold" style="font-size: 1.1rem;">
+                                        <i class="fas fa-money-bill-wave mr-1"></i>${formatVND(menu.price || 0)}
+                                    </span>
+                                    <small class="text-muted">
+                                        <i class="fas fa-clock mr-1"></i>${menu.timeShip || 'N/A'}
+                                    </small>
+                                </div>
+                                ${menu.categoryName ? `
+                                    <div class="mt-2">
+                                        <span class="badge badge-secondary">
+                                            <i class="fas fa-tag mr-1"></i>${escapeHtml(menu.categoryName)}
+                                        </span>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            $grid.html(html);
+            
+            // Add hover effect for images
+            $('.menu-image').hover(
+                function() { $(this).css('transform', 'scale(1.05)'); },
+                function() { $(this).css('transform', 'scale(1)'); }
+            );
+            
+            // Validate images after rendering - remove items with broken images
+            $('.menu-image').on('error', function() {
+                console.warn('⚠️ Image failed to load:', this.src);
+                const $menuItem = $(this).closest('.menu-item');
+                console.log('Removing menu item with broken image:', $menuItem.data('menu-id'));
+                $menuItem.fadeOut(300, function() {
+                    $(this).remove();
+                    
+                    // Check if no items left
+                    if ($('#menu-grid .menu-item').length === 0) {
+                        $('#menu-grid').html(`
+                            <div class="col-12 text-center py-5">
+                                <i class="fas fa-utensils fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">Không có món ăn nào có ảnh hợp lệ</p>
+                            </div>
+                        `);
+                    }
+                });
+            });
+        }
+
+        function toggleMenuAvailability(menuId, isAvailable) {
+            console.log("=== toggleMenuAvailability() called ===");
+            console.log("Menu ID:", menuId);
+            console.log("Is Available:", isAvailable);
+            
+            if (!menuId || menuId <= 0) {
+                console.error("❌ Invalid menu ID:", menuId);
+                alert('ID món ăn không hợp lệ!');
+                $(`#toggle-${menuId}`).prop('checked', !isAvailable);
+                return;
+            }
+            
+            if (typeof StaffApiService === 'undefined' || typeof StaffApiService.toggleMenu !== 'function') {
+                console.error("❌ StaffApiService.toggleMenu is not defined!");
+                alert('API service không khả dụng!');
+                $(`#toggle-${menuId}`).prop('checked', !isAvailable);
+                return;
+            }
+            
+            // Disable toggle while processing
+            const $toggle = $(`#toggle-${menuId}`);
+            $toggle.prop('disabled', true);
+            
+            StaffApiService.toggleMenu(menuId, isAvailable)
+                .done(function(response) {
+                    console.log("=== Toggle Menu API Response ===");
+                    console.log("Full response:", response);
+                    console.log("Response success:", response?.success);
+                    console.log("Response isSuccess:", response?.isSuccess);
+                    console.log("Response status:", response?.status);
+                    console.log("Response data:", response?.data);
+                    
+                    const isSuccess = response && (response.success === true || response.isSuccess === true || response.status === 200);
+                    
+                    if (isSuccess) {
+                        console.log("✅ Toggle menu successful!");
+                        
+                        // Update allMenus array
+                        const menuIndex = allMenus.findIndex(m => m.id === menuId);
+                        if (menuIndex !== -1) {
+                            allMenus[menuIndex].isAvailable = isAvailable;
+                            console.log("✅ Updated allMenus array");
+                        }
+                        
+                        // Update UI
+                        const $menuItem = $(`.menu-item[data-menu-id="${menuId}"]`);
+                        if ($menuItem.length > 0) {
+                            $menuItem.attr('data-available', isAvailable);
+                            if (isAvailable) {
+                                $menuItem.find('.menu-card').removeClass('menu-unavailable');
+                                const $badge = $menuItem.find('.badge');
+                                $badge.removeClass('badge-danger').addClass('badge-success');
+                                $badge.html('<i class="fas fa-check-circle mr-1"></i>Có sẵn');
+                            } else {
+                                $menuItem.find('.menu-card').addClass('menu-unavailable');
+                                const $badge = $menuItem.find('.badge');
+                                $badge.removeClass('badge-success').addClass('badge-danger');
+                                $badge.html('<i class="fas fa-times-circle mr-1"></i>Hết món');
+                            }
+                            console.log("✅ UI updated successfully");
+                        } else {
+                            console.warn("⚠️ Menu item not found in DOM, reloading menu...");
+                            // Reload menu if item not found
+                            loadMenu();
+                        }
+                        
+                        // Re-enable toggle
+                        $toggle.prop('disabled', false);
+                    } else {
+                        console.warn("⚠️ Toggle menu failed:", response);
+                        const errorMsg = response?.desc || 'Không thể cập nhật trạng thái món';
+                        alert('Lỗi: ' + errorMsg);
+                        // Revert toggle
+                        $toggle.prop('checked', !isAvailable);
+                        $toggle.prop('disabled', false);
+                    }
+                })
+                .fail(function(xhr, status, error) {
+                    console.error('=== Error toggling menu ===');
+                    console.error('XHR:', xhr);
+                    console.error('Status:', status);
+                    console.error('Error:', error);
+                    console.error('Status Code:', xhr.status);
+                    console.error('Response Text:', xhr.responseText);
+                    console.error('Response JSON:', xhr.responseJSON);
+                    
+                    let errorMsg = 'Lỗi khi cập nhật trạng thái món!';
+                    
+                    if (xhr.status === 401) {
+                        errorMsg = 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!';
+                        setTimeout(function() {
+                            window.location.href = '../admin/login.html';
+                        }, 2000);
+                    } else if (xhr.status === 403) {
+                        errorMsg = 'Bạn không có quyền cập nhật món ăn này!';
+                    } else if (xhr.status === 404) {
+                        errorMsg = 'Không tìm thấy món ăn!';
+                    } else if (xhr.status === 400) {
+                        errorMsg = 'Thông tin không hợp lệ!';
+                        if (xhr.responseJSON && xhr.responseJSON.desc) {
+                            errorMsg = xhr.responseJSON.desc;
+                        }
+                    } else if (xhr.responseJSON && xhr.responseJSON.desc) {
+                        errorMsg = xhr.responseJSON.desc;
+                    }
+                    
+                    alert(errorMsg);
+                    // Revert toggle
+                    $toggle.prop('checked', !isAvailable);
+                    $toggle.prop('disabled', false);
+                });
+        }
+
+        function filterMenu() {
+            const searchTerm = $('#search-menu').val().toLowerCase();
+            const availabilityFilter = $('#filter-availability').val();
+            const categoryFilter = $('#filter-category').val();
+            
+            let filtered = allMenus.filter(function(menu) {
+                // Search filter
+                if (searchTerm && !menu.title.toLowerCase().includes(searchTerm)) {
+                    return false;
+                }
+                
+                // Availability filter
+                if (availabilityFilter === 'available' && menu.isAvailable === false) {
+                    return false;
+                }
+                if (availabilityFilter === 'unavailable' && menu.isAvailable !== false) {
+                    return false;
+                }
+                
+                // Category filter - kiểm tra cả cateId và categoryId
+                if (categoryFilter) {
+                    const menuCategoryId = menu.cateId || menu.categoryId || menu.cate_id || menu.category_id;
+                    if (!menuCategoryId || menuCategoryId.toString() !== categoryFilter) {
+                        return false;
+                    }
+                }
+                
+                return true;
+            });
+            
+            renderMenu(filtered);
+        }
+
+        function formatVND(amount) {
+            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.toString().replace(/[&<>"']/g, m => map[m]);
+        }
+    </script>
+</body>
+</html>
+

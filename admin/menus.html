@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="vi">
+   <head>
+      <meta charset="utf-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+      <meta name="description" content="OSAHANEAT - Hệ thống quản lý đặt món ăn" />
+      <meta name="author" content="OSAHANEAT" />
+      <title>OSAHANEAT - Quản lý món ăn</title>
+      <!-- Favicon Icon -->
+      <link rel="icon" type="image/png" href="img/favicon.png?v=2.0">
+      <!-- Feather Icon-->
+      <link href="vendor/icons/feather.css?v=2.0" rel="stylesheet" type="text/css">
+      <!-- Fontawesome Icon-->
+      <link href="vendor/fontawesome/css/fontawesome.min.css?v=2.0" rel="stylesheet" type="text/css">
+      <!-- Bootstrap Css -->
+      <link href="vendor/bootstrap/css/bootstrap.min.css?v=2.0" rel="stylesheet">
+      <!-- Custom Css -->
+      <link href="css/styles.css?v=2.0" rel="stylesheet" />
+      <!-- Datatables css -->
+      <link href="vendor/dataTables/dataTables/css/dataTables.bootstrap4.min.css?v=2.0" rel="stylesheet">
+      <!-- Custom Menu Grid Styles -->
+      <style>
+         .menu-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid #e0e0e0;
+         }
+         .menu-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+         }
+         .card-img-wrapper {
+            border-radius: 4px 4px 0 0;
+         }
+         .menu-card .card-body {
+            padding: 1rem;
+         }
+         .menu-card .card-title {
+            color: #333;
+            line-height: 1.4;
+         }
+         .gap-2 {
+            gap: 0.5rem;
+         }
+         @media (max-width: 768px) {
+            .menu-card .card-img-wrapper {
+               height: 150px !important;
+            }
+         }
+      </style>
+   </head>
+   <body class="sb-nav-fixed">
+      <nav class="sb-topnav navbar navbar-expand navbar-light bg-white shadow-sm">
+         <a class="navbar-brand" href="index.html"><img alt="logo" src="img/logo.png"></a>
+         <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#"><i class="fas fa-bars"></i></button>
+         <!-- Navbar-->
+         <ul class="navbar-nav ml-auto ml-md-0">
+            <!-- Nav Item - User Information -->
+            <li class="nav-item dropdown no-arrow ml-1 osahan-profile-dropdown">
+               <a class="nav-link dropdown-toggle pr-0" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+               <img class="img-profile rounded-circle" src="img/user/1.png">
+               </a>
+               <!-- Dropdown - User Information -->
+               <div class="dropdown-menu dropdown-menu-right shadow-sm">
+                  <div class="p-3 d-flex align-items-center">
+                     <div class="dropdown-list-image mr-3">
+                        <img class="rounded-circle" src="img/user/1.png" alt="">
+                        <div class="status-indicator bg-success"></div>
+                     </div>
+                     <div class="font-weight-bold">
+                        <div class="text-truncate">Quản trị viên</div>
+                        <div class="small text-gray-500">Quản lý hệ thống</div>
+                     </div>
+                  </div>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="my-profile.html"><i class="feather-edit"></i> Tài khoản của tôi</a>
+                  <a class="dropdown-item" href="my-profile.html"><i class="feather-settings"></i> Cài đặt tài khoản</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="login.html" onclick="adminLogout(); return false;"><i class="feather-log-out"></i> Đăng xuất</a>
+               </div>
+            </li>
+         </ul>
+      </nav>
+      <div id="layoutSidenav">
+         <div id="layoutSidenav_nav">
+            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+               <div class="sb-sidenav-menu">
+                  <div class="nav">
+                     <div class="sb-sidenav-menu-heading">Chức năng</div>
+                     <a class="nav-link" href="index.html">
+                        <div class="sb-nav-link-icon"><i class="feather-home"></i></div>
+                        Bảng điều khiển
+                     </a>
+                     <a class="nav-link" href="orders.html">
+                        <div class="sb-nav-link-icon"><i class="feather-shopping-cart"></i></div>
+                        Quản lý đơn hàng
+                     </a>
+                     <a class="nav-link" href="listings.html">
+                        <div class="sb-nav-link-icon"><i class="feather-list"></i></div>
+                        Quản lý nhà hàng
+                     </a>
+                     <a class="nav-link" href="users.html">
+                        <div class="sb-nav-link-icon"><i class="feather-users"></i></div>
+                        Quản lý người dùng
+                     </a>
+                     <a class="nav-link" href="categories.html">
+                        <div class="sb-nav-link-icon"><i class="feather-tag"></i></div>
+                        Quản lý danh mục
+                     </a>
+                     <a class="nav-link active" href="menus.html">
+                        <div class="sb-nav-link-icon"><i class="feather-coffee"></i></div>
+                        Quản lý món ăn
+                     </a>
+                     <a class="nav-link" href="messages.html">
+                        <div class="sb-nav-link-icon"><i class="feather-message-square"></i></div>
+                        Quản lý tin nhắn
+                        <span class="badge badge-pill ml-2 badge-danger" id="sidebar-message-badge" style="display: none;">0</span>
+                     </a>
+                  </div>
+               </div>
+               <div class="sb-sidenav-footer">
+                  <div class="small">Đăng nhập với:</div>
+                  Quản trị viên
+               </div>
+            </nav>
+         </div>
+         <div id="layoutSidenav_content">
+            <main>
+               <div class="container-fluid">
+                  <h1 class="mt-4">Quản lý món ăn</h1>
+                  <ol class="breadcrumb mb-4">
+                     <li class="breadcrumb-item"><a href="index.html">Bảng điều khiển</a></li>
+                     <li class="breadcrumb-item active">Quản lý món ăn</li>
+                  </ol>
+                  
+                  <!-- Action Buttons -->
+                  <div class="row mb-3">
+                     <div class="col-md-12">
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#create-menu-modal">
+                           <i class="feather-plus-circle"></i> Thêm món ăn mới
+                        </button>
+                        <button class="btn btn-secondary ml-2" onclick="loadMenus()">
+                           <i class="feather-refresh-cw"></i> Làm mới
+                        </button>
+                     </div>
+                  </div>
+
+                  <!-- Menus Grid View -->
+                  <div class="row">
+                     <div class="col-xl-12">
+                        <div class="card mb-4">
+                           <div class="card-header d-flex justify-content-between align-items-center">
+                              <div>
+                                 <i class="fas fa-th mr-1"></i>
+                                 DANH SÁCH MÓN ĂN
+                              </div>
+                              <div class="btn-group" role="group">
+                                 <button type="button" class="btn btn-sm btn-outline-secondary active" id="grid-view-btn" onclick="switchView('grid')">
+                                    <i class="fas fa-th"></i> Grid
+                                 </button>
+                                 <button type="button" class="btn btn-sm btn-outline-secondary" id="table-view-btn" onclick="switchView('table')">
+                                    <i class="fas fa-list"></i> Table
+                                 </button>
+                              </div>
+                           </div>
+                           <div class="card-body">
+                              <!-- Grid View -->
+                              <div id="menus-grid-view">
+                                 <div class="row" id="menus-grid-container">
+                                    <div class="col-12 text-center py-4">
+                                       <i class="feather-loader spinner-border spinner-border-sm"></i> Đang tải dữ liệu...
+                                    </div>
+                                 </div>
+                              </div>
+                              
+                              <!-- Table View (Hidden by default) -->
+                              <div id="menus-table-view" style="display: none;">
+                                 <div class="table-responsive">
+                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                       <thead>
+                                          <tr class="text-uppercase">
+                                             <th>Ảnh</th>
+                                             <th>Tên món ăn</th>
+                                             <th>Danh mục</th>
+                                             <th>Giá</th>
+                                             <th>Thời gian ship</th>
+                                             <th>Miễn phí ship</th>
+                                             <th>Hành động</th>
+                                          </tr>
+                                       </thead>
+                                       <tbody id="menus-tbody">
+                                          <tr>
+                                             <td colspan="7" class="text-center text-muted">
+                                                <i class="feather-loader spinner-border spinner-border-sm"></i> Đang tải dữ liệu...
+                                             </td>
+                                          </tr>
+                                       </tbody>
+                                    </table>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </main>
+            <footer class="py-4 bg-light mt-auto">
+               <div class="container-fluid">
+                  <div class="d-flex align-items-center justify-content-between small">
+                     <div class="text-muted">Copyright &copy; OSAHANEAT 2024</div>
+                  </div>
+               </div>
+            </footer>
+         </div>
+      </div>
+
+      <!-- Create Menu Modal -->
+      <div class="modal fade" id="create-menu-modal" tabindex="-1" role="dialog" aria-labelledby="createMenuModalLabel" aria-hidden="true">
+         <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <h5 class="modal-title" id="createMenuModalLabel">Thêm món ăn mới</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                     <span aria-hidden="true">&times;</span>
+                  </button>
+               </div>
+               <div class="modal-body">
+                  <form id="create-menu-form">
+                     <div class="form-group">
+                        <label for="create-menu-title">Tên món ăn <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="create-menu-title" required>
+                     </div>
+                     <div class="form-group">
+                        <label for="create-menu-category">Danh mục <span class="text-danger">*</span></label>
+                        <select class="form-control" id="create-menu-category" required>
+                           <option value="">-- Chọn danh mục --</option>
+                        </select>
+                     </div>
+                     <div class="row">
+                        <div class="col-md-6">
+                           <div class="form-group">
+                              <label for="create-menu-price">Giá (VNĐ) <span class="text-danger">*</span></label>
+                              <input type="number" class="form-control" id="create-menu-price" min="0" step="1000" required>
+                           </div>
+                        </div>
+                        <div class="col-md-6">
+                           <div class="form-group">
+                              <label for="create-menu-shipping-fee">Phí ship (VNĐ) <span class="text-muted">(Doanh thu shipper)</span></label>
+                              <input type="number" class="form-control" id="create-menu-shipping-fee" min="0" step="1000" value="15000" placeholder="15000">
+                              <small class="form-text text-muted">Phí ship mà shipper sẽ nhận được khi giao đơn hàng này</small>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="form-group">
+                        <label for="create-menu-time-ship">Thời gian ship <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="create-menu-time-ship" placeholder="VD: 30 phút" required>
+                     </div>
+                     <div class="form-group">
+                        <label for="create-menu-is-freeship">Miễn phí ship</label>
+                        <select class="form-control" id="create-menu-is-freeship">
+                           <option value="false">Không</option>
+                           <option value="true">Có</option>
+                        </select>
+                     </div>
+                     <div class="form-group">
+                        <label for="create-menu-image">Ảnh món ăn <span class="text-danger">*</span></label>
+                        <input type="file" class="form-control-file" id="create-menu-image" accept="image/*" required>
+                        <small class="form-text text-muted">Chọn file ảnh cho món ăn</small>
+                     </div>
+                  </form>
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                  <button type="button" class="btn btn-primary" onclick="createMenu()">Tạo món ăn</button>
+               </div>
+            </div>
+         </div>
+      </div>
+
+      <!-- Edit Menu Modal -->
+      <div class="modal fade" id="edit-menu-modal" tabindex="-1" role="dialog" aria-labelledby="editMenuModalLabel" aria-hidden="true">
+         <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <h5 class="modal-title" id="editMenuModalLabel">Chỉnh sửa món ăn</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                     <span aria-hidden="true">&times;</span>
+                  </button>
+               </div>
+               <div class="modal-body">
+                  <form id="edit-menu-form">
+                     <input type="hidden" id="edit-menu-id">
+                     <div class="form-group">
+                        <label for="edit-menu-title">Tên món ăn <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="edit-menu-title" required>
+                     </div>
+                     <div class="form-group">
+                        <label for="edit-menu-category">Danh mục <span class="text-danger">*</span></label>
+                        <select class="form-control" id="edit-menu-category" required>
+                           <option value="">-- Chọn danh mục --</option>
+                        </select>
+                     </div>
+                     <div class="row">
+                        <div class="col-md-6">
+                           <div class="form-group">
+                              <label for="edit-menu-price">Giá (VNĐ) <span class="text-danger">*</span></label>
+                              <input type="number" class="form-control" id="edit-menu-price" min="0" step="1000" required>
+                           </div>
+                        </div>
+                        <div class="col-md-6">
+                           <div class="form-group">
+                              <label for="edit-menu-shipping-fee">Phí ship (VNĐ) <span class="text-muted">(Doanh thu shipper)</span></label>
+                              <input type="number" class="form-control" id="edit-menu-shipping-fee" min="0" step="1000" placeholder="15000">
+                              <small class="form-text text-muted">Phí ship mà shipper sẽ nhận được khi giao đơn hàng này</small>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="form-group">
+                        <label for="edit-menu-time-ship">Thời gian ship <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="edit-menu-time-ship" placeholder="VD: 30 phút" required>
+                     </div>
+                     <div class="form-group">
+                        <label for="edit-menu-is-freeship">Miễn phí ship</label>
+                        <select class="form-control" id="edit-menu-is-freeship">
+                           <option value="false">Không</option>
+                           <option value="true">Có</option>
+                        </select>
+                     </div>
+                     <div class="form-group">
+                        <label for="edit-menu-image">Ảnh món ăn</label>
+                        <input type="file" class="form-control-file" id="edit-menu-image" accept="image/*">
+                        <small class="form-text text-muted">Chọn file ảnh mới để thay đổi (để trống nếu không đổi)</small>
+                        <div id="edit-menu-current-image" class="mt-2"></div>
+                     </div>
+                  </form>
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                  <button type="button" class="btn btn-primary" onclick="updateMenu()">Cập nhật</button>
+               </div>
+            </div>
+         </div>
+      </div>
+
+      <!-- Scripts -->
+      <script src="vendor/jquery/jquery.min.js?v=2.0"></script>
+      <script src="vendor/bootstrap/js/bootstrap.bundle.min.js?v=2.0"></script>
+      <script src="vendor/dataTables/dataTables/js/jquery.dataTables.min.js?v=2.0"></script>
+      <script src="vendor/dataTables/dataTables/js/dataTables.bootstrap4.min.js?v=2.0"></script>
+      <!-- Load API first -->
+      <script src="js/api.js?v=2.0"></script>
+      <script src="js/scripts.js?v=2.0"></script>
+      <script src="js/menus.js?v=2.0"></script>
+   </body>
+</html>
+

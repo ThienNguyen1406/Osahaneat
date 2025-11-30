@@ -1,0 +1,310 @@
+/* ============================================
+   SHIPPER APP - CSS Styles
+   Primary: #1E88E5 (Xanh dương đậm)
+   Secondary: #90CAF9
+   Accent: #FFD600 (Vàng)
+   Background: #F5F5F5
+   Text: #1A1A1A
+   ============================================ */
+
+:root {
+    --shipper-primary: #1E88E5;
+    --shipper-secondary: #90CAF9;
+    --shipper-accent: #FFD600;
+    --shipper-bg: #F5F5F5;
+    --shipper-text: #1A1A1A;
+    --shipper-success: #4CAF50;
+    --shipper-danger: #F44336;
+    --shipper-warning: #FF9800;
+}
+
+body {
+    background-color: var(--shipper-bg);
+    color: var(--shipper-text);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Navigation */
+.shipper-navbar {
+    background: linear-gradient(135deg, var(--shipper-primary) 0%, #1565C0 100%);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    padding: 1rem 0;
+}
+
+.shipper-navbar .navbar-brand {
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.shipper-navbar .nav-link {
+    color: rgba(255,255,255,0.9) !important;
+    font-weight: 500;
+    padding: 0.5rem 1rem !important;
+    transition: all 0.3s;
+}
+
+.shipper-navbar .nav-link:hover,
+.shipper-navbar .nav-link.active {
+    color: var(--shipper-accent) !important;
+    background-color: rgba(255,255,255,0.1);
+    border-radius: 4px;
+}
+
+/* Status Card */
+.shipper-status-card {
+    background: linear-gradient(135deg, var(--shipper-primary) 0%, #1565C0 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(30, 136, 229, 0.3);
+}
+
+.status-indicator {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.status-online {
+    color: var(--shipper-success);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.shipper-status-card .btn-warning {
+    background-color: var(--shipper-accent);
+    border: none;
+    color: var(--shipper-text);
+    font-weight: 600;
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+
+.shipper-status-card .btn-warning:hover {
+    background-color: #FFC107;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Stat Cards */
+.shipper-stat-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s;
+    background: white;
+}
+
+.shipper-stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+.shipper-stat-card .stat-icon {
+    font-size: 2.5rem;
+    color: var(--shipper-primary);
+    opacity: 0.3;
+}
+
+.shipper-stat-card h3 {
+    color: var(--shipper-primary);
+    font-weight: 700;
+}
+
+/* Card Header */
+.shipper-card-header {
+    background: linear-gradient(135deg, var(--shipper-primary) 0%, #1565C0 100%);
+    color: white;
+    border: none;
+    border-radius: 8px 8px 0 0;
+    padding: 1rem 1.5rem;
+}
+
+.shipper-card-header h5 {
+    margin: 0;
+    font-weight: 600;
+}
+
+/* Order Cards */
+.order-card {
+    background: white;
+    border: 2px solid #E0E0E0;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.order-card:hover {
+    border-color: var(--shipper-primary);
+    box-shadow: 0 4px 12px rgba(30, 136, 229, 0.2);
+    transform: translateY(-2px);
+}
+
+.order-card.active {
+    border-color: var(--shipper-accent);
+    background: linear-gradient(135deg, #FFF9C4 0%, #FFFFFF 100%);
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #F5F5F5;
+}
+
+.order-id {
+    font-weight: 700;
+    color: var(--shipper-primary);
+    font-size: 1.1rem;
+}
+
+.order-status {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.order-status.new {
+    background-color: var(--shipper-secondary);
+    color: var(--shipper-primary);
+}
+
+.order-status.accepted {
+    background-color: var(--shipper-accent);
+    color: var(--shipper-text);
+}
+
+.order-status.delivering {
+    background-color: var(--shipper-primary);
+    color: white;
+}
+
+.order-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+}
+
+.info-item i {
+    color: var(--shipper-primary);
+    margin-right: 0.5rem;
+    width: 20px;
+}
+
+.info-label {
+    font-size: 0.85rem;
+    color: #666;
+    margin-right: 0.5rem;
+}
+
+.info-value {
+    font-weight: 600;
+    color: var(--shipper-text);
+}
+
+.order-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.btn-shipper {
+    flex: 1;
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-weight: 600;
+    border: none;
+    transition: all 0.3s;
+}
+
+.btn-shipper-primary {
+    background-color: var(--shipper-primary);
+    color: white;
+}
+
+.btn-shipper-primary:hover {
+    background-color: #1565C0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(30, 136, 229, 0.3);
+}
+
+.btn-shipper-success {
+    background-color: var(--shipper-success);
+    color: white;
+}
+
+.btn-shipper-success:hover {
+    background-color: #388E3C;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+}
+
+.btn-shipper-warning {
+    background-color: var(--shipper-accent);
+    color: var(--shipper-text);
+}
+
+.btn-shipper-warning:hover {
+    background-color: #FFC107;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 214, 0, 0.3);
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #999;
+}
+
+.empty-state i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.3;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .order-info {
+        grid-template-columns: 1fr;
+    }
+    
+    .order-actions {
+        flex-direction: column;
+    }
+    
+    .shipper-navbar .navbar-brand {
+        font-size: 1rem;
+    }
+}
+
+/* Loading Spinner */
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(30, 136, 229, 0.3);
+    border-radius: 50%;
+    border-top-color: var(--shipper-primary);
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+

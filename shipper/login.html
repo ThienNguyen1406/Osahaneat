@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="OSAHANEAT - Đăng nhập Shipper">
+    <meta name="author" content="OSAHANEAT">
+    <link rel="icon" type="image/png" href="../theme-sidebar/img/logo.png">
+    <title>OSAHANEAT - Đăng nhập Shipper</title>
+    <!-- Custom fonts for this template-->
+    <link href="../theme-sidebar/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <!-- Custom styles for this template-->
+    <link href="../theme-sidebar/css/osahan.css" rel="stylesheet">
+    <!-- Font CSS -->
+    <link href="../theme-sidebar/font/stylesheet.css" rel="stylesheet">
+    <!-- Mdi icons for this template-->
+    <link href="../theme-sidebar/vendor/mdi-icons/css/materialdesignicons.min.css" rel="stylesheet">
+    <!-- Custom styles for this template-->
+    <link href="../theme-sidebar/css/custom.css" rel="stylesheet">
+    <style>
+        .osahan-login-left {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .osahan-login-left::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: url('../theme-sidebar/img/food-banner.png') center/cover;
+            opacity: 0.3;
+            z-index: 0;
+        }
+        .osahan-login-left > div {
+            position: relative;
+            z-index: 1;
+        }
+        .shipper-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body id="page-top">
+    <div class="row osahan-login m-0">
+        <div class="col-md-6 osahan-login-left px-0 position-relative">
+            <div class="text-center text-white position-relative" style="z-index: 1;">
+                <h1 class="display-4 font-weight-bold mb-3">
+                    <i class="mdi mdi-truck-delivery"></i> OSAHANEAT
+                </h1>
+                <p class="lead">Hệ thống giao hàng trực tuyến</p>
+                <div class="shipper-badge">
+                    <i class="mdi mdi-account-tie mr-2"></i>
+                    <strong>SHIPPER</strong>
+                </div>
+                <p class="mt-4">Giao hàng nhanh chóng, thu nhập ổn định</p>
+            </div>
+        </div>
+        <div class="col-md-6 d-flex justify-content-center flex-column px-0">
+            <div class="col-lg-6 mx-auto">
+                <h3 class="mb-1">Chào mừng Shipper</h3>
+                <p class="mb-5">Đăng nhập vào tài khoản shipper của bạn để tiếp tục<br>
+                    <small class="text-muted">Chỉ dành cho tài khoản shipper đã được admin duyệt</small>
+                </p>
+                <form id="loginForm">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="mr-3 bg-light rounded p-2 osahan-icon"><i class="mdi mdi-email-outline"></i></div>
+                        <div class="w-100">
+                            <p class="mb-0 small font-weight-bold text-dark">Địa chỉ Email</p>
+                            <input id="email" type="email" class="form-control form-control-sm p-0 border-input border-0 rounded-0"
+                                placeholder="Nhập email của bạn" autocomplete="off" value="" required>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="mr-3 bg-light rounded p-2 osahan-icon"><i class="mdi mdi-form-textbox-password"></i>
+                        </div>
+                        <div class="w-100">
+                            <p class="mb-0 small font-weight-bold text-dark">Mật khẩu</p>
+                            <input id="password" type="password"
+                                class="form-control form-control-sm p-0 border-input border-0 rounded-0"
+                                placeholder="Nhập mật khẩu" autocomplete="new-password" value="" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div id="loginMessage" class="alert" style="display: none;"></div>
+                        <button id="btn-signin" type="button" class="btn btn-primary btn-block mb-3">
+                            <i class="mdi mdi-login mr-2"></i>Đăng nhập
+                        </button>
+                        <p class="text-center">
+                            <a href="register-shipper.html" class="text-dark">Chưa có tài khoản? Đăng ký Shipper</a>
+                        </p>
+                        <p class="text-center mt-2">
+                            <a href="../login.html" class="text-muted small">Đăng nhập với vai trò khác</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap core JavaScript-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="../theme-sidebar/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- Core plugin JavaScript-->
+    <script src="../theme-sidebar/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <!-- API Service - Load trước -->
+    <script src="../theme-sidebar/js/api.js"></script>
+    <!-- Custom scripts for all pages-->
+    <script src="../theme-sidebar/js/osahan.min.js"></script>
+    <!-- Shipper Login Script -->
+    <script>
+        const API_BASE_URL = 'http://localhost:82';
+        
+        // Helper function để decode JWT token
+        function decodeToken(token) {
+            try {
+                if (!token) return null;
+                const parts = token.split('.');
+                if (parts.length !== 3) return null;
+                const payload = parts[1];
+                const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+                const paddedBase64 = base64 + '='.repeat((4 - base64.length % 4) % 4);
+                const decoded = JSON.parse(atob(paddedBase64));
+                return decoded;
+            } catch (e) {
+                console.error('Error decoding token:', e);
+                return null;
+            }
+        }
+
+        // Helper function để lấy role từ token
+        function getUserRoleFromToken(token) {
+            const decoded = decodeToken(token);
+            if (!decoded) {
+                console.warn("⚠️ Cannot decode token");
+                return null;
+            }
+            
+            const scope = decoded.scope || decoded.scopes || '';
+            console.log("🔍 Token scope:", scope);
+            const scopes = scope.split(' ').filter(s => s.trim() !== '');
+            console.log("🔍 Token scopes array:", scopes);
+            
+            // Tìm role trong scopes - check cả ROLE_DRIVER và DRIVER
+            if (scopes.includes('ROLE_ADMIN') || scopes.includes('ADMIN')) {
+                console.log("✅ Role detected: ADMIN");
+                return 'ADMIN';
+            } else if (scopes.includes('ROLE_DRIVER') || scopes.includes('DRIVER')) {
+                console.log("✅ Role detected: DRIVER");
+                return 'DRIVER';
+            } else if (scopes.includes('ROLE_RESTAURANT_STAFF') || scopes.includes('RESTAURANT_STAFF')) {
+                console.log("✅ Role detected: RESTAURANT_STAFF");
+                return 'RESTAURANT_STAFF';
+            } else if (scopes.includes('ROLE_RESTAURANT_OWNER') || scopes.includes('RESTAURANT_OWNER')) {
+                console.log("✅ Role detected: RESTAURANT_OWNER");
+                return 'RESTAURANT_OWNER';
+            } else if (scopes.includes('ROLE_USER') || scopes.includes('USER')) {
+                console.log("✅ Role detected: USER");
+                return 'USER';
+            }
+            
+            console.warn("⚠️ No role found in scopes, defaulting to USER");
+            return 'USER'; // Default
+        }
+
+        $(document).ready(function() {
+            console.log("=== SHIPPER LOGIN PAGE LOADED ===");
+            
+            // Clear any pre-filled values
+            $('#email').val('');
+            $('#password').val('');
+            
+            // Đợi ApiService load
+            function waitForApiService(callback, maxAttempts = 10) {
+                let attempts = 0;
+                const checkInterval = setInterval(function() {
+                    attempts++;
+                    if (typeof ApiService !== 'undefined' && typeof ApiService.login === 'function') {
+                        clearInterval(checkInterval);
+                        console.log("✅ ApiService loaded successfully");
+                        callback();
+                    } else if (attempts >= maxAttempts) {
+                        clearInterval(checkInterval);
+                        console.error("❌ ApiService failed to load after " + maxAttempts + " attempts");
+                        showMessage('Lỗi: API Service chưa được tải. Vui lòng reload trang.', 'danger');
+                    } else {
+                        console.log("⏳ Waiting for ApiService... (" + attempts + "/" + maxAttempts + ")");
+                    }
+                }, 200);
+            }
+            
+            // Setup login handler sau khi ApiService đã load
+            waitForApiService(function() {
+                // Login handler
+                $("#btn-signin").click(function (e) {
+                    e.preventDefault();
+                    const username = $("#email").val().trim();
+                    const password = $("#password").val();
+
+                    if (!username || !password) {
+                        showMessage("Vui lòng nhập đầy đủ thông tin!", 'danger');
+                        return;
+                    }
+
+                    console.log("Attempting login for shipper:", username);
+
+                    // Disable button
+                    const $btn = $("#btn-signin");
+                    $btn.prop('disabled', true).html('<i class="mdi mdi-loading mdi-spin mr-2"></i>Đang đăng nhập...');
+
+                    ApiService.login(username, password)
+                    .done(function (response) {
+                        console.log("Login response:", response);
+                        
+                        // Check response format
+                        const hasToken = response && response.data && typeof response.data === 'string' && response.data.length > 10;
+                        const hasSuccess = response && (response.success === true || response.success === "true" || 
+                                                        response.isSuccess === true || response.isSuccess === "true");
+                        const hasStatusOk = response && (response.status === 200 || response.status === "200");
+
+                        if (hasToken && (hasSuccess || hasStatusOk)) {
+                            const token = response.data;
+                            console.log("Login successful! Token received (length: " + token.length + ")");
+                            
+                            // Get user role from token
+                            const userRole = getUserRoleFromToken(token);
+                            console.log("=== User Role Check ===");
+                            console.log("User role detected:", userRole);
+                            const decodedToken = decodeToken(token);
+                            console.log("Token decoded:", decodedToken);
+                            console.log("Token scopes:", decodedToken?.scope || decodedToken?.scopes);
+                            
+                            // Check if user is DRIVER (shipper)
+                            console.log("=== Role Validation ===");
+                            console.log("Expected role: DRIVER");
+                            console.log("Actual role:", userRole);
+                            console.log("All scopes:", scopes);
+                            
+                            // Check if user has DRIVER role (check both ROLE_DRIVER and DRIVER)
+                            const isDriver = userRole === 'DRIVER' || 
+                                          scopes.includes('ROLE_DRIVER') || 
+                                          scopes.includes('DRIVER');
+                            
+                            if (!isDriver) {
+                                console.error("❌ User role mismatch! Expected DRIVER, got:", userRole);
+                                console.error("Token scopes:", scopes);
+                                showMessage('Tài khoản này không phải là Shipper! Vui lòng đăng nhập tại trang đăng nhập chung.', 'danger');
+                                $btn.prop('disabled', false).html('<i class="mdi mdi-login mr-2"></i>Đăng nhập');
+                                return;
+                            }
+                            
+                            console.log("✅ Role validation passed!");
+                            
+                            // Save token
+                            localStorage.setItem('token', token);
+                            console.log("✅ Token saved to localStorage");
+                            console.log("✅ User role verified: DRIVER");
+                            
+                            // Show success message
+                            showMessage('Đăng nhập thành công! Đang chuyển hướng...', 'success');
+                            
+                            // Redirect to shipper dashboard
+                            console.log("🔄 Redirecting to shipper dashboard...");
+                            console.log("Current location:", window.location.href);
+                            console.log("Redirecting to:", window.location.origin + window.location.pathname.replace('login.html', 'index.html'));
+                            
+                            // Use setTimeout to ensure message is shown before redirect
+                            setTimeout(function() {
+                                // Try multiple redirect methods to ensure it works
+                                const redirectUrl = './index.html';
+                                console.log("Final redirect URL:", redirectUrl);
+                                window.location.href = redirectUrl;
+                                
+                                // Backup redirect after 1 second if first one doesn't work
+                                setTimeout(function() {
+                                    if (window.location.pathname.includes('login.html')) {
+                                        console.warn("⚠️ Redirect may have failed, trying again...");
+                                        window.location.replace(redirectUrl);
+                                    }
+                                }, 1000);
+                            }, 500);
+                        } else {
+                            const errorMsg = response.desc || response.description || response.message || 'Đăng nhập thất bại!';
+                            showMessage(errorMsg, 'danger');
+                            console.error("Login failed:", response);
+                            $btn.prop('disabled', false).html('<i class="mdi mdi-login mr-2"></i>Đăng nhập');
+                        }
+                    })
+                    .fail(function(xhr) {
+                        console.error('Login error:', xhr);
+                        let errorMsg = 'Không thể kết nối đến server!';
+                        
+                        if (xhr.responseJSON) {
+                            const errorResponse = xhr.responseJSON;
+                            errorMsg = errorResponse.desc || errorResponse.message || errorMsg;
+                        }
+                        
+                        if (xhr.status === 400 || xhr.status === 401) {
+                            showMessage('Sai tên đăng nhập hoặc mật khẩu!', 'danger');
+                        } else {
+                            showMessage(errorMsg, 'danger');
+                        }
+                        
+                        $btn.prop('disabled', false).html('<i class="mdi mdi-login mr-2"></i>Đăng nhập');
+                    });
+                });
+                
+                // Allow Enter key to submit
+                $('#loginForm input').on('keypress', function(e) {
+                    if (e.which === 13) {
+                        e.preventDefault();
+                        $('#btn-signin').click();
+                    }
+                });
+            });
+        });
+        
+        function showMessage(message, type) {
+            const $msg = $('#loginMessage');
+            $msg.removeClass('alert-success alert-danger alert-warning')
+                .addClass(`alert-${type}`)
+                .text(message)
+                .show();
+            
+            if (type === 'success') {
+                setTimeout(function() {
+                    $msg.fadeOut();
+                }, 3000);
+            }
+        }
+    </script>
+</body>
+</html>
+

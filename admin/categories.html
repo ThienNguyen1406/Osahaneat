@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="vi">
+   <head>
+      <meta charset="utf-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+      <meta name="description" content="OSAHANEAT - Hệ thống quản lý đặt món ăn" />
+      <meta name="author" content="OSAHANEAT" />
+      <title>OSAHANEAT - Quản lý danh mục</title>
+      <!-- Favicon Icon -->
+      <link rel="icon" type="image/png" href="img/favicon.png?v=2.0">
+      <!-- Feather Icon-->
+      <link href="vendor/icons/feather.css?v=2.0" rel="stylesheet" type="text/css">
+      <!-- Fontawesome Icon-->
+      <link href="vendor/fontawesome/css/fontawesome.min.css?v=2.0" rel="stylesheet" type="text/css">
+      <!-- Bootstrap Css -->
+      <link href="vendor/bootstrap/css/bootstrap.min.css?v=2.0" rel="stylesheet">
+      <!-- Custom Css -->
+      <link href="css/styles.css?v=2.0" rel="stylesheet" />
+      <!-- Datatables css -->
+      <link href="vendor/dataTables/dataTables/css/dataTables.bootstrap4.min.css?v=2.0" rel="stylesheet">
+   </head>
+   <body class="sb-nav-fixed">
+      <nav class="sb-topnav navbar navbar-expand navbar-light bg-white shadow-sm">
+         <a class="navbar-brand" href="index.html"><img alt="logo" src="img/logo.png"></a>
+         <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#"><i class="fas fa-bars"></i></button>
+         <!-- Navbar Search-->
+         <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0" id="searchForm">
+            <div class="input-group">
+               <input class="form-control" type="text" id="searchInput" placeholder="Tìm kiếm danh mục..." aria-label="Search" aria-describedby="basic-addon2" />
+               <div class="input-group-append">
+                  <button class="btn btn-primary" type="button" id="searchBtn"><i class="feather-search"></i></button>
+               </div>
+            </div>
+         </form>
+         <!-- Navbar-->
+         <ul class="navbar-nav ml-auto ml-md-0">
+            <li class="nav-item dropdown no-arrow d-sm-none">
+               <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+               <i class="feather-search mr-2"></i>
+               </a>
+               <!-- Dropdown - Messages -->
+               <div class="dropdown-menu dropdown-menu-right p-3 shadow-sm animated--grow-in" aria-labelledby="searchDropdown">
+                  <form class="form-inline mr-auto w-100 navbar-search">
+                     <div class="input-group">
+                        <input type="text" class="form-control border-0 shadow-none" id="mobileSearchInput" placeholder="Tìm kiếm danh mục..." aria-label="Search" aria-describedby="basic-addon2">
+                        <div class="input-group-append">
+                           <button class="btn" type="button" id="mobileSearchBtn">
+                           <i class="feather-search"></i>
+                           </button>
+                        </div>
+                     </div>
+                  </form>
+               </div>
+            </li>
+            <!-- Nav Item - User Information -->
+            <li class="nav-item dropdown no-arrow ml-1 osahan-profile-dropdown">
+               <a class="nav-link dropdown-toggle pr-0" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+               <img class="img-profile rounded-circle" src="img/user/1.png">
+               </a>
+               <!-- Dropdown - User Information -->
+               <div class="dropdown-menu dropdown-menu-right shadow-sm">
+                  <div class="p-3 d-flex align-items-center">
+                     <div class="dropdown-list-image mr-3">
+                        <img class="rounded-circle" src="img/user/1.png" alt="">
+                        <div class="status-indicator bg-success"></div>
+                     </div>
+                     <div class="font-weight-bold">
+                        <div class="text-truncate">Quản trị viên</div>
+                        <div class="small text-gray-500">Quản lý hệ thống</div>
+                     </div>
+                  </div>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="my-profile.html"><i class="feather-edit"></i> Tài khoản của tôi</a>
+                  <a class="dropdown-item" href="my-profile.html"><i class="feather-settings"></i> Cài đặt tài khoản</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="login.html" onclick="adminLogout(); return false;"><i class="feather-log-out"></i> Đăng xuất</a>
+               </div>
+            </li>
+         </ul>
+      </nav>
+      <div id="layoutSidenav">
+         <div id="layoutSidenav_nav">
+            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+               <div class="sb-sidenav-menu">
+                  <div class="nav">
+                     <div class="sb-sidenav-menu-heading">Chức năng</div>
+                     <a class="nav-link" href="index.html">
+                        <div class="sb-nav-link-icon"><i class="feather-home"></i></div>
+                        Bảng điều khiển
+                     </a>
+                     <a class="nav-link" href="orders.html">
+                        <div class="sb-nav-link-icon"><i class="feather-shopping-cart"></i></div>
+                        Quản lý đơn hàng
+                     </a>
+                     <a class="nav-link" href="listings.html">
+                        <div class="sb-nav-link-icon"><i class="feather-list"></i></div>
+                        Quản lý nhà hàng
+                     </a>
+                     <a class="nav-link" href="users.html">
+                        <div class="sb-nav-link-icon"><i class="feather-users"></i></div>
+                        Quản lý người dùng
+                     </a>
+                     <a class="nav-link active" href="categories.html">
+                        <div class="sb-nav-link-icon"><i class="feather-tag"></i></div>
+                        Quản lý danh mục
+                     </a>
+                     <a class="nav-link" href="menus.html">
+                        <div class="sb-nav-link-icon"><i class="feather-coffee"></i></div>
+                        Quản lý món ăn
+                     </a>
+                     <a class="nav-link" href="messages.html">
+                        <div class="sb-nav-link-icon"><i class="feather-message-square"></i></div>
+                        Quản lý tin nhắn
+                        <span class="badge badge-pill ml-2 badge-danger" id="sidebar-message-badge" style="display: none;">0</span>
+                     </a>
+                  </div>
+               </div>
+               <div class="sb-sidenav-footer">
+                  <div class="small">Đăng nhập với:</div>
+                  Quản trị viên
+               </div>
+            </nav>
+         </div>
+         <div id="layoutSidenav_content">
+            <main>
+               <div class="container-fluid">
+                  <h1 class="mt-4">Quản lý danh mục</h1>
+                  <ol class="breadcrumb mb-4">
+                     <li class="breadcrumb-item"><a href="index.html">Bảng điều khiển</a></li>
+                     <li class="breadcrumb-item active">Quản lý danh mục</li>
+                  </ol>
+                  <div class="row">
+                     <div class="col-xl-12">
+                        <div class="card mb-4">
+                           <div class="card-header d-flex justify-content-between align-items-center">
+                              <div>
+                                 <i class="fas fa-table mr-1"></i>
+                                 DANH SÁCH DANH MỤC
+                              </div>
+                              <button type="button" class="btn btn-primary btn-sm" id="addCategoryBtn">
+                                 <i class="feather-plus"></i> Thêm danh mục
+                              </button>
+                           </div>
+                           <div class="card-body">
+                              <div class="table-responsive">
+                                 <table class="table table-bordered" id="categoriesDataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                       <tr class="text-uppercase">
+                                          <th>ID</th>
+                                          <th>Tên danh mục</th>
+                                          <th>Hành động</th>
+                                       </tr>
+                                    </thead>
+                                    <tbody id="categories-tbody">
+                                       <tr>
+                                          <td colspan="3" class="text-center text-muted">
+                                             <i class="feather-loader spinner-border spinner-border-sm"></i> Đang tải dữ liệu...
+                                          </td>
+                                       </tr>
+                                    </tbody>
+                                 </table>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </main>
+            <footer class="py-4 bg-light mt-auto">
+               <div class="container-fluid">
+                  <div class="d-flex align-items-center justify-content-between small">
+                     <div class="text-muted">Copyright &copy; OSAHANEAT 2024</div>
+                  </div>
+               </div>
+            </footer>
+         </div>
+      </div>
+
+      <!-- Modal Add/Edit Category -->
+      <div class="modal fade" id="categoryModal" tabindex="-1" role="dialog" aria-labelledby="categoryModalLabel" aria-hidden="true">
+         <div class="modal-dialog" role="document">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <h5 class="modal-title" id="categoryModalLabel">Thêm danh mục mới</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                     <span aria-hidden="true">&times;</span>
+                  </button>
+               </div>
+               <div class="modal-body">
+                  <form id="categoryForm">
+                     <div class="form-group">
+                        <label for="categoryName">Tên danh mục <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="categoryName" name="nameCate" placeholder="Nhập tên danh mục" required>
+                        <small class="form-text text-muted">Tên danh mục không được để trống</small>
+                     </div>
+                  </form>
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                  <button type="button" class="btn btn-primary" id="saveCategoryBtn">Lưu</button>
+               </div>
+            </div>
+         </div>
+      </div>
+
+      <!-- Jquery -->
+      <script src="vendor/jquery/jquery.min.js?v=2.0"></script>
+      <!-- Fontawesome -->
+      <script src="vendor/fontawesome/js/all.min.js?v=2.0"></script>
+      <!-- Bootstrap -->
+      <script src="vendor/bootstrap/js/bootstrap.bundle.min.js?v=2.0"></script>
+      <!-- Admin API Service -->
+      <script src="js/api.js?v=2.0"></script>
+      <!-- Custom Js -->
+      <script src="js/scripts.js?v=2.0"></script>
+      <script src="js/admin.js?v=2.0"></script>
+      <!-- Categories Page Script -->
+      <script src="js/admin-categories.js?v=2.0"></script>
+      <!-- Datatable Js -->
+      <script src="vendor/dataTables/dataTables/js/jquery.dataTables.min.js?v=2.0"></script>
+      <script src="vendor/dataTables/dataTables/js/dataTables.bootstrap.min.js?v=2.0"></script>
+   </body>
+</html>
+

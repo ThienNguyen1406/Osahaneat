@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="OSAHANEAT - Ứng dụng nhân viên nhà hàng" />
+    <meta name="author" content="OSAHANEAT" />
+    <title>OSAHANEAT - Restaurant Staff</title>
+    <!-- Favicon Icon -->
+    <link rel="icon" type="image/png" href="../admin/img/favicon.png">
+    <!-- Bootstrap Css -->
+    <link href="../admin/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Fontawesome Icon - CDN for better compatibility -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Fallback to local -->
+    <link href="../admin/vendor/fontawesome/css/fontawesome.min.css" rel="stylesheet" type="text/css">
+    <!-- Custom Staff CSS -->
+    <link href="css/staff.css" rel="stylesheet" />
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark staff-navbar">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-utensils mr-2"></i>
+                <strong>OSAHANEAT</strong> <span class="badge badge-light ml-2">STAFF</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-home"></i> Trang chủ
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="orders.html">
+                            <i class="fas fa-clipboard-list"></i> Đơn hàng
+                            <span class="badge badge-warning ml-1" id="new-orders-badge">0</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="menu.html">
+                            <i class="fas fa-utensils"></i> Menu
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="revenue.html">
+                            <i class="fas fa-chart-line"></i> Doanh thu
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="chat.html">
+                            <i class="fas fa-comments"></i> Chat
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../admin/login.html" onclick="staffLogout(); return false;">
+                            <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid mt-4">
+        <!-- Page Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2 class="staff-page-title">
+                    <i class="fas fa-home mr-2"></i>Trang chủ
+                </h2>
+                <p class="text-muted">
+                    <i class="fas fa-utensils mr-1"></i>Tổng quan đơn hàng và hoạt động
+                </p>
+            </div>
+        </div>
+        
+        <!-- Quick Stats -->
+        <div class="row mb-4">
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card staff-stat-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-1">
+                                    <i class="fas fa-bell mr-1"></i>Đơn mới
+                                </h6>
+                                <h3 class="mb-0 text-warning" id="new-orders-count">0</h3>
+                            </div>
+                            <div class="stat-icon text-warning">
+                                <i class="fas fa-bell fa-3x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card staff-stat-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-1">
+                                    <i class="fas fa-fire mr-1"></i>Đang chế biến
+                                </h6>
+                                <h3 class="mb-0 text-info" id="processing-orders-count">0</h3>
+                            </div>
+                            <div class="stat-icon text-info">
+                                <i class="fas fa-utensils fa-3x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card staff-stat-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-1">
+                                    <i class="fas fa-check-circle mr-1"></i>Sẵn sàng
+                                </h6>
+                                <h3 class="mb-0 text-success" id="ready-orders-count">0</h3>
+                            </div>
+                            <div class="stat-icon text-success">
+                                <i class="fas fa-check-circle fa-3x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card staff-stat-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-1">
+                                    <i class="fas fa-wallet mr-1"></i>Doanh thu hôm nay
+                                </h6>
+                                <h3 class="mb-0 text-primary" id="today-revenue">0 ₫</h3>
+                            </div>
+                            <div class="stat-icon text-primary">
+                                <i class="fas fa-money-bill-wave fa-3x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Orders by Status -->
+        <div class="row">
+            <!-- New Orders -->
+            <div class="col-lg-4 mb-4">
+                <div class="card order-column">
+                    <div class="card-header staff-card-header bg-warning">
+                        <h5 class="mb-0">
+                            <i class="fas fa-bell mr-2"></i>
+                            Đơn mới
+                            <span class="badge badge-light ml-2" id="new-orders-badge-header">0</span>
+                        </h5>
+                    </div>
+                    <div class="card-body order-list" id="new-orders-list">
+                        <div class="text-center py-3">
+                            <i class="fas fa-spinner fa-spin text-muted"></i>
+                            <p class="mt-2 text-muted small">Đang tải...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Processing Orders -->
+            <div class="col-lg-4 mb-4">
+                <div class="card order-column">
+                    <div class="card-header staff-card-header bg-info">
+                        <h5 class="mb-0">
+                            <i class="fas fa-spinner fa-spin mr-2"></i>
+                            Đang chế biến
+                            <span class="badge badge-light ml-2" id="processing-orders-badge-header">0</span>
+                        </h5>
+                    </div>
+                    <div class="card-body order-list" id="processing-orders-list">
+                        <div class="text-center py-5">
+                            <i class="fas fa-spinner fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">Chưa có đơn hàng</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ready Orders -->
+            <div class="col-lg-4 mb-4">
+                <div class="card order-column">
+                    <div class="card-header staff-card-header bg-success">
+                        <h5 class="mb-0">
+                            <i class="fas fa-check-circle mr-2"></i>
+                            Sẵn sàng
+                            <span class="badge badge-light ml-2" id="ready-orders-badge-header">0</span>
+                        </h5>
+                    </div>
+                    <div class="card-body order-list" id="ready-orders-list">
+                        <div class="text-center py-5">
+                            <i class="fas fa-check-circle fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">Chưa có đơn hàng</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../admin/vendor/jquery/jquery.min.js"></script>
+    <script src="../admin/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../admin/js/api.js"></script>
+    <script src="js/staff.js"></script>
+</body>
+</html>
+

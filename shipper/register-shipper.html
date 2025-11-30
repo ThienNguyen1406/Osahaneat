@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="OSAHANEAT - Đăng ký Shipper">
+    <meta name="author" content="OSAHANEAT">
+    <link rel="icon" type="image/png" href="../theme-sidebar/img/logo.png">
+    <title>OSAHANEAT - Đăng ký Shipper</title>
+    <!-- Custom fonts for this template-->
+    <link href="../theme-sidebar/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <!-- Custom styles for this template-->
+    <link href="../theme-sidebar/css/osahan.css" rel="stylesheet">
+    <!-- Font CSS -->
+    <link href="../theme-sidebar/font/stylesheet.css" rel="stylesheet">
+    <!-- Mdi icons for this template-->
+    <link href="../theme-sidebar/vendor/mdi-icons/css/materialdesignicons.min.css" rel="stylesheet">
+    <!-- Custom styles for this template-->
+    <link href="../theme-sidebar/css/custom.css" rel="stylesheet">
+    <style>
+        .osahan-login-left {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .osahan-login-left::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: url('../theme-sidebar/img/food-banner.png') center/cover;
+            opacity: 0.3;
+            z-index: 0;
+        }
+        .osahan-login-left > div {
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+</head>
+
+<body id="page-top">
+    <div class="row osahan-login m-0">
+        <div class="col-md-6 osahan-login-left px-0 position-relative">
+            <div class="text-center text-white position-relative" style="z-index: 1;">
+                <h1 class="display-4 font-weight-bold mb-3"><i class="mdi mdi-truck"></i> OSAHANEAT</h1>
+                <p class="lead">Đăng ký trở thành Shipper</p>
+                <p class="mt-4">Giao hàng nhanh chóng, thu nhập ổn định</p>
+            </div>
+        </div>
+        <div class="col-md-6 d-flex justify-content-center flex-column px-0">
+            <div class="col-lg-6 mx-auto">
+                <h3 class="mb-1">Đăng ký Shipper</h3>
+                <p class="mb-5">Điền thông tin để đăng ký tài khoản shipper<br>
+                    <small class="text-muted">Tài khoản của bạn sẽ được admin duyệt trước khi có thể sử dụng</small>
+                </p>
+                <form id="registerForm">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="mr-3 bg-light rounded p-2 osahan-icon"><i class="mdi mdi-account"></i></div>
+                        <div class="w-100">
+                            <p class="mb-0 small font-weight-bold text-dark">Họ và tên <span class="text-danger">*</span></p>
+                            <input id="fullname" type="text" class="form-control form-control-sm p-0 border-input border-0 rounded-0"
+                                placeholder="Nhập họ và tên" required>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="mr-3 bg-light rounded p-2 osahan-icon"><i class="mdi mdi-email-outline"></i></div>
+                        <div class="w-100">
+                            <p class="mb-0 small font-weight-bold text-dark">Email (Tên đăng nhập) <span class="text-danger">*</span></p>
+                            <input id="email" type="email" class="form-control form-control-sm p-0 border-input border-0 rounded-0"
+                                placeholder="Nhập email của bạn" autocomplete="off" required>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="mr-3 bg-light rounded p-2 osahan-icon"><i class="mdi mdi-phone"></i></div>
+                        <div class="w-100">
+                            <p class="mb-0 small font-weight-bold text-dark">Số điện thoại</p>
+                            <input id="phone" type="tel" class="form-control form-control-sm p-0 border-input border-0 rounded-0"
+                                placeholder="Nhập số điện thoại" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="mr-3 bg-light rounded p-2 osahan-icon"><i class="mdi mdi-form-textbox-password"></i></div>
+                        <div class="w-100">
+                            <p class="mb-0 small font-weight-bold text-dark">Mật khẩu <span class="text-danger">*</span></p>
+                            <input id="password" type="password"
+                                class="form-control form-control-sm p-0 border-input border-0 rounded-0"
+                                placeholder="Mật khẩu tối thiểu 8 ký tự" autocomplete="new-password" required minlength="8">
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="mr-3 bg-light rounded p-2 osahan-icon"><i class="mdi mdi-form-textbox-password"></i></div>
+                        <div class="w-100">
+                            <p class="mb-0 small font-weight-bold text-dark">Xác nhận mật khẩu <span class="text-danger">*</span></p>
+                            <input id="confirmPassword" type="password"
+                                class="form-control form-control-sm p-0 border-input border-0 rounded-0"
+                                placeholder="Nhập lại mật khẩu" autocomplete="new-password" required minlength="8">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div id="registerMessage" class="alert" style="display: none; margin-bottom: 1rem;"></div>
+                        <button id="btn-register" type="button" class="btn btn-primary btn-block mb-3">
+                            <i class="mdi mdi-account-plus mr-2"></i>Đăng ký Shipper
+                        </button>
+                        <p class="text-center">
+                            <a href="login.html" class="text-dark">Đã có tài khoản? Đăng nhập Shipper</a>
+                        </p>
+                        <p class="text-center mt-2">
+                            <a href="../login.html" class="text-muted small">Đăng nhập với vai trò khác</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap core JavaScript-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="../theme-sidebar/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- Core plugin JavaScript-->
+    <script src="../theme-sidebar/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <!-- API Service -->
+    <script src="../theme-sidebar/js/api.js"></script>
+    <!-- Custom scripts for all pages-->
+    <script src="../theme-sidebar/js/osahan.min.js"></script>
+    <script>
+        const API_BASE_URL = 'http://localhost:82';
+        
+        $(document).ready(function() {
+            $('#btn-register').on('click', function() {
+                registerShipper();
+            });
+            
+            $('#registerForm').on('submit', function(e) {
+                e.preventDefault();
+                registerShipper();
+            });
+        });
+        
+        function registerShipper() {
+            const fullname = $('#fullname').val().trim();
+            const email = $('#email').val().trim();
+            const phone = $('#phone').val().trim();
+            const password = $('#password').val();
+            const confirmPassword = $('#confirmPassword').val();
+            
+            // Validation
+            if (!fullname) {
+                showMessage('Vui lòng nhập họ và tên!', 'danger');
+                return;
+            }
+            
+            if (!email) {
+                showMessage('Vui lòng nhập email!', 'danger');
+                $('#email').focus();
+                return;
+            }
+            
+            // Validate email format
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showMessage('Email không hợp lệ! Vui lòng nhập đúng định dạng email.', 'danger');
+                $('#email').focus();
+                return;
+            }
+            
+            if (!password || password.length < 8) {
+                showMessage('Mật khẩu phải có ít nhất 8 ký tự!', 'danger');
+                $('#password').focus();
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showMessage('Mật khẩu xác nhận không khớp!', 'danger');
+                $('#confirmPassword').focus();
+                return;
+            }
+            
+            // Disable button
+            const $btn = $('#btn-register');
+            $btn.prop('disabled', true).html('<i class="mdi mdi-loading mdi-spin mr-2"></i>Đang đăng ký...');
+            
+            // Call API
+            $.ajax({
+                method: 'POST',
+                url: `${API_BASE_URL}/shipper/register`,
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    userName: email,
+                    fullname: fullname,
+                    password: password,
+                    phoneNumber: phone || null
+                }),
+                dataType: 'json'
+            })
+            .done(function(response) {
+                console.log('Register response:', response);
+                if (response && (response.success || response.isSuccess)) {
+                    showMessage('Đăng ký thành công! Tài khoản của bạn đang chờ admin duyệt. Vui lòng đăng nhập sau khi được duyệt.', 'success');
+                    $('#registerForm')[0].reset();
+                    setTimeout(function() {
+                        window.location.href = 'login.html';
+                    }, 3000);
+                } else {
+                    showMessage(response?.desc || 'Đăng ký thất bại!', 'danger');
+                    $btn.prop('disabled', false).html('<i class="mdi mdi-account-plus mr-2"></i>Đăng ký Shipper');
+                }
+            })
+            .fail(function(xhr) {
+                console.error('Register error:', xhr);
+                let errorMsg = 'Đăng ký thất bại! Vui lòng thử lại.';
+                
+                if (xhr.responseJSON) {
+                    errorMsg = xhr.responseJSON.desc || xhr.responseJSON.message || errorMsg;
+                } else if (xhr.status === 0) {
+                    errorMsg = 'Không thể kết nối đến server. Vui lòng kiểm tra kết nối mạng.';
+                } else if (xhr.status === 400) {
+                    errorMsg = 'Dữ liệu không hợp lệ. Vui lòng kiểm tra lại thông tin.';
+                } else if (xhr.status === 500) {
+                    errorMsg = 'Lỗi server. Vui lòng thử lại sau.';
+                }
+                
+                showMessage(errorMsg, 'danger');
+                $btn.prop('disabled', false).html('<i class="mdi mdi-account-plus mr-2"></i>Đăng ký Shipper');
+            });
+        }
+        
+        function showMessage(message, type) {
+            const $msg = $('#registerMessage');
+            $msg.removeClass('alert-success alert-danger alert-warning alert-info')
+                .addClass(`alert alert-${type}`)
+                .html(`<i class="mdi mdi-${type === 'success' ? 'check-circle' : type === 'danger' ? 'alert-circle' : 'information'} mr-2"></i>${message}`)
+                .show()
+                .scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            
+            // Auto hide after 5 seconds for success, 8 seconds for errors
+            const delay = type === 'success' ? 5000 : 8000;
+            if (type === 'success') {
+                setTimeout(function() {
+                    $msg.fadeOut();
+                }, delay);
+            }
+        }
+    </script>
+</body>
+</html>
+

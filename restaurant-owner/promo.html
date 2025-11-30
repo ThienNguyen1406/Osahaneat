@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="OSAHANEAT - Quản lý khuyến mãi" />
+    <meta name="author" content="OSAHANEAT" />
+    <title>OSAHANEAT - Quản lý khuyến mãi</title>
+    <link rel="icon" type="image/png" href="../admin/img/favicon.png">
+    <link href="../admin/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="../admin/vendor/fontawesome/css/fontawesome.min.css" rel="stylesheet" type="text/css">
+    <link href="css/owner.css" rel="stylesheet" />
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark owner-navbar">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-store mr-2"></i>
+                <strong>OSAHANEAT</strong> <span class="badge badge-light ml-2">OWNER</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" title="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-chart-line"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="restaurants.html">
+                            <i class="fas fa-store"></i> Cửa hàng
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="menu.html">
+                            <i class="fas fa-utensils"></i> Menu
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="orders.html">
+                            <i class="fas fa-shopping-bag"></i> Đơn hàng
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="staff.html">
+                            <i class="fas fa-users"></i> Nhân viên
+                        </a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="promo.html">
+                            <i class="fas fa-tags"></i> Khuyến mãi
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../admin/login.html" onclick="ownerLogout(); return false;">
+                            <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid mt-4">
+        <div class="row mb-4">
+            <div class="col-12 d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="owner-page-title">
+                        <i class="fas fa-tags mr-2"></i>Quản lý khuyến mãi
+                    </h2>
+                    <p class="text-muted">
+                        <i class="fas fa-gift mr-1"></i>Tạo và quản lý voucher khuyến mãi cho cửa hàng
+                    </p>
+                </div>
+                <button class="btn btn-owner btn-owner-primary" data-toggle="modal" data-target="#addPromoModal">
+                    <i class="fas fa-plus mr-2"></i>Tạo khuyến mãi
+                </button>
+            </div>
+        </div>
+
+        <!-- Restaurant Selector -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <label><i class="fas fa-store mr-1"></i>Chọn cửa hàng</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-store"></i></span>
+                    </div>
+                    <select class="form-control" id="restaurant-select">
+                        <option value="">Chọn cửa hàng...</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Promo List -->
+        <div class="card owner-card">
+            <div class="card-header owner-card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-tags mr-2"></i>
+                    Danh sách khuyến mãi
+                </h5>
+            </div>
+            <div class="card-body">
+                <div id="promo-list">
+                    <div class="text-center py-5">
+                        <i class="fas fa-tags fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">Chọn cửa hàng để xem khuyến mãi</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Promo Modal -->
+    <div class="modal fade" id="addPromoModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header owner-card-header">
+                    <h5 class="modal-title">Tạo khuyến mãi mới</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="add-promo-form">
+                        <div class="form-group">
+                            <div class="custom-control custom-checkbox mb-2">
+                                <input type="checkbox" class="custom-control-input" id="apply-to-all-restaurants">
+                                <label class="custom-control-label" for="apply-to-all-restaurants">
+                                    <i class="fas fa-globe mr-1"></i>Áp dụng cho tất cả nhà hàng
+                                </label>
+                            </div>
+                            <label><i class="fas fa-store mr-1"></i>Chọn cửa hàng <span class="text-danger" id="restaurant-required">*</span></label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-store"></i></span>
+                                </div>
+                                <select class="form-control" id="add-promo-restaurant">
+                                    <option value="">Chọn cửa hàng...</option>
+                                </select>
+                            </div>
+                            <small class="form-text text-muted">Nếu chọn "Áp dụng cho tất cả nhà hàng", bạn không cần chọn cửa hàng cụ thể</small>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-tag mr-1"></i>Tên khuyến mãi <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-tag"></i></span>
+                                </div>
+                                <input type="text" class="form-control" id="add-promo-name" 
+                                       placeholder="VD: Giảm 50k cho đơn hàng đầu tiên" required />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-barcode mr-1"></i>Mã voucher <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-barcode"></i></span>
+                                </div>
+                                <input type="text" class="form-control" id="add-promo-code" 
+                                       placeholder="VD: GIAM50K" required pattern="[A-Z0-9]+" 
+                                       style="text-transform: uppercase;" />
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-outline-secondary" onclick="generatePromoCode()">
+                                        <i class="fas fa-random"></i> Tự động
+                                    </button>
+                                </div>
+                            </div>
+                            <small class="form-text text-muted">Mã voucher phải là chữ in hoa và số, không có khoảng trắng</small>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-percent mr-1"></i>Loại giảm giá <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-percent"></i></span>
+                                </div>
+                                <select class="form-control" id="add-promo-type" required>
+                                    <option value="">Chọn loại...</option>
+                                    <option value="FOOD_DISCOUNT">Giảm giá đồ ăn</option>
+                                    <option value="SHIP_DISCOUNT">Giảm giá ship</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-money-bill-wave mr-1"></i>Giá trị giảm <span class="text-danger">*</span></label>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-money-bill-wave"></i></span>
+                                        </div>
+                                        <input type="number" class="form-control" id="add-promo-value" 
+                                               placeholder="VD: 50000" required min="1" step="1000" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">₫</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-control" style="background-color: #e7f3ff; border: 1px solid #b3d9ff; display: flex; align-items: center; justify-content: center; height: 38px; font-weight: bold;">
+                                        <span class="text-primary" id="promo-value-display" style="font-size: 1rem;">0 VND</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <small class="form-text text-muted">Nhập số tiền giảm (đơn vị: VNĐ)</small>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label><i class="fas fa-calendar-alt mr-1"></i>Ngày bắt đầu <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                                        </div>
+                                        <input type="datetime-local" class="form-control" id="add-promo-start-date" required />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label><i class="fas fa-calendar-times mr-1"></i>Ngày kết thúc <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-calendar-times"></i></span>
+                                        </div>
+                                        <input type="datetime-local" class="form-control" id="add-promo-end-date" required />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-hashtag mr-1"></i>Số lượng sử dụng tối đa</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
+                                </div>
+                                <input type="number" class="form-control" id="add-promo-max-usage" 
+                                       placeholder="Để trống = không giới hạn" min="1" />
+                            </div>
+                            <small class="form-text text-muted">Để trống nếu không giới hạn số lần sử dụng</small>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-info-circle mr-1"></i>Mô tả</label>
+                            <textarea class="form-control" id="add-promo-description" rows="3" 
+                                      placeholder="Mô tả chi tiết về chương trình khuyến mãi..."></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-owner btn-owner-primary" onclick="addPromo()">
+                        <i class="fas fa-plus mr-2"></i>Tạo khuyến mãi
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../admin/vendor/jquery/jquery.min.js"></script>
+    <script src="../admin/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../admin/js/api.js"></script>
+    <script src="js/owner.js"></script>
+    <script>
+        $(document).ready(function() {
+            if (!isAuthenticated()) {
+                alert('Vui lòng đăng nhập!');
+                window.location.href = '../admin/login.html';
+                return;
+            }
+            
+            loadRestaurants();
+            
+            $('#restaurant-select').on('change', function() {
+                const restaurantId = $(this).val();
+                if (restaurantId) {
+                    loadPromos(restaurantId);
+                } else {
+                    // Load tất cả promo (bao gồm cả promo áp dụng cho tất cả nhà hàng)
+                    loadPromos(0);
+                }
+            });
+
+            // Load restaurants for modal
+            loadRestaurantsForModal();
+            
+            // Format promo value display
+            $('#add-promo-value').on('input keyup change', function() {
+                const value = $(this).val();
+                if (value && !isNaN(value) && parseFloat(value) > 0) {
+                    const formatted = formatVND(parseFloat(value));
+                    $('#promo-value-display').text(formatted);
+                } else {
+                    $('#promo-value-display').text('0 VND');
+                }
+            });
+            
+            // Reset display when modal is opened
+            $('#addPromoModal').on('show.bs.modal', function() {
+                $('#promo-value-display').text('0 VND');
+                $('#apply-to-all-restaurants').prop('checked', false);
+                $('#add-promo-restaurant').prop('required', true);
+                $('#restaurant-required').show();
+                $('#add-promo-restaurant').prop('disabled', false);
+            });
+            
+            // Toggle restaurant select when "apply to all" checkbox changes
+            $('#apply-to-all-restaurants').on('change', function() {
+                const applyToAll = $(this).is(':checked');
+                if (applyToAll) {
+                    $('#add-promo-restaurant').prop('required', false);
+                    $('#restaurant-required').hide();
+                    $('#add-promo-restaurant').prop('disabled', true).val('');
+                } else {
+                    $('#add-promo-restaurant').prop('required', true);
+                    $('#restaurant-required').show();
+                    $('#add-promo-restaurant').prop('disabled', false);
+                }
+            });
+        });
+
+        function loadRestaurants() {
+            OwnerApiService.getMyRestaurants()
+                .done(function(response) {
+                    let restaurants = [];
+                    if (response && (response.success || response.isSuccess || response.status === 200) && response.data) {
+                        restaurants = Array.isArray(response.data) ? response.data : [];
+                    }
+                    
+                    const $select = $('#restaurant-select');
+                    $select.empty().append('<option value="">Chọn cửa hàng...</option>');
+                    
+                    if (restaurants.length === 0) {
+                        $select.append('<option value="">Bạn chưa có cửa hàng nào</option>');
+                    } else {
+                        restaurants.forEach(function(restaurant) {
+                            $select.append(`<option value="${restaurant.id}">${restaurant.title || 'N/A'}</option>`);
+                        });
+                    }
+                })
+                .fail(function(xhr) {
+                    console.error('Error loading restaurants:', xhr);
+                });
+        }
+
+        function loadRestaurantsForModal() {
+            OwnerApiService.getMyRestaurants()
+                .done(function(response) {
+                    let restaurants = [];
+                    if (response && (response.success || response.isSuccess || response.status === 200) && response.data) {
+                        restaurants = Array.isArray(response.data) ? response.data : [];
+                    }
+                    
+                    const $select = $('#add-promo-restaurant');
+                    $select.empty().append('<option value="">Chọn cửa hàng...</option>');
+                    
+                    if (restaurants.length === 0) {
+                        $select.append('<option value="">Bạn chưa có cửa hàng nào</option>');
+                    } else {
+                        restaurants.forEach(function(restaurant) {
+                            $select.append(`<option value="${restaurant.id}">${restaurant.title || 'N/A'}</option>`);
+                        });
+                    }
+                })
+                .fail(function(xhr) {
+                    console.error('Error loading restaurants:', xhr);
+                });
+        }
+
+        function loadPromos(restaurantId) {
+            // Nếu restaurantId = 0 hoặc không có, load tất cả promo (bao gồm promo áp dụng cho tất cả)
+            const finalRestaurantId = restaurantId || 0;
+            OwnerApiService.getRestaurantPromos(finalRestaurantId)
+                .done(function(response) {
+                    let promos = [];
+                    if (response && (response.success || response.isSuccess) && response.data) {
+                        promos = Array.isArray(response.data) ? response.data : [];
+                    }
+                    
+                    renderPromos(promos);
+                })
+                .fail(function(xhr) {
+                    console.error('Error loading promos:', xhr);
+                    $('#promo-list').html('<div class="alert alert-danger">Lỗi khi tải danh sách khuyến mãi</div>');
+                });
+        }
+
+        function renderPromos(promos) {
+            const $list = $('#promo-list');
+            
+            if (promos.length === 0) {
+                $list.html('<div class="text-center py-5"><i class="fas fa-tag fa-3x text-muted mb-3"></i><p class="text-muted">Chưa có khuyến mãi nào</p></div>');
+                return;
+            }
+            
+            let html = '<div class="table-responsive"><table class="table table-hover"><thead><tr><th><i class="fas fa-hashtag mr-1"></i>ID</th><th><i class="fas fa-tag mr-1"></i>Tên</th><th><i class="fas fa-barcode mr-1"></i>Mã</th><th><i class="fas fa-percent mr-1"></i>Loại</th><th><i class="fas fa-store mr-1"></i>Cửa hàng</th><th><i class="fas fa-money-bill-wave mr-1"></i>Giá trị</th><th><i class="fas fa-calendar-alt mr-1"></i>Thời gian</th><th><i class="fas fa-users mr-1"></i>Đã dùng</th><th><i class="fas fa-cog mr-1"></i>Thao tác</th></tr></thead><tbody>';
+            
+            promos.forEach(function(promo) {
+                const startDate = new Date(promo.startDate || promo.start_date);
+                const endDate = new Date(promo.endDate || promo.end_date);
+                const now = new Date();
+                const isActive = now >= startDate && now <= endDate;
+                const isExpired = now > endDate;
+                
+                const typeText = promo.type === 'FOOD_DISCOUNT' ? 'Giảm đồ ăn' : 'Giảm ship';
+                const statusBadge = isExpired 
+                    ? '<span class="badge badge-secondary">Hết hạn</span>'
+                    : isActive 
+                        ? '<span class="badge badge-success">Đang áp dụng</span>'
+                        : '<span class="badge badge-warning">Chưa bắt đầu</span>';
+                
+                html += `
+                    <tr>
+                        <td>${promo.id || 'N/A'}</td>
+                        <td>${promo.name || 'N/A'}</td>
+                        <td><strong>${promo.code || 'N/A'}</strong></td>
+                        <td>${typeText}</td>
+                        <td>${promo.restaurantName ? promo.restaurantName : '<span class="badge badge-info"><i class="fas fa-globe mr-1"></i>Tất cả nhà hàng</span>'}</td>
+                        <td>${formatVND(promo.value || promo.discountValue || 0)}</td>
+                        <td>
+                            <small>${formatDate(startDate)} - ${formatDate(endDate)}</small>
+                            ${statusBadge}
+                        </td>
+                        <td>${promo.usedCount || promo.used_count || 0} / ${promo.maxUsage || promo.max_usage || '∞'}</td>
+                        <td>
+                            <button class="btn btn-sm btn-danger" onclick="deletePromo(${promo.id}, '${promo.code || ''}')">
+                                <i class="fas fa-trash mr-1"></i>Xóa
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += '</tbody></table></div>';
+            $list.html(html);
+        }
+
+        function generatePromoCode() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let code = '';
+            for (let i = 0; i < 8; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            $('#add-promo-code').val(code);
+        }
+
+        function addPromo() {
+            const applyToAll = $('#apply-to-all-restaurants').is(':checked');
+            const restaurantId = $('#add-promo-restaurant').val();
+            const name = $('#add-promo-name').val().trim();
+            const code = $('#add-promo-code').val().trim().toUpperCase();
+            const type = $('#add-promo-type').val();
+            const value = parseFloat($('#add-promo-value').val());
+            const startDateInput = $('#add-promo-start-date').val();
+            const endDateInput = $('#add-promo-end-date').val();
+            
+            // Convert datetime-local format (YYYY-MM-DDTHH:mm) to ISO format for backend
+            let startDate = startDateInput;
+            let endDate = endDateInput;
+            
+            if (startDateInput) {
+                // datetime-local format: "2024-01-01T10:00" -> "2024-01-01 10:00:00"
+                // Backend expects format: "yyyy-MM-dd HH:mm:ss"
+                startDate = startDateInput.replace('T', ' ') + ':00';
+            }
+            if (endDateInput) {
+                endDate = endDateInput.replace('T', ' ') + ':00';
+            }
+            const maxUsage = $('#add-promo-max-usage').val() ? parseInt($('#add-promo-max-usage').val()) : null;
+            const description = $('#add-promo-description').val().trim();
+            
+            // Nếu không chọn "áp dụng cho tất cả", yêu cầu chọn cửa hàng
+            if (!applyToAll && !restaurantId) {
+                alert('Vui lòng chọn cửa hàng hoặc chọn "Áp dụng cho tất cả nhà hàng"!');
+                return;
+            }
+            
+            if (!name) {
+                alert('Vui lòng nhập tên khuyến mãi!');
+                return;
+            }
+            
+            if (!code) {
+                alert('Vui lòng nhập mã voucher!');
+                return;
+            }
+            
+            if (!type) {
+                alert('Vui lòng chọn loại giảm giá!');
+                return;
+            }
+            
+            if (!value || value <= 0) {
+                alert('Giá trị giảm phải lớn hơn 0!');
+                return;
+            }
+            
+            if (!startDate || !endDate) {
+                alert('Vui lòng chọn ngày bắt đầu và ngày kết thúc!');
+                return;
+            }
+            
+            if (new Date(startDate) >= new Date(endDate)) {
+                alert('Ngày kết thúc phải sau ngày bắt đầu!');
+                return;
+            }
+            
+            const data = {
+                name: name,
+                code: code,
+                type: type,
+                value: value,
+                startDate: startDate,
+                endDate: endDate,
+                maxUsage: maxUsage,
+                description: description,
+                applyToAll: applyToAll
+            };
+            
+            // Nếu áp dụng cho tất cả, gửi restaurantId = 0 hoặc null
+            const finalRestaurantId = applyToAll ? 0 : restaurantId;
+            
+            OwnerApiService.createPromo(finalRestaurantId, data)
+                .done(function(response) {
+                    if (response && (response.success || response.isSuccess)) {
+                        alert('Tạo khuyến mãi thành công!');
+                        $('#addPromoModal').modal('hide');
+                        $('#add-promo-form')[0].reset();
+                        $('#apply-to-all-restaurants').prop('checked', false);
+                        // Reload promos based on current selection
+                        const currentRestaurantId = $('#restaurant-select').val() || 0;
+                        loadPromos(currentRestaurantId);
+                    } else {
+                        alert('Lỗi: ' + (response.desc || 'Không thể tạo khuyến mãi'));
+                    }
+                })
+                .fail(function(xhr) {
+                    const errorMsg = xhr.responseJSON?.desc || 'Lỗi khi tạo khuyến mãi';
+                    alert(errorMsg);
+                    console.error(xhr);
+                });
+        }
+
+        function deletePromo(promoId, code) {
+            const restaurantId = $('#restaurant-select').val() || 0;
+            
+            if (!confirm(`Bạn có chắc muốn xóa khuyến mãi "${code}"?`)) {
+                return;
+            }
+            
+            OwnerApiService.deletePromo(restaurantId, promoId)
+                .done(function(response) {
+                    if (response && (response.success || response.isSuccess)) {
+                        alert('Xóa khuyến mãi thành công!');
+                        // Reload promos based on current selection
+                        const currentRestaurantId = $('#restaurant-select').val() || 0;
+                        loadPromos(currentRestaurantId);
+                    } else {
+                        alert('Lỗi: ' + (response.desc || 'Không thể xóa khuyến mãi'));
+                    }
+                })
+                .fail(function(xhr) {
+                    const errorMsg = xhr.responseJSON?.desc || 'Lỗi khi xóa khuyến mãi';
+                    alert(errorMsg);
+                    console.error(xhr);
+                });
+        }
+
+        function formatVND(amount) {
+            if (amount == null || amount === undefined || amount === '') return '0 VND';
+            const num = parseFloat(amount);
+            if (isNaN(num)) return '0 VND';
+            return num.toLocaleString('vi-VN') + ' VND';
+        }
+
+        function formatDate(date) {
+            if (!date) return '';
+            const d = new Date(date);
+            return d.toLocaleDateString('vi-VN', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+    </script>
+</body>
+</html>
+

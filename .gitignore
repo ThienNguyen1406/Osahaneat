@@ -1,0 +1,59 @@
+# IDE
+.idea/
+*.iml
+*.swp
+*.swo
+*~
+.vscode/
+.DS_Store
+
+# Build files
+target/
+*.class
+*.jar
+*.war
+*.ear
+
+# Logs
+*.log
+logs/
+
+# Maven
+.mvn/
+mvnw
+mvnw.cmd
+
+# Node modules (if any)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.cache
+
+# OS files
+Thumbs.db
+desktop.ini
+
+# Uploads (keep structure but ignore large files if needed)
+# uploads/*.jpg
+# uploads/*.png
+# uploads/*.jpeg
+
+# Compiled files
+*.min.js
+*.min.css
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+

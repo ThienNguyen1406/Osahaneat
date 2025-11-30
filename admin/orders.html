@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="vi">
+   <head>
+      <meta charset="utf-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+      <meta name="description" content="OSAHANEAT - Hệ thống quản lý đặt món ăn" />
+      <meta name="author" content="OSAHANEAT" />
+      <title>OSAHANEAT - Quản lý đơn hàng</title>
+      <!-- Favicon Icon -->
+      <link rel="icon" type="image/png" href="img/favicon.png">
+      <!-- Feather Icon-->
+      <link href="vendor/icons/feather.css" rel="stylesheet" type="text/css">
+      <!-- Fontawesome Icon-->
+      <link href="vendor/fontawesome/css/fontawesome.min.css" rel="stylesheet" type="text/css">
+      <!-- Bootstrap Css -->
+      <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+      <!-- Custom Css -->
+      <link href="css/styles.css" rel="stylesheet" />
+      <!-- Datatables css -->
+      <link href="vendor/dataTables/dataTables/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+   </head>
+   <body class="sb-nav-fixed">
+      <nav class="sb-topnav navbar navbar-expand navbar-light bg-white shadow-sm">
+         <a class="navbar-brand" href="index.html"><img alt="logo" src="img/logo.png"></a>
+         <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#"><i class="fas fa-bars"></i></button>
+         <!-- Navbar-->
+         <ul class="navbar-nav ml-auto ml-md-0">
+            <!-- Nav Item - User Information -->
+            <li class="nav-item dropdown no-arrow ml-1 osahan-profile-dropdown">
+               <a class="nav-link dropdown-toggle pr-0" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+               <img class="img-profile rounded-circle" src="img/user/1.png">
+               </a>
+               <!-- Dropdown - User Information -->
+               <div class="dropdown-menu dropdown-menu-right shadow-sm">
+                  <div class="p-3 d-flex align-items-center">
+                     <div class="dropdown-list-image mr-3">
+                        <img class="rounded-circle" src="img/user/1.png" alt="">
+                        <div class="status-indicator bg-success"></div>
+                     </div>
+                     <div class="font-weight-bold">
+                        <div class="text-truncate">Quản trị viên</div>
+                        <div class="small text-gray-500">Quản lý hệ thống</div>
+                     </div>
+                  </div>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="my-profile.html"><i class="feather-edit"></i> Tài khoản của tôi</a>
+                  <a class="dropdown-item" href="my-profile.html"><i class="feather-settings"></i> Cài đặt tài khoản</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="login.html" onclick="adminLogout(); return false;"><i class="feather-log-out"></i> Đăng xuất</a>
+               </div>
+            </li>
+         </ul>
+      </nav>
+      <div id="layoutSidenav">
+         <div id="layoutSidenav_nav">
+            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+               <div class="sb-sidenav-menu">
+                  <div class="nav">
+                     <div class="sb-sidenav-menu-heading">Chức năng</div>
+                     <a class="nav-link" href="index.html">
+                        <div class="sb-nav-link-icon"><i class="feather-home"></i></div>
+                        Bảng điều khiển
+                     </a>
+                     <a class="nav-link active" href="orders.html">
+                        <div class="sb-nav-link-icon"><i class="feather-shopping-cart"></i></div>
+                        Quản lý đơn hàng
+                     </a>
+                     <a class="nav-link" href="listings.html">
+                        <div class="sb-nav-link-icon"><i class="feather-list"></i></div>
+                        Quản lý nhà hàng
+                     </a>
+                     <a class="nav-link" href="users.html">
+                        <div class="sb-nav-link-icon"><i class="feather-users"></i></div>
+                        Quản lý người dùng
+                     </a>
+                     <a class="nav-link" href="shippers.html">
+                        <div class="sb-nav-link-icon"><i class="feather-truck"></i></div>
+                        Quản lý shipper
+                     </a>
+                     <a class="nav-link" href="permissions.html">
+                        <div class="sb-nav-link-icon"><i class="feather-shield"></i></div>
+                        Quản lý phân quyền
+                     </a>
+                  </div>
+               </div>
+               <div class="sb-sidenav-footer">
+                  <div class="small">Đăng nhập với:</div>
+                  Quản trị viên
+               </div>
+            </nav>
+         </div>
+         <div id="layoutSidenav_content">
+            <main>
+               <div class="container-fluid">
+                  <h1 class="mt-4">Quản lý đơn hàng</h1>
+                  <ol class="breadcrumb mb-4">
+                     <li class="breadcrumb-item"><a href="index.html">Bảng điều khiển</a></li>
+                     <li class="breadcrumb-item active">Quản lý đơn hàng</li>
+                  </ol>
+                  <!-- Statistics Cards -->
+                  <div class="row mb-4">
+                     <div class="col-xl-3 col-md-6">
+                        <div class="card bg-primary text-white mb-4" id="orders-pending">
+                           <div class="card-body">
+                              <div class="stat-value" style="font-size: 2rem; font-weight: bold;">0</div>
+                              <div class="stat-label">Chờ xử lý</div>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="col-xl-3 col-md-6">
+                        <div class="card bg-warning text-white mb-4" id="orders-processing">
+                           <div class="card-body">
+                              <div class="stat-value" style="font-size: 2rem; font-weight: bold;">0</div>
+                              <div class="stat-label">Đang xử lý</div>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="col-xl-3 col-md-6">
+                        <div class="card bg-success text-white mb-4" id="orders-delivered">
+                           <div class="card-body">
+                              <div class="stat-value" style="font-size: 2rem; font-weight: bold;">0</div>
+                              <div class="stat-label">Đã giao</div>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="col-xl-3 col-md-6">
+                        <div class="card bg-danger text-white mb-4" id="orders-cancelled">
+                           <div class="card-body">
+                              <div class="stat-value" style="font-size: 2rem; font-weight: bold;">0</div>
+                              <div class="stat-label">Đã hủy</div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <!-- Filter -->
+                  <div class="row mb-3">
+                     <div class="col-md-3">
+                        <select class="form-control" id="status-filter">
+                           <option value="">Tất cả trạng thái</option>
+                           <option value="created">Mới tạo</option>
+                           <option value="processing">Đang xử lý</option>
+                           <option value="delivered">Đã giao</option>
+                           <option value="cancelled">Đã hủy</option>
+                        </select>
+                     </div>
+                     <div class="col-md-3">
+                        <button class="btn btn-primary" onclick="loadOrders()">
+                           <i class="feather-refresh-cw"></i> Làm mới
+                        </button>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col-xl-12">
+                        <div class="card mb-4">
+                           <div class="card-header">
+                              <i class="fas fa-table mr-1"></i>
+                              DANH SÁCH ĐƠN HÀNG
+                           </div>
+                           <div class="card-body">
+                              <div class="table-responsive">
+                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                       <tr class="text-uppercase">
+                                          <th>Người dùng</th>
+                                          <th>Tên người dùng</th>
+                                          <th>Nhà hàng</th>
+                                          <th>Trạng thái</th>
+                                          <th>Ngày đặt</th>
+                                          <th>Tổng tiền</th>
+                                          <th>Số lượng</th>
+                                          <th>Hành động</th>
+                                       </tr>
+                                    </thead>
+                                    <tbody>
+                                       <!-- Orders will be loaded from API -->
+                                    </tbody>
+                                 </table>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </main>
+            <footer class="py-4 bg-light mt-auto">
+               <div class="container-fluid">
+                  <div class="d-flex align-items-center justify-content-between small">
+                     <div class="text-muted">Copyright &copy; OSAHANEAT 2024</div>
+                  </div>
+               </div>
+            </footer>
+         </div>
+      </div>
+      <!-- Jquery -->
+      <script src="vendor/jquery/jquery.min.js"></script>
+      <!-- Fontawesome -->
+      <script src="vendor/fontawesome/js/all.min.js"></script>
+      <!-- Bootstrap -->
+      <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+      <!-- Admin API Service -->
+      <script src="js/api.js"></script>
+      <!-- Custom Js -->
+      <script src="js/scripts.js"></script>
+      <script src="js/admin.js"></script>
+      <!-- Orders Page Script -->
+      <script src="js/orders.js?v=2.0"></script>
+      <!-- Datatable Js -->
+      <script src="vendor/dataTables/dataTables/js/jquery.dataTables.min.js"></script>
+      <script src="vendor/dataTables/dataTables/js/dataTables.bootstrap.min.js"></script>
+   </body>
+</html>

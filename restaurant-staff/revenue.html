@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="OSAHANEAT - Doanh thu" />
+    <meta name="author" content="OSAHANEAT" />
+    <title>OSAHANEAT - Doanh thu</title>
+    <link rel="icon" type="image/png" href="../admin/img/favicon.png">
+    <link href="../admin/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Fontawesome Icon - CDN for better compatibility -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Fallback to local -->
+    <link href="../admin/vendor/fontawesome/css/fontawesome.min.css" rel="stylesheet" type="text/css">
+    <link href="css/staff.css" rel="stylesheet" />
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark staff-navbar">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-utensils mr-2"></i>
+                <strong>OSAHANEAT</strong> <span class="badge badge-light ml-2">STAFF</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-home"></i> Trang chủ
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="orders.html">
+                            <i class="fas fa-clipboard-list"></i> Đơn hàng
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="menu.html">
+                            <i class="fas fa-utensils"></i> Menu
+                        </a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="revenue.html">
+                            <i class="fas fa-chart-line"></i> Doanh thu
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../admin/login.html" onclick="staffLogout(); return false;">
+                            <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid mt-4">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2 class="staff-page-title">
+                    <i class="fas fa-chart-line mr-2"></i>Doanh thu
+                </h2>
+                <p class="text-muted">
+                    <i class="fas fa-calendar-alt mr-1"></i>Xem doanh thu theo ngày
+                </p>
+            </div>
+        </div>
+
+        <!-- Date Selector -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <label><i class="fas fa-calendar-alt mr-1"></i>Chọn ngày</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                    </div>
+                    <input type="date" class="form-control" id="revenue-date" />
+                </div>
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button class="btn btn-success btn-block" onclick="loadRevenue()">
+                    <i class="fas fa-search mr-2"></i>Xem doanh thu
+                </button>
+            </div>
+        </div>
+
+        <!-- Revenue Stats -->
+        <div class="row mb-4">
+            <div class="col-md-4 mb-3">
+                <div class="card staff-stat-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-1">Doanh thu</h6>
+                                <h3 class="mb-0 text-success" id="revenue-amount">0 ₫</h3>
+                            </div>
+                            <div class="stat-icon text-success">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card staff-stat-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-1">Số đơn hàng</h6>
+                                <h3 class="mb-0 text-info" id="revenue-orders">0</h3>
+                            </div>
+                            <div class="stat-icon text-info">
+                                <i class="fas fa-shopping-bag"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card staff-stat-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-1">Giá trị đơn TB</h6>
+                                <h3 class="mb-0 text-primary" id="revenue-average">0 ₫</h3>
+                            </div>
+                            <div class="stat-icon text-primary">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Revenue Details -->
+        <div class="card">
+            <div class="card-header staff-card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-list mr-2"></i>
+                    Chi tiết doanh thu
+                </h5>
+            </div>
+            <div class="card-body">
+                <div id="revenue-details">
+                    <div class="text-center py-5">
+                        <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">
+                            <i class="fas fa-calendar-alt mr-2"></i>Chọn ngày để xem doanh thu
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../admin/vendor/jquery/jquery.min.js"></script>
+    <script src="../admin/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../admin/js/api.js"></script>
+    <script src="js/staff.js"></script>
+    <script>
+        // Helper function to decode JWT token
+        function decodeToken(token) {
+            try {
+                if (!token) return null;
+                const parts = token.split('.');
+                if (parts.length !== 3) return null;
+                const payload = parts[1];
+                const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+                const paddedBase64 = base64 + '='.repeat((4 - base64.length % 4) % 4);
+                const decoded = JSON.parse(atob(paddedBase64));
+                return decoded;
+            } catch (e) {
+                console.error('Error decoding token:', e);
+                return null;
+            }
+        }
+
+        // Helper function to check if user has RESTAURANT_STAFF role
+        function hasStaffRole() {
+            const token = localStorage.getItem('token');
+            if (!token) return false;
+            
+            try {
+                const decoded = decodeToken(token);
+                if (!decoded) return false;
+                
+                const scope = decoded.scope || decoded.scopes || '';
+                const scopes = scope.split(' ').filter(s => s.trim() !== '');
+                
+                return scopes.includes('ROLE_RESTAURANT_STAFF') || scopes.includes('RESTAURANT_STAFF');
+            } catch (e) {
+                console.error('Error checking staff role:', e);
+                return false;
+            }
+        }
+
+        $(document).ready(function() {
+            if (!isAuthenticated()) {
+                alert('Vui lòng đăng nhập!');
+                window.location.href = '../admin/login.html';
+                return;
+            }
+            
+            // Check if user has RESTAURANT_STAFF role
+            if (!hasStaffRole()) {
+                console.error("❌ User does not have RESTAURANT_STAFF role");
+                alert('Bạn không có quyền truy cập trang nhân viên nhà hàng!\n\nVui lòng đăng nhập với tài khoản nhân viên.');
+                window.location.href = '../theme-sidebar/index.html';
+                return;
+            }
+            
+            // Set today as default
+            const today = new Date().toISOString().split('T')[0];
+            $('#revenue-date').val(today);
+            
+            loadRevenue();
+        });
+
+        function loadRevenue() {
+            const date = $('#revenue-date').val();
+            if (!date) {
+                alert('Vui lòng chọn ngày!');
+                return;
+            }
+            
+            StaffApiService.getDailyRevenue()
+                .done(function(response) {
+                    if (response && (response.success || response.isSuccess) && response.data) {
+                        const revenue = response.data;
+                        $('#revenue-amount').text(formatVND(revenue.revenue || 0));
+                        $('#revenue-orders').text(revenue.orderCount || 0);
+                        $('#revenue-average').text(formatVND(revenue.averageOrderValue || 0));
+                        
+                        renderRevenueDetails(revenue);
+                    }
+                })
+                .fail(function(xhr) {
+                    // Handle 403 errors silently (user doesn't have permission)
+                    if (xhr.status === 403) {
+                        console.warn("⚠️ Access denied - user does not have RESTAURANT_STAFF role");
+                        // Don't spam console with 403 errors
+                        return;
+                    }
+                    // Only log other errors
+                    console.error('Error loading revenue:', xhr);
+                    alert('Lỗi khi tải doanh thu');
+                });
+        }
+
+        function renderRevenueDetails(revenue) {
+            const $details = $('#revenue-details');
+            
+            let html = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-info-circle mr-2"></i>Thông tin doanh thu</h6>
+                        <table class="table table-sm">
+                            <tr>
+                                <td><i class="fas fa-money-bill-wave mr-2 text-success"></i>Tổng doanh thu:</td>
+                                <td class="text-right"><strong>${formatVND(revenue.revenue || 0)}</strong></td>
+                            </tr>
+                            <tr>
+                                <td><i class="fas fa-shopping-bag mr-2 text-info"></i>Số đơn hàng:</td>
+                                <td class="text-right"><strong>${revenue.orderCount || 0}</strong></td>
+                            </tr>
+                            <tr>
+                                <td><i class="fas fa-chart-bar mr-2 text-primary"></i>Giá trị đơn trung bình:</td>
+                                <td class="text-right"><strong>${formatVND(revenue.averageOrderValue || 0)}</strong></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-chart-pie mr-2"></i>Thống kê</h6>
+                        <div class="progress mb-2" style="height: 30px;">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: 100%">
+                                <i class="fas fa-shopping-bag mr-2"></i>${revenue.orderCount || 0} đơn hàng
+                            </div>
+                        </div>
+                        <p class="small text-muted mb-0">
+                            <i class="fas fa-money-bill-wave mr-1"></i>Tổng doanh thu: <strong>${formatVND(revenue.revenue || 0)}</strong>
+                        </p>
+                    </div>
+                </div>
+            `;
+            
+            $details.html(html);
+        }
+
+        function formatVND(amount) {
+            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+        }
+    </script>
+</body>
+</html>
+

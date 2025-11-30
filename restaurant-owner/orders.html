@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="OSAHANEAT - Quản lý đơn hàng" />
+    <meta name="author" content="OSAHANEAT" />
+    <title>OSAHANEAT - Quản lý đơn hàng</title>
+    <link rel="icon" type="image/png" href="../admin/img/favicon.png">
+    <link href="../admin/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Fontawesome Icon - CDN for better compatibility -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Fallback to local -->
+    <link href="../admin/vendor/fontawesome/css/fontawesome.min.css" rel="stylesheet" type="text/css">
+    <link href="css/owner.css" rel="stylesheet" />
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark owner-navbar">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-store mr-2"></i>
+                <strong>OSAHANEAT</strong> <span class="badge badge-light ml-2">OWNER</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-chart-line"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="restaurants.html">
+                            <i class="fas fa-store"></i> Cửa hàng
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="menu.html">
+                            <i class="fas fa-utensils"></i> Menu
+                        </a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="orders.html">
+                            <i class="fas fa-shopping-bag"></i> Đơn hàng
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="staff.html">
+                            <i class="fas fa-users"></i> Nhân viên
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../admin/login.html" onclick="ownerLogout(); return false;">
+                            <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid mt-4">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2 class="owner-page-title">
+                    <i class="fas fa-shopping-bag mr-2"></i>Quản lý đơn hàng
+                </h2>
+                <p class="text-muted">
+                    <i class="fas fa-info-circle mr-1"></i>Xem tất cả đơn hàng của cửa hàng
+                </p>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-store"></i></span>
+                    </div>
+                    <select class="form-control" id="restaurant-select">
+                        <option value="">Tất cả cửa hàng</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-filter"></i></span>
+                    </div>
+                    <select class="form-control" id="filter-status">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="created">Mới tạo</option>
+                        <option value="processing">Đang chế biến</option>
+                        <option value="ready">Sẵn sàng</option>
+                        <option value="delivered">Đã giao</option>
+                        <option value="cancelled">Đã hủy</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                    </div>
+                    <input type="date" class="form-control" id="filter-date" />
+                </div>
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-owner btn-owner-primary btn-block" onclick="loadOrders()">
+                    <i class="fas fa-search mr-2"></i>Tìm kiếm
+                </button>
+            </div>
+        </div>
+
+        <!-- Orders Table -->
+        <div class="card owner-card">
+            <div class="card-header owner-card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-list mr-2"></i>
+                    Danh sách đơn hàng
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover" id="orders-table">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-hashtag mr-1"></i>Mã đơn</th>
+                                <th><i class="fas fa-user mr-1"></i>Khách hàng</th>
+                                <th><i class="fas fa-store mr-1"></i>Cửa hàng</th>
+                                <th><i class="fas fa-money-bill-wave mr-1"></i>Tổng tiền</th>
+                                <th><i class="fas fa-calendar mr-1"></i>Ngày tạo</th>
+                                <th><i class="fas fa-info-circle mr-1"></i>Trạng thái</th>
+                                <th><i class="fas fa-cog mr-1"></i>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-tbody">
+                            <tr>
+                                <td colspan="7" class="text-center">
+                                    <i class="fas fa-spinner fa-spin"></i> Đang tải...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination -->
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center" id="orders-pagination">
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../admin/vendor/jquery/jquery.min.js"></script>
+    <script src="../admin/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../admin/js/api.js"></script>
+    <script src="js/owner.js"></script>
+    <script>
+        let currentPage = 0;
+        const pageSize = 20;
+        let selectedRestaurantId = null;
+
+        $(document).ready(function() {
+            if (!isAuthenticated()) {
+                alert('Vui lòng đăng nhập!');
+                window.location.href = '../admin/login.html';
+                return;
+            }
+            
+            loadRestaurants();
+            loadOrders();
+        });
+
+        function loadRestaurants() {
+            OwnerApiService.getMyRestaurants()
+                .done(function(response) {
+                    if (response && (response.success || response.isSuccess) && response.data) {
+                        const restaurants = Array.isArray(response.data) ? response.data : [];
+                        const $select = $('#restaurant-select');
+                        restaurants.forEach(function(restaurant) {
+                            $select.append(`<option value="${restaurant.id}">${restaurant.title || 'N/A'}</option>`);
+                        });
+                        
+                        $('#restaurant-select').on('change', function() {
+                            selectedRestaurantId = $(this).val();
+                            currentPage = 0;
+                            loadOrders();
+                        });
+                    }
+                })
+                .fail(function(xhr) {
+                    console.error('Error loading restaurants:', xhr);
+                });
+        }
+
+        function loadOrders(page = 0) {
+            currentPage = page;
+            const restaurantId = selectedRestaurantId || $('#restaurant-select').val();
+            
+            if (!restaurantId) {
+                $('#orders-tbody').html('<tr><td colspan="7" class="text-center"><p class="text-muted">Vui lòng chọn cửa hàng</p></td></tr>');
+                return;
+            }
+            
+            OwnerApiService.getRestaurantOrders(restaurantId, page, pageSize)
+                .done(function(response) {
+                    let orders = [];
+                    let totalElements = 0;
+                    let totalPages = 0;
+                    
+                    if (response && (response.success || response.isSuccess) && response.data) {
+                        if (response.data.orders) {
+                            orders = Array.isArray(response.data.orders) ? response.data.orders : [];
+                            totalElements = response.data.totalElements || 0;
+                            totalPages = response.data.totalPages || 0;
+                        } else if (Array.isArray(response.data)) {
+                            orders = response.data;
+                        }
+                    }
+                    
+                    renderOrdersTable(orders);
+                    renderPagination(totalPages, currentPage);
+                })
+                .fail(function(xhr) {
+                    console.error('Error loading orders:', xhr);
+                    $('#orders-tbody').html('<tr><td colspan="7" class="text-center text-danger">Lỗi khi tải đơn hàng</td></tr>');
+                });
+        }
+
+        function renderOrdersTable(orders) {
+            const $tbody = $('#orders-tbody');
+            
+            if (orders.length === 0) {
+                $tbody.html('<tr><td colspan="7" class="text-center py-5"><i class="fas fa-shopping-bag fa-3x text-muted mb-3"></i><p class="text-muted">Chưa có đơn hàng nào</p></td></tr>');
+                return;
+            }
+            
+            let html = '';
+            orders.forEach(function(order) {
+                html += `
+                    <tr>
+                        <td><strong>#${order.id}</strong></td>
+                        <td>${order.userFullName || order.userName || 'N/A'}</td>
+                        <td>${order.restaurantTitle || 'N/A'}</td>
+                        <td><strong>${formatVND(order.totalPrice || 0)}</strong></td>
+                        <td>${formatDate(order.createDate)}</td>
+                        <td>
+                            <span class="badge badge-${getStatusBadgeColor(order.status)}">
+                                <i class="fas fa-${getStatusIcon(order.status)} mr-1"></i>${getStatusText(order.status)}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-owner btn-owner-primary" onclick="viewOrderDetails(${order.id})" title="Xem chi tiết">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            $tbody.html(html);
+        }
+
+        function renderPagination(totalPages, currentPage) {
+            const $pagination = $('#orders-pagination');
+            
+            if (totalPages <= 1) {
+                $pagination.html('');
+                return;
+            }
+            
+            let html = '';
+            
+            html += `<li class="page-item ${currentPage === 0 ? 'disabled' : ''}">
+                <a class="page-link" href="#" onclick="loadOrders(${currentPage - 1}); return false;">Trước</a>
+            </li>`;
+            
+            for (let i = 0; i < totalPages; i++) {
+                if (i === 0 || i === totalPages - 1 || (i >= currentPage - 2 && i <= currentPage + 2)) {
+                    html += `<li class="page-item ${i === currentPage ? 'active' : ''}">
+                        <a class="page-link" href="#" onclick="loadOrders(${i}); return false;">${i + 1}</a>
+                    </li>`;
+                } else if (i === currentPage - 3 || i === currentPage + 3) {
+                    html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+                }
+            }
+            
+            html += `<li class="page-item ${currentPage >= totalPages - 1 ? 'disabled' : ''}">
+                <a class="page-link" href="#" onclick="loadOrders(${currentPage + 1}); return false;">Sau</a>
+            </li>`;
+            
+            $pagination.html(html);
+        }
+
+        function viewOrderDetails(orderId) {
+            // TODO: Implement order details modal or page
+            alert('Chi tiết đơn hàng #' + orderId);
+        }
+
+        function getStatusBadgeColor(status) {
+            const colors = {
+                'created': 'secondary',
+                'processing': 'info',
+                'ready': 'warning',
+                'delivered': 'success',
+                'cancelled': 'danger'
+            };
+            return colors[status] || 'secondary';
+        }
+
+        function getStatusText(status) {
+            const texts = {
+                'created': 'Mới tạo',
+                'processing': 'Đang chế biến',
+                'ready': 'Sẵn sàng',
+                'delivered': 'Đã giao',
+                'cancelled': 'Đã hủy'
+            };
+            return texts[status] || status;
+        }
+
+        function getStatusIcon(status) {
+            const icons = {
+                'created': 'plus-circle',
+                'processing': 'spinner',
+                'ready': 'check-circle',
+                'delivered': 'check-double',
+                'cancelled': 'times-circle'
+            };
+            return icons[status] || 'info-circle';
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleString('vi-VN');
+        }
+
+        function formatVND(amount) {
+            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+        }
+    </script>
+</body>
+</html>
+

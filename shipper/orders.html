@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="OSAHANEAT - Quản lý đơn hàng" />
+    <meta name="author" content="OSAHANEAT" />
+    <title>OSAHANEAT - Đơn hàng</title>
+    <link rel="icon" type="image/png" href="../admin/img/favicon.png">
+    <link href="../admin/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Fontawesome Icon - CDN for better compatibility -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Fallback to local -->
+    <link href="../admin/vendor/fontawesome/css/fontawesome.min.css" rel="stylesheet" type="text/css">
+    <link href="css/shipper.css" rel="stylesheet" />
+    <!-- Leaflet CSS for Vietmap -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
+          crossorigin="" />
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark shipper-navbar">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-motorcycle mr-2"></i>
+                <strong>OSAHANEAT</strong> <span class="badge badge-warning ml-2">SHIPPER</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-home"></i> Trang chủ
+                        </a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="orders.html">
+                            <i class="fas fa-shopping-bag"></i> Đơn hàng
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="history.html">
+                            <i class="fas fa-history"></i> Lịch sử
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="profile.html">
+                            <i class="fas fa-user"></i> Hồ sơ
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="login.html" onclick="shipperLogout(); return false;">
+                            <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid mt-4">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2 class="shipper-page-title">
+                    <i class="fas fa-shopping-bag mr-2"></i>Quản lý đơn hàng
+                </h2>
+                <p class="text-muted">
+                    <i class="fas fa-info-circle mr-1"></i>Xem và quản lý đơn hàng có sẵn và đang giao
+                </p>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <ul class="nav nav-tabs mb-4" id="ordersTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="available-tab" data-toggle="tab" href="#available" role="tab">
+                    <i class="fas fa-bell mr-2"></i>Đơn hàng có sẵn
+                    <span class="badge badge-warning ml-2" id="available-count">0</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="active-tab" data-toggle="tab" href="#active" role="tab">
+                    <i class="fas fa-shipping-fast mr-2"></i>Đang giao
+                    <span class="badge badge-info ml-2" id="active-count">0</span>
+                </a>
+            </li>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="ordersTabContent">
+            <!-- Available Orders -->
+            <div class="tab-pane fade show active" id="available" role="tabpanel">
+                <div class="card">
+                    <div class="card-header shipper-card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-bell mr-2"></i>
+                            Đơn hàng có sẵn để nhận
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="available-orders-container">
+                            <div class="text-center py-5">
+                                <i class="fas fa-spinner fa-spin fa-2x text-muted"></i>
+                                <p class="mt-3 text-muted">Đang tải đơn hàng...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Orders -->
+            <div class="tab-pane fade" id="active" role="tabpanel">
+                <div class="card">
+                    <div class="card-header shipper-card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-shipping-fast mr-2"></i>
+                            Đơn hàng đang giao
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="active-orders-container">
+                            <div class="text-center py-5">
+                                <i class="fas fa-spinner fa-spin fa-2x text-muted"></i>
+                                <p class="mt-3 text-muted">Đang tải đơn hàng...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Map Modal -->
+    <div class="modal fade" id="mapModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header shipper-card-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-map-marker-alt mr-2"></i>
+                        Bản đồ đơn hàng #<span id="map-order-id"></span>
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="vietmap-container" style="width: 100%; height: 500px; border-radius: 4px;"></div>
+                    <div class="mt-3">
+                        <p class="mb-1"><i class="fas fa-map-marker-alt text-success mr-2"></i><strong>Vị trí khách hàng:</strong> <span id="map-user-address"></span></p>
+                        <p class="mb-0"><i class="fas fa-truck text-danger mr-2"></i><strong>Vị trí của bạn:</strong> <span id="map-shipper-address">Đang cập nhật...</span></p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
+            crossorigin=""></script>
+    <script src="../admin/vendor/jquery/jquery.min.js"></script>
+    <script src="../admin/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../admin/js/api.js"></script>
+    <script src="js/shipper.js"></script>
+    <script src="js/vietmap.js"></script>
+    <script>
+        $(document).ready(function() {
+            if (!isAuthenticated()) {
+                alert('Vui lòng đăng nhập!');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            loadOrdersPage();
+            
+            // Auto refresh every 30 seconds
+            setInterval(function() {
+                loadOrdersPage();
+            }, 30000);
+        });
+
+        function loadOrdersPage() {
+            loadAvailableOrders();
+            loadActiveOrders();
+        }
+
+        function loadAvailableOrders() {
+            ShipperApiService.getAvailableOrders()
+                .done(function(response) {
+                    let orders = [];
+                    if (response && (response.success || response.isSuccess) && response.data) {
+                        orders = Array.isArray(response.data) ? response.data : [];
+                    }
+                    
+                    $('#available-count').text(orders.length);
+                    renderOrdersList(orders, '#available-orders-container', true);
+                })
+                .fail(function(xhr) {
+                    console.error('Error loading available orders:', xhr);
+                    $('#available-orders-container').html('<div class="alert alert-danger">Lỗi khi tải đơn hàng</div>');
+                });
+        }
+
+        function loadActiveOrders() {
+            ShipperApiService.getActiveOrders()
+                .done(function(response) {
+                    let orders = [];
+                    if (response && (response.success || response.isSuccess) && response.data) {
+                        orders = Array.isArray(response.data) ? response.data : [];
+                    }
+                    
+                    $('#active-count').text(orders.length);
+                    renderOrdersList(orders, '#active-orders-container', false);
+                })
+                .fail(function(xhr) {
+                    console.error('Error loading active orders:', xhr);
+                    $('#active-orders-container').html('<div class="alert alert-danger">Lỗi khi tải đơn hàng</div>');
+                });
+        }
+
+        function renderOrdersList(orders, container, showAcceptButton) {
+            const $container = $(container);
+            
+            if (orders.length === 0) {
+                $container.html('<div class="text-center py-5"><i class="fas fa-inbox fa-3x text-muted mb-3"></i><p class="text-muted">Chưa có đơn hàng</p></div>');
+                return;
+            }
+            
+            let html = '<div class="row">';
+            orders.forEach(function(order) {
+                html += `
+                    <div class="col-md-6 mb-3">
+                        <div class="card order-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h6 class="mb-1">Đơn #${order.id}</h6>
+                                        <small class="text-muted">${formatDate(order.createDate)}</small>
+                                    </div>
+                                    <span class="badge badge-${getStatusBadgeColor(order.status)}">${getStatusText(order.status)}</span>
+                                </div>
+                                
+                                <div class="order-info mb-3">
+                                    <p class="mb-2"><i class="fas fa-store mr-2"></i><strong>${order.restaurantTitle || 'N/A'}</strong></p>
+                                    <p class="mb-2"><i class="fas fa-map-marker-alt mr-2"></i>${order.deliveryAddress || 'Chưa cập nhật địa chỉ'}</p>
+                                    <p class="mb-0"><i class="fas fa-money-bill-wave mr-2"></i><strong>${formatVND(order.totalPrice || 0)}</strong></p>
+                                </div>
+                                
+                                <div class="mb-2">
+                                    <button class="btn btn-sm btn-outline-primary btn-block" onclick="showOrderMap(${order.id}, ${order.userLat || 10.8231}, ${order.userLng || 106.6297}, '${order.deliveryAddress || ''}')">
+                                        <i class="fas fa-map-marked-alt mr-2"></i>Xem bản đồ
+                                    </button>
+                                </div>
+                                
+                                ${showAcceptButton ? `
+                                    <button class="btn btn-warning btn-block" onclick="acceptOrder(${order.id})">
+                                        <i class="fas fa-check mr-2"></i>Nhận đơn
+                                    </button>
+                                ` : `
+                                    <div class="btn-group btn-block" role="group">
+                                        ${order.status === 'accepted' ? `
+                                            <button class="btn btn-info" onclick="updateOrderStatus(${order.id}, 'picked_up')">
+                                                <i class="fas fa-hand-paper mr-2"></i>Đã lấy hàng
+                                            </button>
+                                        ` : ''}
+                                        ${order.status === 'picked_up' ? `
+                                            <button class="btn btn-success" onclick="updateOrderStatus(${order.id}, 'delivered')">
+                                                <i class="fas fa-check-circle mr-2"></i>Đã giao
+                                            </button>
+                                        ` : ''}
+                                    </div>
+                                `}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            $container.html(html);
+        }
+
+        function acceptOrder(orderId) {
+            if (!confirm('Bạn có chắc muốn nhận đơn hàng này?')) {
+                return;
+            }
+            
+            ShipperApiService.acceptOrder(orderId)
+                .done(function(response) {
+                    if (response && (response.success || response.isSuccess)) {
+                        alert('Nhận đơn hàng thành công!');
+                        loadOrdersPage();
+                    } else {
+                        alert('Lỗi: ' + (response.desc || 'Không thể nhận đơn hàng'));
+                    }
+                })
+                .fail(function(xhr) {
+                    alert('Lỗi khi nhận đơn hàng');
+                    console.error(xhr);
+                });
+        }
+
+        function updateOrderStatus(orderId, status) {
+            const statusText = status === 'picked_up' ? 'đã lấy hàng' : 'đã giao';
+            if (!confirm(`Xác nhận đơn hàng ${statusText}?`)) {
+                return;
+            }
+            
+            ShipperApiService.updateOrderStatus(orderId, status)
+                .done(function(response) {
+                    if (response && (response.success || response.isSuccess)) {
+                        alert('Cập nhật trạng thái thành công!');
+                        loadOrdersPage();
+                    } else {
+                        alert('Lỗi: ' + (response.desc || 'Không thể cập nhật trạng thái'));
+                    }
+                })
+                .fail(function(xhr) {
+                    alert('Lỗi khi cập nhật trạng thái');
+                    console.error(xhr);
+                });
+        }
+
+        function getStatusBadgeColor(status) {
+            const colors = {
+                'created': 'secondary',
+                'ready': 'warning',
+                'accepted': 'info',
+                'picked_up': 'primary',
+                'delivering': 'info',
+                'delivered': 'success',
+                'cancelled': 'danger'
+            };
+            return colors[status] || 'secondary';
+        }
+
+        function getStatusText(status) {
+            const texts = {
+                'created': 'Mới tạo',
+                'ready': 'Sẵn sàng',
+                'accepted': 'Đã nhận',
+                'picked_up': 'Đã lấy hàng',
+                'delivering': 'Đang giao',
+                'delivered': 'Đã giao',
+                'cancelled': 'Đã hủy'
+            };
+            return texts[status] || status;
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            const date = new Date(dateString);
+            return date.toLocaleString('vi-VN');
+        }
+
+        function formatVND(amount) {
+            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+        }
+
+        // Use Vietmap API from vietmap.js
+        function showOrderMap(orderId, userLat, userLng, userAddress) {
+            console.log("=== showOrderMap() called ===");
+            console.log("Order ID:", orderId);
+            console.log("User Lat:", userLat);
+            console.log("User Lng:", userLng);
+            console.log("User Address:", userAddress);
+            
+            // Validate coordinates
+            if (!userLat || !userLng || isNaN(userLat) || isNaN(userLng)) {
+                console.warn("⚠️ Invalid coordinates, using default (Ho Chi Minh City)");
+                userLat = 10.8231;
+                userLng = 106.6297;
+            }
+            
+            $('#map-order-id').text(orderId);
+            $('#map-user-address').text(userAddress || `${userLat}, ${userLng}`);
+            $('#map-shipper-address').text('Đang lấy vị trí...');
+            
+            $('#mapModal').modal('show');
+            
+            // Initialize map after modal is shown
+            $('#mapModal').on('shown.bs.modal', function() {
+                setTimeout(function() {
+                    // Use initShipperVietmap from vietmap.js
+                    if (typeof initShipperVietmap === 'function') {
+                        console.log("✅ Using initShipperVietmap from vietmap.js");
+                        // vietmap.js will handle geolocation and update #map-shipper-address automatically
+                        initShipperVietmap({
+                            userLat: userLat,
+                            userLng: userLng,
+                            userAddress: userAddress,
+                            orderId: orderId,
+                            containerId: 'vietmap-container'
+                        });
+                    } else {
+                        console.error("❌ initShipperVietmap function not found! Make sure vietmap.js is loaded.");
+                        alert('Lỗi: Không thể tải bản đồ. Vui lòng reload trang.');
+                        $('#map-shipper-address').text('Lỗi: Không thể tải bản đồ');
+                    }
+                }, 300);
+            });
+        }
+        
+        // Destroy map when modal is hidden
+        $('#mapModal').on('hidden.bs.modal', function() {
+            if (typeof destroyShipperVietmap === 'function') {
+                destroyShipperVietmap();
+            }
+        });
+    </script>
+</body>
+</html>
+

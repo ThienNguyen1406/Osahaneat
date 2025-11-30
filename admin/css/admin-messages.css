@@ -1,0 +1,255 @@
+/*
+ * Admin Messages Page - Custom Styles
+ */
+
+/* Chat List - Conversations */
+.osahan-chat-list {
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+    scroll-behavior: smooth;
+}
+
+.osahan-chat-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.osahan-chat-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.osahan-chat-list::-webkit-scrollbar-thumb {
+    background: #667eea;
+    border-radius: 10px;
+}
+
+.osahan-chat-list::-webkit-scrollbar-thumb:hover {
+    background: #764ba2;
+}
+
+/* Conversation Item */
+.conversation-item {
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border-left: 3px solid transparent !important;
+}
+
+.conversation-item:hover {
+    background-color: #f8f9fa !important;
+    border-left-color: #667eea !important;
+}
+
+.conversation-item.bg-light {
+    background-color: #e7f3ff !important;
+    border-left-color: #667eea !important;
+}
+
+/* Chat Box */
+.osahan-chat-box {
+    max-height: calc(100vh - 300px);
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    padding: 20px;
+    background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%);
+}
+
+.osahan-chat-box::-webkit-scrollbar {
+    width: 6px;
+}
+
+.osahan-chat-box::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.osahan-chat-box::-webkit-scrollbar-thumb {
+    background: #667eea;
+    border-radius: 10px;
+}
+
+.osahan-chat-box::-webkit-scrollbar-thumb:hover {
+    background: #764ba2;
+}
+
+/* Message Bubbles */
+.osahan-post-header {
+    margin-bottom: 12px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    transition: all 0.3s;
+    display: inline-block;
+    word-wrap: break-word;
+    word-break: break-word;
+}
+
+/* Admin messages (right side) - Purple gradient */
+.osahan-post-header.justify-content-end {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    margin-left: auto;
+    margin-right: 0;
+    max-width: 75%;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    text-align: left;
+}
+
+/* User messages (left side) - White background */
+.osahan-post-header:not(.justify-content-end) {
+    background: white !important;
+    color: #333 !important;
+    margin-left: 0;
+    margin-right: auto;
+    max-width: 75%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e9ecef;
+    text-align: left;
+}
+
+/* Message container alignment */
+.osahan-chat-box .d-flex.justify-content-end {
+    justify-content: flex-end !important;
+}
+
+.osahan-chat-box .d-flex:not(.justify-content-end) {
+    justify-content: flex-start !important;
+}
+
+/* Chat Input */
+#admin-chat-input {
+    border: 2px solid #e9ecef !important;
+    border-radius: 24px !important;
+    padding: 12px 18px !important;
+    font-size: 14px !important;
+    resize: none !important;
+    transition: all 0.3s !important;
+    min-height: 60px !important;
+    max-height: 120px !important;
+}
+
+#admin-chat-input:focus {
+    outline: none !important;
+    border-color: #667eea !important;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15) !important;
+    background: #fafbfc !important;
+}
+
+#admin-chat-input::placeholder {
+    color: #adb5bd;
+}
+
+/* Send Button */
+.btn-primary.btn-sm.rounded {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    transition: all 0.3s;
+}
+
+.btn-primary.btn-sm.rounded:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+}
+
+/* Badge Counter */
+.badge-counter {
+    animation: pulse-badge 2s infinite;
+}
+
+@keyframes pulse-badge {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+/* Search Input */
+.icon-form-control input {
+    border: 2px solid #e9ecef;
+    border-radius: 24px;
+    padding: 10px 15px 10px 40px;
+    transition: all 0.3s;
+}
+
+.icon-form-control input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
+}
+
+.icon-form-control .feather-search {
+    left: 15px;
+    color: #adb5bd;
+}
+
+/* Empty State */
+.text-center.py-5.text-muted {
+    padding: 60px 20px !important;
+}
+
+.text-center.py-5.text-muted i {
+    font-size: 48px;
+    color: #adb5bd;
+    margin-bottom: 16px;
+}
+
+/* Date Separator */
+.text-center.my-3 {
+    margin: 24px 0;
+}
+
+.text-center.my-3 span {
+    background: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    font-size: 12px;
+    font-weight: 600;
+    color: #667eea;
+}
+
+/* User Avatar */
+.dropdown-list-image {
+    position: relative;
+}
+
+.dropdown-list-image .rounded-circle {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s;
+}
+
+.conversation-item:hover .dropdown-list-image .rounded-circle {
+    border-color: #667eea;
+    transform: scale(1.05);
+}
+
+/* Online Status */
+.status-indicator {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+.status-indicator.bg-success {
+    background-color: #28a745 !important;
+    box-shadow: 0 0 0 2px white;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .osahan-chat-box {
+        max-height: calc(100vh - 250px);
+    }
+    
+    .osahan-chat-list {
+        max-height: calc(100vh - 150px);
+    }
+}
+

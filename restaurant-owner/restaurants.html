@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="OSAHANEAT - Quản lý cửa hàng" />
+    <meta name="author" content="OSAHANEAT" />
+    <title>OSAHANEAT - Quản lý cửa hàng</title>
+    <link rel="icon" type="image/png" href="../admin/img/favicon.png">
+    <link href="../admin/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Fontawesome Icon - CDN for better compatibility -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Fallback to local -->
+    <link href="../admin/vendor/fontawesome/css/fontawesome.min.css" rel="stylesheet" type="text/css">
+    <link href="css/owner.css" rel="stylesheet" />
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark owner-navbar">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-store mr-2"></i>
+                <strong>OSAHANEAT</strong> <span class="badge badge-light ml-2">OWNER</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-chart-line"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="restaurants.html">
+                            <i class="fas fa-store"></i> Cửa hàng
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="menu.html">
+                            <i class="fas fa-utensils"></i> Menu
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="orders.html">
+                            <i class="fas fa-shopping-bag"></i> Đơn hàng
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="staff.html">
+                            <i class="fas fa-users"></i> Nhân viên
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../admin/login.html" onclick="ownerLogout(); return false;">
+                            <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid mt-4">
+        <div class="row mb-4">
+            <div class="col-12 d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="owner-page-title">
+                        <i class="fas fa-store mr-2"></i>Quản lý cửa hàng
+                    </h2>
+                    <p class="text-muted">
+                        <i class="fas fa-info-circle mr-1"></i>Quản lý thông tin cửa hàng của bạn
+                    </p>
+                </div>
+                <button class="btn btn-owner btn-owner-primary" data-toggle="modal" data-target="#addRestaurantModal">
+                    <i class="fas fa-plus mr-2"></i>Thêm cửa hàng
+                </button>
+            </div>
+        </div>
+
+        <!-- Restaurants Grid -->
+        <div class="row" id="restaurants-grid">
+            <div class="col-12 text-center py-5">
+                <i class="fas fa-spinner fa-spin fa-2x text-muted"></i>
+                <p class="mt-3 text-muted">Đang tải cửa hàng...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Restaurant Modal -->
+    <div class="modal fade" id="addRestaurantModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header owner-card-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-store mr-2"></i>Thêm cửa hàng mới
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="add-restaurant-form" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="add-restaurant-title" class="form-label">
+                                <i class="fas fa-store mr-1"></i>Tên cửa hàng <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-store"></i></span>
+                                </div>
+                                <input type="text" class="form-control" id="add-restaurant-title" 
+                                       placeholder="VD: Nhà hàng ABC" required />
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="add-restaurant-subtitle" class="form-label">
+                                <i class="fas fa-info-circle mr-1"></i>Mô tả ngắn
+                            </label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-info-circle"></i></span>
+                                </div>
+                                <input type="text" class="form-control" id="add-restaurant-subtitle" 
+                                       placeholder="VD: Món ăn Việt Nam truyền thống" />
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="add-restaurant-description" class="form-label">
+                                <i class="fas fa-align-left mr-1"></i>Mô tả chi tiết
+                            </label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-align-left"></i></span>
+                                </div>
+                                <textarea class="form-control" id="add-restaurant-description" rows="3" 
+                                          placeholder="Mô tả về cửa hàng của bạn..."></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="add-restaurant-address" class="form-label">
+                                <i class="fas fa-map-marker-alt mr-1"></i>Địa chỉ <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                                </div>
+                                <textarea class="form-control" id="add-restaurant-address" rows="2" 
+                                          placeholder="VD: 123 Nguyễn Huệ, Quận 1, TP.HCM" required></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="add-restaurant-open-date" class="form-label">
+                                <i class="fas fa-calendar-alt mr-1"></i>Ngày khai trương <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                                </div>
+                                <input type="datetime-local" class="form-control" id="add-restaurant-open-date" required />
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-image mr-1"></i>Ảnh cửa hàng <span class="text-danger">*</span>
+                            </label>
+                            <div class="image-upload-section">
+                                <div class="d-flex gap-2 mb-2">
+                                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="document.getElementById('add-restaurant-image').click()">
+                                        <i class="fas fa-image mr-1"></i>Chọn ảnh
+                                    </button>
+                                    <button type="button" class="btn btn-outline-danger btn-sm" id="remove-add-image-btn" style="display: none;" onclick="removeAddRestaurantImage()">
+                                        <i class="fas fa-trash mr-1"></i>Xóa ảnh
+                                    </button>
+                                </div>
+                                <input type="file" class="d-none" id="add-restaurant-image" accept="image/*" required 
+                                       onchange="previewAddRestaurantImage(event)" />
+                                <small class="form-text text-muted d-block mb-2">
+                                    Chọn file ảnh cho cửa hàng (JPG, PNG, GIF - tối đa 5MB)
+                                </small>
+                                <div id="add-restaurant-image-preview" class="image-preview-container" style="display: none;">
+                                    <img id="add-restaurant-preview-img" src="" alt="Preview" class="preview-image" />
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="add-restaurant-active" checked />
+                                <label class="custom-control-label" for="add-restaurant-active">
+                                    Cửa hàng đang hoạt động
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="add-restaurant-freeship" />
+                                <label class="custom-control-label" for="add-restaurant-freeship">
+                                    Miễn phí giao hàng
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <i class="fas fa-times mr-1"></i>Thoát
+                    </button>
+                    <button type="button" class="btn btn-owner btn-owner-primary" onclick="createRestaurant()">
+                        <i class="fas fa-save mr-2"></i>Lưu
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Restaurant Modal -->
+    <div class="modal fade" id="editRestaurantModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header owner-card-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-edit mr-2"></i>Chỉnh sửa cửa hàng
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="edit-restaurant-form" enctype="multipart/form-data">
+                        <input type="hidden" id="edit-restaurant-id" />
+                        
+                        <div class="form-group">
+                            <label for="edit-restaurant-title" class="form-label">
+                                <i class="fas fa-store mr-1"></i>Tên cửa hàng <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-store"></i></span>
+                                </div>
+                                <input type="text" class="form-control" id="edit-restaurant-title" required />
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="edit-restaurant-subtitle" class="form-label">
+                                <i class="fas fa-info-circle mr-1"></i>Mô tả ngắn
+                            </label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-info-circle"></i></span>
+                                </div>
+                                <input type="text" class="form-control" id="edit-restaurant-subtitle" />
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="edit-restaurant-description" class="form-label">
+                                <i class="fas fa-align-left mr-1"></i>Mô tả chi tiết
+                            </label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-align-left"></i></span>
+                                </div>
+                                <textarea class="form-control" id="edit-restaurant-description" rows="3"></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="edit-restaurant-address" class="form-label">
+                                <i class="fas fa-map-marker-alt mr-1"></i>Địa chỉ <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                                </div>
+                                <textarea class="form-control" id="edit-restaurant-address" rows="2" required></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-image mr-1"></i>Ảnh cửa hàng
+                            </label>
+                            <div class="image-upload-section">
+                                <div class="d-flex gap-2 mb-2">
+                                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="document.getElementById('edit-restaurant-image').click()">
+                                        <i class="fas fa-image mr-1"></i>Chọn ảnh
+                                    </button>
+                                    <button type="button" class="btn btn-outline-danger btn-sm" id="remove-edit-image-btn" style="display: none;" onclick="removeEditRestaurantImage()">
+                                        <i class="fas fa-trash mr-1"></i>Xóa ảnh
+                                    </button>
+                                </div>
+                                <input type="file" class="d-none" id="edit-restaurant-image" accept="image/*" 
+                                       onchange="previewEditRestaurantImage(event)" />
+                                <small class="form-text text-muted d-block mb-2">
+                                    Chọn file ảnh mới để thay thế (JPG, PNG, GIF - tối đa 5MB)
+                                </small>
+                                <div id="edit-restaurant-image-preview" class="image-preview-container">
+                                    <img id="edit-restaurant-preview-img" src="" alt="Current image" class="preview-image" style="display: none;" />
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="edit-restaurant-active" />
+                                <label class="custom-control-label" for="edit-restaurant-active">
+                                    Cửa hàng đang hoạt động
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="edit-restaurant-freeship" />
+                                <label class="custom-control-label" for="edit-restaurant-freeship">
+                                    Miễn phí giao hàng
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <i class="fas fa-times mr-1"></i>Thoát
+                    </button>
+                    <button type="button" class="btn btn-owner btn-owner-primary" onclick="saveRestaurant()">
+                        <i class="fas fa-save mr-2"></i>Lưu
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../admin/vendor/jquery/jquery.min.js"></script>
+    <script src="../admin/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../admin/js/api.js"></script>
+    <script src="js/owner.js"></script>
+    <script>
+        // Ignore onboarding.js errors
+        window.addEventListener('error', function(event) {
+            if (event.filename && event.filename.includes('onboarding')) {
+                console.warn('⚠️ Ignoring onboarding.js error:', event.message);
+                event.preventDefault();
+                return false;
+            }
+        });
+        
+        window.addEventListener('unhandledrejection', function(event) {
+            if (event.reason === undefined || (event.promise && event.promise.toString().includes('onboarding'))) {
+                console.warn('⚠️ Ignoring onboarding.js promise rejection');
+                event.preventDefault();
+            }
+        });
+        
+        $(document).ready(function() {
+            console.log('=== restaurants.html ready ===');
+            console.log('isAuthenticated:', typeof isAuthenticated !== 'undefined' ? isAuthenticated() : 'function not defined');
+            console.log('OwnerApiService:', typeof OwnerApiService !== 'undefined' ? 'defined' : 'NOT DEFINED');
+            
+            try {
+                if (typeof isAuthenticated === 'undefined' || !isAuthenticated()) {
+                    alert('Vui lòng đăng nhập!');
+                    window.location.href = '../admin/login.html';
+                    return;
+                }
+                
+                // Check if OwnerApiService is loaded
+                if (typeof OwnerApiService === 'undefined') {
+                    console.error('OwnerApiService is not loaded! Waiting...');
+                    setTimeout(function() {
+                        if (typeof OwnerApiService === 'undefined') {
+                            alert('Lỗi: API Service chưa được load. Vui lòng refresh trang.');
+                        } else {
+                            loadRestaurants();
+                        }
+                    }, 500);
+                } else {
+                    console.log('Calling loadRestaurants()...');
+                    loadRestaurants();
+                }
+                
+                // Test modal opening
+                $('#addRestaurantModal').on('show.bs.modal', function() {
+                    console.log('Add Restaurant Modal is opening...');
+                });
+                
+                $('#addRestaurantModal').on('shown.bs.modal', function() {
+                    console.log('Add Restaurant Modal is shown');
+                });
+            } catch (error) {
+                console.error('Error in document.ready:', error);
+            }
+        });
+
+        function loadRestaurants() {
+            console.log('=== loadRestaurants() called ===');
+            console.log('OwnerApiService:', typeof OwnerApiService !== 'undefined' ? 'defined' : 'NOT DEFINED');
+            console.log('OwnerApiService.getMyRestaurants:', typeof OwnerApiService !== 'undefined' && typeof OwnerApiService.getMyRestaurants === 'function' ? 'function exists' : 'NOT A FUNCTION');
+            
+            if (typeof OwnerApiService === 'undefined') {
+                console.error('OwnerApiService is not defined!');
+                $('#restaurants-grid').html('<div class="col-12 alert alert-danger">Lỗi: API Service chưa được load. Vui lòng refresh trang.</div>');
+                return;
+            }
+            
+            if (typeof OwnerApiService.getMyRestaurants !== 'function') {
+                console.error('OwnerApiService.getMyRestaurants is not a function!');
+                $('#restaurants-grid').html('<div class="col-12 alert alert-danger">Lỗi: API method chưa được định nghĩa. Vui lòng refresh trang.</div>');
+                return;
+            }
+            
+            console.log('Calling OwnerApiService.getMyRestaurants()...');
+            console.log('API URL:', OwnerApiService.API_BASE_URL + '/restaurant/owner/my-restaurants');
+            console.log('Headers:', OwnerApiService.getHeaders());
+            
+            OwnerApiService.getMyRestaurants()
+                .done(function(response) {
+                    console.log('=== getMyRestaurants Response ===');
+                    console.log('Full response:', response);
+                    console.log('Response type:', typeof response);
+                    console.log('Response.success:', response?.success);
+                    console.log('Response.isSuccess:', response?.isSuccess);
+                    console.log('Response.status:', response?.status);
+                    console.log('Response.data:', response?.data);
+                    console.log('Response.data type:', typeof response?.data);
+                    console.log('Response.data isArray:', Array.isArray(response?.data));
+                    
+                    let restaurants = [];
+                    if (response && (response.success || response.isSuccess || response.status === 200) && response.data) {
+                        restaurants = Array.isArray(response.data) ? response.data : [];
+                        console.log('Restaurants extracted:', restaurants.length);
+                    } else {
+                        console.warn('Response format invalid or no data:', response);
+                    }
+                    
+                    renderRestaurants(restaurants);
+                })
+                .fail(function(xhr, status, error) {
+                    console.error('=== Error loading restaurants ===');
+                    console.error('XHR:', xhr);
+                    console.error('Status:', status);
+                    console.error('Error:', error);
+                    console.error('Response Text:', xhr.responseText);
+                    console.error('Response JSON:', xhr.responseJSON);
+                    
+                    let errorMsg = 'Lỗi khi tải cửa hàng';
+                    if (xhr.status === 401 || xhr.status === 403) {
+                        errorMsg = 'Bạn không có quyền truy cập. Vui lòng đăng nhập lại với tài khoản Owner.';
+                    } else if (xhr.status === 0) {
+                        errorMsg = 'Không thể kết nối đến server. Vui lòng kiểm tra backend có đang chạy không.';
+                    } else if (xhr.responseJSON && xhr.responseJSON.desc) {
+                        errorMsg = xhr.responseJSON.desc;
+                    }
+                    
+                    $('#restaurants-grid').html(`
+                        <div class="col-12">
+                            <div class="alert alert-danger">
+                                <i class="fas fa-exclamation-triangle mr-2"></i>${errorMsg}
+                            </div>
+                        </div>
+                    `);
+                });
+        }
+
+        function renderRestaurants(restaurants) {
+            const $grid = $('#restaurants-grid');
+            
+            if (restaurants.length === 0) {
+                $grid.html(`
+                    <div class="col-12">
+                        <div class="empty-state-owner text-center py-5">
+                            <i class="fas fa-store fa-3x text-muted mb-3"></i>
+                            <p>Bạn chưa có cửa hàng nào</p>
+                            <button class="btn btn-owner btn-owner-primary mt-3" data-toggle="modal" data-target="#addRestaurantModal">
+                                <i class="fas fa-plus mr-2"></i>Thêm cửa hàng đầu tiên
+                            </button>
+                        </div>
+                    </div>
+                `);
+                return;
+            }
+            
+            let html = '';
+            restaurants.forEach(function(restaurant) {
+                // Xác định trạng thái dựa trên isApproved và isActive
+                let statusText = '';
+                let statusBadgeClass = '';
+                let statusIcon = '';
+                
+                const isApproved = restaurant.isApproved;
+                // Xử lý isActive: nếu null/undefined thì mặc định là true (đã được duyệt thì mặc định active)
+                const isActive = restaurant.isActive === null || restaurant.isActive === undefined ? true : restaurant.isActive;
+                
+                // Debug log để kiểm tra giá trị
+                console.log(`Restaurant ${restaurant.id} (${restaurant.title}): isApproved=${isApproved}, isActive=${isActive}, restaurant.isActive=${restaurant.isActive}`);
+                
+                if (isApproved === null || isApproved === undefined) {
+                    // Chưa được duyệt (pending)
+                    statusText = 'Đang chờ duyệt';
+                    statusBadgeClass = 'warning';
+                    statusIcon = 'clock';
+                } else if (isApproved === false) {
+                    // Bị hủy (rejected)
+                    statusText = 'Bị hủy';
+                    statusBadgeClass = 'danger';
+                    statusIcon = 'times-circle';
+                } else if (isApproved === true && isActive === true) {
+                    // Được duyệt và đang hoạt động
+                    statusText = 'Hoạt động';
+                    statusBadgeClass = 'success';
+                    statusIcon = 'check-circle';
+                } else if (isApproved === true && isActive === false) {
+                    // Được duyệt nhưng tạm dừng
+                    statusText = 'Tạm dừng';
+                    statusBadgeClass = 'secondary';
+                    statusIcon = 'pause-circle';
+                } else {
+                    // Fallback - nếu isApproved = true nhưng isActive không rõ, coi như đang hoạt động
+                    statusText = 'Hoạt động';
+                    statusBadgeClass = 'success';
+                    statusIcon = 'check-circle';
+                }
+                
+                html += `
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card owner-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-store mr-2 text-primary"></i>${restaurant.title || 'N/A'}
+                                    </h5>
+                                    <span class="badge badge-${statusBadgeClass}">
+                                        <i class="fas fa-${statusIcon} mr-1"></i>${statusText}
+                                    </span>
+                                </div>
+                                <p class="text-muted small mb-2">
+                                    <i class="fas fa-info-circle mr-1"></i>${restaurant.subtitle || ''}
+                                </p>
+                                <p class="mb-3">
+                                    <i class="fas fa-map-marker-alt mr-2 text-danger"></i>${restaurant.address || 'Chưa cập nhật'}
+                                </p>
+                                
+                                <div class="btn-group btn-block" role="group">
+                                    <button class="btn btn-sm btn-owner btn-owner-primary" onclick="editRestaurant(${restaurant.id})">
+                                        <i class="fas fa-edit mr-1"></i>Sửa
+                                    </button>
+                                    <button class="btn btn-sm btn-owner btn-owner-secondary" onclick="viewRestaurantDetails(${restaurant.id})">
+                                        <i class="fas fa-eye mr-1"></i>Chi tiết
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteRestaurant(${restaurant.id}, '${(restaurant.title || '').replace(/'/g, "\\'")}')">
+                                        <i class="fas fa-trash mr-1"></i>Xóa
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            $grid.html(html);
+        }
+
+        function editRestaurant(restaurantId) {
+            OwnerApiService.getMyRestaurants()
+                .done(function(response) {
+                    if (response && (response.success || response.isSuccess) && response.data) {
+                        const restaurants = Array.isArray(response.data) ? response.data : [];
+                        const restaurant = restaurants.find(r => r.id === restaurantId);
+                        
+                        if (restaurant) {
+                            $('#edit-restaurant-id').val(restaurant.id);
+                            $('#edit-restaurant-title').val(restaurant.title || '');
+                            $('#edit-restaurant-subtitle').val(restaurant.subtitle || '');
+                            $('#edit-restaurant-description').val(restaurant.description || '');
+                            $('#edit-restaurant-address').val(restaurant.address || '');
+                            $('#edit-restaurant-active').prop('checked', restaurant.isActive !== false);
+                            $('#edit-restaurant-freeship').prop('checked', restaurant.isFreeShip || false);
+                            
+                            // Load current image if exists
+                            if (restaurant.image) {
+                                const baseUrl = 'http://localhost:82';
+                                const imageUrl = restaurant.image.startsWith('http') 
+                                    ? restaurant.image 
+                                    : `${baseUrl}/uploads/${restaurant.image}`;
+                                $('#edit-restaurant-preview-img').attr('src', imageUrl).show();
+                                $('#edit-restaurant-image-preview').show();
+                            } else {
+                                $('#edit-restaurant-preview-img').hide();
+                                $('#edit-restaurant-image-preview').hide();
+                            }
+                            
+                            $('#editRestaurantModal').modal('show');
+                        }
+                    }
+                })
+                .fail(function(xhr) {
+                    console.error('Error loading restaurant:', xhr);
+                    alert('Lỗi khi tải thông tin cửa hàng');
+                });
+        }
+
+        function saveRestaurant() {
+            console.log('=== saveRestaurant() called ===');
+            
+            const restaurantId = $('#edit-restaurant-id').val();
+            const title = $('#edit-restaurant-title').val().trim();
+            const subtitle = $('#edit-restaurant-subtitle').val().trim();
+            const description = $('#edit-restaurant-description').val().trim();
+            const address = $('#edit-restaurant-address').val().trim();
+            const isActive = $('#edit-restaurant-active').is(':checked');
+            const freeShip = $('#edit-restaurant-freeship').is(':checked');
+            const imageFile = $('#edit-restaurant-image')[0].files[0];
+            
+            // Validate
+            if (!title) {
+                alert('Vui lòng nhập tên cửa hàng!');
+                $('#edit-restaurant-title').focus();
+                return;
+            }
+            if (!address) {
+                alert('Vui lòng nhập địa chỉ!');
+                $('#edit-restaurant-address').focus();
+                return;
+            }
+            
+            // Disable submit button
+            const $submitBtn = $('#editRestaurantModal .btn-owner-primary');
+            const originalText = $submitBtn.html();
+            $submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-2"></i>Đang lưu...');
+            
+            // If new image is selected, use FormData, otherwise use JSON
+            if (imageFile) {
+                const formData = new FormData();
+                formData.append('file', imageFile);
+                formData.append('title', title);
+                formData.append('subtitle', subtitle || '');
+                formData.append('description', description || '');
+                formData.append('address', address);
+                formData.append('is_freeship', freeShip);
+                formData.append('is_active', isActive);
+                
+                // Use update with file if available, otherwise use regular update
+                if (typeof OwnerApiService.updateRestaurantWithFile === 'function') {
+                    OwnerApiService.updateRestaurantWithFile(restaurantId, formData)
+                        .done(function(response) {
+                            handleSaveRestaurantResponse(response, $submitBtn, originalText);
+                        })
+                        .fail(function(xhr) {
+                            handleSaveRestaurantError(xhr, $submitBtn, originalText);
+                        });
+                } else {
+                    // Fallback to regular update
+                    const data = { title, subtitle, description, address, isActive, freeShip };
+                    OwnerApiService.updateRestaurant(restaurantId, data)
+                        .done(function(response) {
+                            handleSaveRestaurantResponse(response, $submitBtn, originalText);
+                        })
+                        .fail(function(xhr) {
+                            handleSaveRestaurantError(xhr, $submitBtn, originalText);
+                        });
+                }
+            } else {
+                // No new image, use JSON update
+                const data = {
+                    title: title,
+                    subtitle: subtitle,
+                    description: description,
+                    address: address,
+                    isActive: isActive,
+                    isFreeShip: freeShip
+                };
+                
+                OwnerApiService.updateRestaurant(restaurantId, data)
+                    .done(function(response) {
+                        handleSaveRestaurantResponse(response, $submitBtn, originalText);
+                    })
+                    .fail(function(xhr) {
+                        handleSaveRestaurantError(xhr, $submitBtn, originalText);
+                    });
+            }
+        }
+        
+        function handleSaveRestaurantResponse(response, $btn, originalText) {
+            if (response && (response.success || response.isSuccess || response.status === 200)) {
+                alert('Cập nhật cửa hàng thành công!');
+                $('#editRestaurantModal').modal('hide');
+                loadRestaurants();
+            } else {
+                alert('Lỗi: ' + (response.desc || response.message || 'Không thể cập nhật cửa hàng'));
+            }
+            $btn.prop('disabled', false).html(originalText);
+        }
+        
+        function handleSaveRestaurantError(xhr, $btn, originalText) {
+            console.error('Error updating restaurant:', xhr);
+            let errorMsg = 'Lỗi khi cập nhật cửa hàng';
+            if (xhr.responseJSON) {
+                errorMsg = xhr.responseJSON.desc || xhr.responseJSON.message || errorMsg;
+            }
+            alert(errorMsg);
+            $btn.prop('disabled', false).html(originalText);
+        }
+
+        function viewRestaurantDetails(restaurantId) {
+            window.location.href = `menu.html?restaurantId=${restaurantId}`;
+        }
+
+        function deleteRestaurant(restaurantId, restaurantName) {
+            if (!confirm(`Bạn có chắc chắn muốn xóa cửa hàng "${restaurantName}"?\n\nLưu ý: Hành động này không thể hoàn tác!`)) {
+                return;
+            }
+            
+            // Confirm again for safety
+            if (!confirm('Xác nhận lần cuối: Bạn có chắc chắn muốn xóa cửa hàng này?')) {
+                return;
+            }
+            
+            console.log("=== deleteRestaurant() called ===");
+            console.log("Restaurant ID:", restaurantId);
+            console.log("Restaurant Name:", restaurantName);
+            
+            if (typeof OwnerApiService === 'undefined' || typeof OwnerApiService.deleteRestaurant !== 'function') {
+                alert('Lỗi: API Service chưa được load. Vui lòng refresh trang.');
+                return;
+            }
+            
+            OwnerApiService.deleteRestaurant(restaurantId)
+                .done(function(response) {
+                    console.log("=== Delete Restaurant Response ===");
+                    console.log("Full response:", response);
+                    
+                    if (response && (response.success || response.isSuccess || response.status === 200)) {
+                        alert('Xóa cửa hàng thành công!');
+                        loadRestaurants();
+                    } else {
+                        const errorMsg = response?.desc || response?.message || 'Không thể xóa cửa hàng';
+                        alert('Lỗi: ' + errorMsg);
+                    }
+                })
+                .fail(function(xhr, status, error) {
+                    console.error("=== Delete Restaurant Error ===");
+                    console.error("XHR:", xhr);
+                    console.error("Status:", status);
+                    console.error("Error:", error);
+                    console.error("Status code:", xhr.status);
+                    console.error("Response text:", xhr.responseText);
+                    console.error("Response JSON:", xhr.responseJSON);
+                    
+                    let errorMsg = 'Lỗi khi xóa cửa hàng';
+                    
+                    if (xhr.responseJSON) {
+                        errorMsg = xhr.responseJSON.desc || xhr.responseJSON.message || errorMsg;
+                    } else if (xhr.status === 401 || xhr.status === 403) {
+                        errorMsg = 'Bạn không có quyền xóa cửa hàng này.';
+                    } else if (xhr.status === 400) {
+                        errorMsg = 'Không thể xóa cửa hàng. Có thể cửa hàng đang có đơn hàng hoặc dữ liệu liên quan.';
+                    } else if (xhr.status === 0) {
+                        errorMsg = 'Không thể kết nối đến server. Vui lòng kiểm tra kết nối mạng.';
+                    }
+                    
+                    alert(errorMsg);
+                });
+        }
+
+        // Preview image functions
+        function previewAddRestaurantImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                // Validate file size (max 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('Kích thước ảnh không được vượt quá 5MB!');
+                    event.target.value = '';
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#add-restaurant-preview-img').attr('src', e.target.result);
+                    $('#add-restaurant-image-preview').show();
+                    $('#remove-add-image-btn').show();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        function removeAddRestaurantImage() {
+            $('#add-restaurant-image').val('');
+            $('#add-restaurant-image-preview').hide();
+            $('#add-restaurant-preview-img').attr('src', '');
+            $('#remove-add-image-btn').hide();
+        }
+        
+        function previewEditRestaurantImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                // Validate file size (max 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('Kích thước ảnh không được vượt quá 5MB!');
+                    event.target.value = '';
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#edit-restaurant-preview-img').attr('src', e.target.result).show();
+                    $('#edit-restaurant-image-preview').show();
+                    $('#remove-edit-image-btn').show();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        function removeEditRestaurantImage() {
+            $('#edit-restaurant-image').val('');
+            $('#edit-restaurant-preview-img').hide().attr('src', '');
+            $('#remove-edit-image-btn').hide();
+        }
+
+        function createRestaurant() {
+            console.log('=== createRestaurant() called ===');
+            
+            const title = $('#add-restaurant-title').val().trim();
+            const subtitle = $('#add-restaurant-subtitle').val().trim();
+            const description = $('#add-restaurant-description').val().trim();
+            const address = $('#add-restaurant-address').val().trim();
+            const openDate = $('#add-restaurant-open-date').val();
+            const isActive = $('#add-restaurant-active').is(':checked');
+            const freeShip = $('#add-restaurant-freeship').is(':checked');
+            const imageFile = $('#add-restaurant-image')[0].files[0];
+            
+            console.log('Form data:', {
+                title, subtitle, description, address, openDate, isActive, freeShip,
+                hasImage: !!imageFile, imageName: imageFile?.name
+            });
+            
+            // Validate
+            if (!title) {
+                alert('Vui lòng nhập tên cửa hàng!');
+                $('#add-restaurant-title').focus();
+                return;
+            }
+            if (!address) {
+                alert('Vui lòng nhập địa chỉ!');
+                $('#add-restaurant-address').focus();
+                return;
+            }
+            if (!openDate) {
+                alert('Vui lòng chọn ngày khai trương!');
+                $('#add-restaurant-open-date').focus();
+                return;
+            }
+            if (!imageFile) {
+                alert('Vui lòng chọn ảnh cửa hàng!');
+                $('#add-restaurant-image').focus();
+                return;
+            }
+            
+            // Check if OwnerApiService is available
+            if (typeof OwnerApiService === 'undefined') {
+                console.error('OwnerApiService is not defined!');
+                alert('Lỗi: API Service chưa được load. Vui lòng refresh trang.');
+                return;
+            }
+            
+            if (typeof OwnerApiService.createRestaurantWithFile !== 'function') {
+                console.error('OwnerApiService.createRestaurantWithFile is not a function!');
+                alert('Lỗi: API method chưa được định nghĩa. Vui lòng refresh trang.');
+                return;
+            }
+            
+            // Disable submit button and show loading
+            const $submitBtn = $('#addRestaurantModal .btn-owner-primary');
+            const originalText = $submitBtn.html();
+            $submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-2"></i>Đang tạo...');
+            
+            // Create FormData for file upload
+            const formData = new FormData();
+            formData.append('file', imageFile);
+            formData.append('title', title);
+            formData.append('subtitle', subtitle || '');
+            formData.append('description', description || '');
+            formData.append('address', address);
+            formData.append('open_date', openDate);
+            formData.append('is_freeship', freeShip);
+            formData.append('is_active', isActive);
+            
+            console.log('Calling OwnerApiService.createRestaurantWithFile()...');
+            console.log('FormData entries:');
+            for (let pair of formData.entries()) {
+                console.log(pair[0] + ': ' + (pair[1] instanceof File ? pair[1].name : pair[1]));
+            }
+            
+            OwnerApiService.createRestaurantWithFile(formData)
+                .done(function(response) {
+                    console.log('=== Create Restaurant API Response ===');
+                    console.log('Full response:', response);
+                    console.log('Response type:', typeof response);
+                    console.log('Response.success:', response?.success);
+                    console.log('Response.isSuccess:', response?.isSuccess);
+                    console.log('Response.status:', response?.status);
+                    console.log('Response.desc:', response?.desc);
+                    
+                    if (response && (response.success || response.isSuccess || response.status === 200)) {
+                        alert('Tạo cửa hàng thành công!');
+                        $('#addRestaurantModal').modal('hide');
+                        // Reset form
+                        $('#add-restaurant-form')[0].reset();
+                        $('#add-restaurant-image-preview').hide();
+                        loadRestaurants();
+                    } else {
+                        const errorMsg = response?.desc || response?.message || 'Không thể tạo cửa hàng';
+                        console.error('Create restaurant failed:', errorMsg);
+                        alert('Lỗi: ' + errorMsg);
+                    }
+                })
+                .fail(function(xhr, status, error) {
+                    console.error('=== Create Restaurant API Error ===');
+                    console.error('XHR:', xhr);
+                    console.error('Status:', status);
+                    console.error('Error:', error);
+                    console.error('Response Text:', xhr.responseText);
+                    console.error('Response JSON:', xhr.responseJSON);
+                    
+                    let errorMsg = 'Lỗi khi tạo cửa hàng';
+                    
+                    if (xhr.status === 401 || xhr.status === 403) {
+                        errorMsg = 'Bạn không có quyền tạo cửa hàng. Vui lòng đăng nhập lại với tài khoản Owner.';
+                    } else if (xhr.status === 400) {
+                        errorMsg = xhr.responseJSON?.desc || xhr.responseJSON?.message || 'Thông tin không hợp lệ. Vui lòng kiểm tra lại.';
+                    } else if (xhr.status === 0) {
+                        errorMsg = 'Không thể kết nối đến server. Vui lòng kiểm tra backend có đang chạy không.';
+                    } else if (xhr.responseJSON) {
+                        errorMsg = xhr.responseJSON.desc || xhr.responseJSON.message || errorMsg;
+                    }
+                    
+                    alert(errorMsg);
+                })
+                .always(function() {
+                    // Re-enable submit button
+                    $submitBtn.prop('disabled', false).html(originalText);
+                });
+        }
+    </script>
+</body>
+</html>
+
