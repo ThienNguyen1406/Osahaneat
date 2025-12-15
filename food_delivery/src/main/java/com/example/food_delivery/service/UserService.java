@@ -216,10 +216,36 @@ public class UserService implements UserServiceImp {
      */
     public List<UserDTO> getUsersByRole(String roleName) {
         try {
-            System.out.println("UserService.getUsersByRole - Role: " + roleName);
+            System.out.println("=== UserService.getUsersByRole ===");
+            System.out.println("Role: " + roleName);
             List<Users> users = userReponsitory.findByRoleName(roleName);
-            System.out.println("UserService.getUsersByRole - Found " + users.size() + " users");
-            return users.stream().map(this::toDTO).collect(Collectors.toList());
+            System.out.println("Found " + users.size() + " users with role: " + roleName);
+            
+            // Log chi tiết từng user
+            for (Users user : users) {
+                System.out.println("  - User ID: " + user.getId() + 
+                    ", Username: " + user.getUserName() + 
+                    ", FullName: " + user.getFullName() + 
+                    ", Phone: " + user.getPhoneNumber() + 
+                    ", Email: " + user.getEmail() +
+                    ", Role: " + (user.getRoles() != null ? user.getRoles().getRoleName() : "null") +
+                    ", isApproved: " + user.getIsApproved());
+            }
+            
+            List<UserDTO> dtos = users.stream().map(this::toDTO).collect(Collectors.toList());
+            System.out.println("Converted to " + dtos.size() + " DTOs");
+            
+            // Log chi tiết từng DTO
+            for (UserDTO dto : dtos) {
+                System.out.println("  - DTO ID: " + dto.getId() + 
+                    ", Username: " + dto.getUserName() + 
+                    ", FullName: " + dto.getFullName() + 
+                    ", Phone: " + dto.getPhoneNumber() + 
+                    ", Email: " + dto.getEmail() +
+                    ", isApproved: " + dto.getIsApproved());
+            }
+            
+            return dtos;
         } catch (Exception e) {
             System.err.println("Error getting users by role: " + e.getMessage());
             e.printStackTrace();
@@ -232,12 +258,15 @@ public class UserService implements UserServiceImp {
      */
     public List<UserDTO> searchUsersByRole(String roleName, String keyword) {
         try {
+            System.out.println("=== UserService.searchUsersByRole ===");
+            System.out.println("Role: " + roleName + ", Keyword: " + keyword);
             List<Users> users;
             if (keyword == null || keyword.trim().isEmpty()) {
                 users = userReponsitory.findByRoleName(roleName);
             } else {
                 users = userReponsitory.findByRoleNameAndKeyword(roleName, keyword.trim());
             }
+            System.out.println("Found " + users.size() + " users");
             return users.stream().map(this::toDTO).collect(Collectors.toList());
         } catch (Exception e) {
             System.err.println("Error searching users by role: " + e.getMessage());

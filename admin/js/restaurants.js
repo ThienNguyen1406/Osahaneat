@@ -92,10 +92,21 @@ function renderRestaurants(restaurants) {
         const freeShip = restaurant.isFreeShip || restaurant.freeShip ? 'Có' : 'Không';
         const rating = restaurant.rating || 0;
         const titleEscaped = (restaurant.title || '').replace(/'/g, "\\'");
-        const isApproved = restaurant.isApproved !== false; // Default to true if not set
-        const approvalStatus = isApproved 
-            ? '<span class="badge badge-success"><i class="feather-check-circle"></i> Đã duyệt</span>'
-            : '<span class="badge badge-warning"><i class="feather-clock"></i> Chờ duyệt</span>';
+        
+        // Kiểm tra trạng thái duyệt: null/undefined = chờ duyệt, true = đã duyệt, false = bị từ chối
+        const isApproved = restaurant.isApproved;
+        let approvalStatus = '';
+        if (isApproved === true) {
+            approvalStatus = '<span class="badge badge-success"><i class="feather-check-circle"></i> Đã duyệt</span>';
+        } else if (isApproved === false) {
+            approvalStatus = '<span class="badge badge-danger"><i class="feather-x-circle"></i> Bị từ chối</span>';
+        } else {
+            // null hoặc undefined = chờ duyệt
+            approvalStatus = '<span class="badge badge-warning"><i class="feather-clock"></i> Chờ duyệt</span>';
+        }
+        
+        // Hiển thị button Duyệt/Từ chối chỉ khi chưa được duyệt (null/undefined) hoặc bị từ chối (false)
+        const showApproveButtons = (isApproved === null || isApproved === undefined || isApproved === false);
         
         html += `
             <tr>
@@ -110,19 +121,19 @@ function renderRestaurants(restaurants) {
                 <td>${freeShip}</td>
                 <td>${rating.toFixed(1)} <i class="feather-star text-warning"></i></td>
                 <td>
-                    ${!isApproved ? `
+                    ${showApproveButtons ? `
                         <button class="btn btn-sm btn-success mr-1" onclick="approveRestaurant(${restaurant.id}, '${titleEscaped}')" title="Duyệt nhà hàng">
                             <i class="feather-check"></i> Duyệt
                         </button>
-                        <button class="btn btn-sm btn-warning mr-1" onclick="rejectRestaurant(${restaurant.id}, '${titleEscaped}')" title="Từ chối nhà hàng">
-                            <i class="feather-x"></i> Hủy
+                        <button class="btn btn-sm btn-danger mr-1" onclick="rejectRestaurant(${restaurant.id}, '${titleEscaped}')" title="Từ chối nhà hàng">
+                            <i class="feather-x"></i> Từ chối
                         </button>
                     ` : ''}
                     <!-- Admin không được sửa nhà hàng -->
                     <!-- <button class="btn btn-sm btn-primary" onclick="editRestaurant(${restaurant.id})">
                         <i class="feather-edit"></i> Sửa
                     </button> -->
-                    <button class="btn btn-sm btn-danger ml-1" onclick="deleteRestaurant(${restaurant.id}, '${titleEscaped}')">
+                    <button class="btn btn-sm btn-danger ${showApproveButtons ? '' : 'ml-1'}" onclick="deleteRestaurant(${restaurant.id}, '${titleEscaped}')">
                         <i class="feather-trash-2"></i> Xóa
                     </button>
                 </td>

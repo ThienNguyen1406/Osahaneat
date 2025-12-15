@@ -23,4 +23,12 @@ public interface RestaurantReponsitory extends JpaRepository<Restaurant, Integer
     // Find restaurants by owner ID
     @Query("SELECT r FROM restaurant r WHERE r.owner.id = :ownerId")
     List<Restaurant> findByOwnerId(@Param("ownerId") int ownerId);
+    
+    // Find restaurants that are approved (for public display)
+    @Query("SELECT r FROM restaurant r WHERE r.isApproved = true AND r.isActive = true")
+    List<Restaurant> findApprovedAndActiveRestaurants();
+    
+    // Find approved restaurants with pagination (for homepage)
+    @Query("SELECT r FROM restaurant r WHERE r.isApproved = true AND r.isActive = true")
+    org.springframework.data.domain.Page<Restaurant> findApprovedAndActiveRestaurants(org.springframework.data.domain.Pageable pageable);
 }

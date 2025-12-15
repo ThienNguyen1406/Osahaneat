@@ -206,7 +206,9 @@ public class OrderService implements OrderServiceImp {
                             
                             Food food = orderItem.getFood();
                             itemDTO.setFoodId(food.getId());
-                            itemDTO.setFoodTitle(food.getTitle());
+                            // Việt hóa tên món ăn
+                            String translatedTitle = com.example.food_delivery.util.FoodNameTranslator.translateAdvanced(food.getTitle());
+                            itemDTO.setFoodTitle(translatedTitle);
                             itemDTO.setFoodPrice(food.getPrice());
                             itemDTO.setQuantity(quantity);
                             
@@ -361,7 +363,9 @@ public class OrderService implements OrderServiceImp {
                     
                     Food food = orderItem.getFood();
                     itemDTO.setFoodId(food.getId());
-                    itemDTO.setFoodTitle(food.getTitle());
+                    // Việt hóa tên món ăn
+                    String translatedTitle = com.example.food_delivery.util.FoodNameTranslator.translateAdvanced(food.getTitle());
+                    itemDTO.setFoodTitle(translatedTitle);
                     itemDTO.setFoodPrice(food.getPrice());
                     itemDTO.setQuantity(quantity);
                     
@@ -506,7 +510,9 @@ public class OrderService implements OrderServiceImp {
                         
                         Food food = orderItem.getFood();
                         itemDTO.setFoodId(food.getId());
-                        itemDTO.setFoodTitle(food.getTitle());
+                        // Việt hóa tên món ăn
+                        String translatedTitle = com.example.food_delivery.util.FoodNameTranslator.translateAdvanced(food.getTitle());
+                        itemDTO.setFoodTitle(translatedTitle);
                         itemDTO.setFoodPrice(food.getPrice());
                         itemDTO.setQuantity(quantity);
                         

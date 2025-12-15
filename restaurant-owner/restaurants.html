@@ -441,6 +441,15 @@
                     if (response && (response.success || response.isSuccess || response.status === 200) && response.data) {
                         restaurants = Array.isArray(response.data) ? response.data : [];
                         console.log('Restaurants extracted:', restaurants.length);
+                        
+                        // Debug: Log từng restaurant để kiểm tra doanh thu
+                        restaurants.forEach(function(rest) {
+                            console.log(`Restaurant ${rest.id} (${rest.title}):`, {
+                                todayRevenue: rest.todayRevenue,
+                                todayOrders: rest.todayOrders,
+                                totalOrders: rest.totalOrders
+                            });
+                        });
                     } else {
                         console.warn('Response format invalid or no data:', response);
                     }
@@ -472,6 +481,15 @@
                         </div>
                     `);
                 });
+        }
+
+        // Function để format tiền VND
+        function formatVND(amount) {
+            if (!amount && amount !== 0) return '0 ₫';
+            return new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND'
+            }).format(amount);
         }
 
         function renderRestaurants(restaurants) {
@@ -512,8 +530,8 @@
                     statusBadgeClass = 'warning';
                     statusIcon = 'clock';
                 } else if (isApproved === false) {
-                    // Bị hủy (rejected)
-                    statusText = 'Bị hủy';
+                    // Bị từ chối (rejected)
+                    statusText = 'Nhà hàng không được duyệt';
                     statusBadgeClass = 'danger';
                     statusIcon = 'times-circle';
                 } else if (isApproved === true && isActive === true) {
@@ -533,6 +551,13 @@
                     statusIcon = 'check-circle';
                 }
                 
+                const todayRevenue = restaurant.todayRevenue || 0;
+                const todayOrders = restaurant.todayOrders || 0;
+                const totalOrders = restaurant.totalOrders || 0;
+                
+                // Debug log để kiểm tra giá trị
+                console.log(`Restaurant ${restaurant.id} (${restaurant.title}): todayRevenue=${todayRevenue}, todayOrders=${todayOrders}, totalOrders=${totalOrders}`);
+                
                 html += `
                     <div class="col-md-6 col-lg-4 mb-4">
                         <div class="card owner-card">
@@ -546,21 +571,45 @@
                                     </span>
                                 </div>
                                 <p class="text-muted small mb-2">
-                                    <i class="fas fa-info-circle mr-1"></i>${restaurant.subtitle || ''}
+                                    <i class="fas fa-map-marker-alt mr-1"></i>${restaurant.address || 'Chưa cập nhật'}
                                 </p>
-                                <p class="mb-3">
-                                    <i class="fas fa-map-marker-alt mr-2 text-danger"></i>${restaurant.address || 'Chưa cập nhật'}
+                                <p class="text-muted small mb-3">
+                                    <i class="fas fa-info-circle mr-1"></i>ID: #${restaurant.id || 'N/A'}
                                 </p>
                                 
+                                <!-- Thống kê -->
+                                <div class="bg-light p-3 rounded mb-3">
+                                    <div class="row text-center">
+                                        <div class="col-4">
+                                            <div class="d-flex flex-column align-items-center">
+                                                <i class="fas fa-shopping-bag text-primary mb-1"></i>
+                                                <strong class="text-primary">${todayOrders}</strong>
+                                                <small class="text-muted">Đơn hôm nay</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="d-flex flex-column align-items-center">
+                                                <i class="fas fa-money-bill-wave text-success mb-1"></i>
+                                                <strong class="text-success">${formatVND(todayRevenue)}</strong>
+                                                <small class="text-muted">Doanh thu hôm nay</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="d-flex flex-column align-items-center">
+                                                <i class="fas fa-list text-info mb-1"></i>
+                                                <strong class="text-info">${totalOrders}</strong>
+                                                <small class="text-muted">Tổng đơn hàng</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
                                 <div class="btn-group btn-block" role="group">
-                                    <button class="btn btn-sm btn-owner btn-owner-primary" onclick="editRestaurant(${restaurant.id})">
-                                        <i class="fas fa-edit mr-1"></i>Sửa
+                                    <button class="btn btn-sm btn-owner btn-owner-primary" onclick="viewRestaurantDetails(${restaurant.id})">
+                                        <i class="fas fa-eye mr-1"></i>Xem chi tiết
                                     </button>
-                                    <button class="btn btn-sm btn-owner btn-owner-secondary" onclick="viewRestaurantDetails(${restaurant.id})">
-                                        <i class="fas fa-eye mr-1"></i>Chi tiết
-                                    </button>
-                                    <button class="btn btn-sm btn-danger" onclick="deleteRestaurant(${restaurant.id}, '${(restaurant.title || '').replace(/'/g, "\\'")}')">
-                                        <i class="fas fa-trash mr-1"></i>Xóa
+                                    <button class="btn btn-sm btn-outline-primary" onclick="editRestaurant(${restaurant.id})">
+                                        <i class="fas fa-edit mr-1"></i>Chỉnh sửa
                                     </button>
                                 </div>
                             </div>

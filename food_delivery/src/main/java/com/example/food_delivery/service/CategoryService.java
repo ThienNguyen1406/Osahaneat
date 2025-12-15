@@ -37,7 +37,9 @@ public class CategoryService implements CategoryServiceImp {
                 for(Food dataFood : data.getLisFood()){
                     MenuDTO menuDTO = new MenuDTO();
                     menuDTO.setId(dataFood.getId());
-                    menuDTO.setTitle(dataFood.getTitle());
+                    // Việt hóa tên món ăn
+                    String translatedTitle = com.example.food_delivery.util.FoodNameTranslator.translateAdvanced(dataFood.getTitle());
+                    menuDTO.setTitle(translatedTitle);
                     menuDTO.setDescription(dataFood.getDesc());
                     menuDTO.setPrice(dataFood.getPrice());
                     menuDTO.setTimeShip(dataFood.getTime_ship());

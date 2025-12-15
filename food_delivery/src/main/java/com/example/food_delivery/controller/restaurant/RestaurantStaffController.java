@@ -65,6 +65,10 @@ public class RestaurantStaffController {
             @RequestBody Map<String, String> request) {
         ResponseData responseData = new ResponseData();
         try {
+            System.out.println("=== RestaurantStaffController.updateOrderStatus ===");
+            System.out.println("Order ID: " + orderId);
+            System.out.println("Request: " + request);
+            
             if (orderId <= 0) {
                 responseData.setStatus(400);
                 responseData.setSuccess(false);
@@ -74,6 +78,8 @@ public class RestaurantStaffController {
             }
             
             String status = request.get("status");
+            System.out.println("Status from request: " + status);
+            
             if (status == null || status.isEmpty()) {
                 responseData.setStatus(400);
                 responseData.setSuccess(false);
@@ -92,7 +98,10 @@ public class RestaurantStaffController {
                 return new ResponseEntity<>(responseData, HttpStatus.BAD_REQUEST);
             }
             
+            System.out.println("Calling restaurantStaffService.updateOrderStatus...");
             OrderDTO order = restaurantStaffService.updateOrderStatus(orderId, status);
+            System.out.println("Service returned order: " + (order != null ? "not null" : "null"));
+            
             if (order != null) {
                 responseData.setStatus(200);
                 responseData.setSuccess(true);

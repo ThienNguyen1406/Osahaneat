@@ -582,8 +582,8 @@ function renderRestaurantsToContainer(restaurants, container) {
         
         // Free delivery badge - luôn dành chỗ để đảm bảo chiều cao đều
         const freeDeliveryBadge = (restaurant.freeShip || restaurant.isFreeShip) ?
-            '<span class="badge badge-light"><i class="mdi mdi-truck-fast-outline"></i> Free delivery</span>' :
-            '<span class="badge badge-light" style="visibility: hidden;"><i class="mdi mdi-truck-fast-outline"></i> Free delivery</span>';
+            '<span class="badge badge-success"><i class="mdi mdi-truck-fast-outline"></i> Miễn phí giao hàng</span>' :
+            '<span class="badge badge-success" style="visibility: hidden;"><i class="mdi mdi-truck-fast-outline"></i> Miễn phí giao hàng</span>';
         
         html += `
             <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
@@ -874,7 +874,7 @@ function renderFoodItemsToContainer(foodItems, container, categoryName) {
         
         const imageUrl = getMenuImageUrl(food.image);
         const freeShipBadge = (food.isFreeShip || food.freeShip) 
-            ? '<span class="badge badge-light ml-auto"><i class="mdi mdi-truck-fast-outline"></i> Free delivery</span>' 
+            ? '<span class="badge badge-success ml-auto"><i class="mdi mdi-truck-fast-outline"></i> Miễn phí giao hàng</span>' 
             : '';
         
         // Tạo card đẹp hơn, giống restaurant card nhưng nhỏ hơn
@@ -941,8 +941,16 @@ $(document).ready(function() {
 if (document.readyState === 'complete' || document.readyState === 'interactive') {
     setTimeout(function() {
         setupHomeSearch();
-    }, 50);
+    }, 100);
 }
+
+// Force setup after a delay to ensure all scripts are loaded
+setTimeout(function() {
+    if ($('#home-search-btn').length > 0 && !$('#home-search-btn').data('handler-attached')) {
+        console.log("🔍 Force re-attaching search handlers");
+        setupHomeSearch();
+    }
+}, 500);
 
 // Debounce function for autocomplete
 let autocompleteTimeout = null;
@@ -971,16 +979,28 @@ function setupHomeSearch() {
     }
     
     // Remove existing handlers to avoid duplicates
-    searchBtn.off('click');
+    searchBtn.off('click mousedown');
     searchForm.off('submit');
     searchInput.off('keypress input keyup');
     clearBtn.off('click');
     
-    // Search button click
+    // Mark as attached to prevent duplicate handlers
+    searchBtn.data('handler-attached', true);
+    
+    // Search button click - use both click and mousedown to ensure it works
     searchBtn.on('click', function(e) {
         console.log("🔍 Search button clicked!");
         e.preventDefault();
         e.stopPropagation();
+        e.stopImmediatePropagation();
+        performHomeSearch();
+        return false;
+    });
+    
+    // Also handle mousedown as backup
+    searchBtn.on('mousedown', function(e) {
+        console.log("🔍 Search button mousedown!");
+        e.preventDefault();
         performHomeSearch();
         return false;
     });
@@ -1299,8 +1319,8 @@ function renderHomeRestaurantCard(restaurant) {
     
     // Free delivery badge - luôn dành chỗ để đảm bảo chiều cao đều
     const freeDeliveryBadge = (restaurant.freeShip || restaurant.isFreeShip) ?
-        '<span class="badge badge-success"><i class="mdi mdi-truck-fast-outline"></i> Free delivery</span>' :
-        '<span class="badge badge-success" style="visibility: hidden;"><i class="mdi mdi-truck-fast-outline"></i> Free delivery</span>';
+        '<span class="badge badge-success"><i class="mdi mdi-truck-fast-outline"></i> Miễn phí giao hàng</span>' :
+        '<span class="badge badge-success" style="visibility: hidden;"><i class="mdi mdi-truck-fast-outline"></i> Miễn phí giao hàng</span>';
     
     return `
         <div class="col-md-6 col-lg-4 mb-4">
@@ -1330,8 +1350,8 @@ function renderHomeFoodCard(food) {
     
     // Free delivery badge - luôn dành chỗ để đảm bảo chiều cao đều
     const freeDeliveryBadge = (food.freeShip || food.isFreeShip) ?
-        '<span class="badge badge-success"><i class="mdi mdi-truck-fast-outline"></i> Free delivery</span>' :
-        '<span class="badge badge-success" style="visibility: hidden;"><i class="mdi mdi-truck-fast-outline"></i> Free delivery</span>';
+        '<span class="badge badge-success"><i class="mdi mdi-truck-fast-outline"></i> Miễn phí giao hàng</span>' :
+        '<span class="badge badge-success" style="visibility: hidden;"><i class="mdi mdi-truck-fast-outline"></i> Miễn phí giao hàng</span>';
     
     const foodId = food.id ? parseInt(food.id) : 0;
     if (!foodId || foodId <= 0) {

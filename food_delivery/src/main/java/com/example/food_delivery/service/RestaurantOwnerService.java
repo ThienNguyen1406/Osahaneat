@@ -129,21 +129,54 @@ public class RestaurantOwnerService {
             
             for (Restaurant restaurant : restaurants) {
                 try {
+                    // Log giá trị từ entity trước khi convert
+                    System.out.println("🔍 Restaurant Entity: ID=" + restaurant.getId() + 
+                        ", Title=" + restaurant.getTitle() + 
+                        ", isApproved=" + restaurant.getIsApproved() + 
+                        " (type: " + (restaurant.getIsApproved() != null ? restaurant.getIsApproved().getClass().getSimpleName() : "null") + ")" +
+                        ", isActive=" + restaurant.isActive());
+                    
                     RestaurantDTO dto = restaurantServiceImp.getRestaurantById(restaurant.getId());
                     if (dto != null) {
+                        // Đảm bảo isApproved và isActive được set trực tiếp từ entity (không qua DTO)
+                        dto.setIsApproved(restaurant.getIsApproved());
+                        dto.setIsActive(restaurant.isActive());
+                        
+                        // Log giá trị sau khi set
+                        System.out.println("📝 Restaurant DTO after set: ID=" + dto.getId() + 
+                            ", isApproved=" + dto.getIsApproved() + 
+                            " (type: " + (dto.getIsApproved() != null ? dto.getIsApproved().getClass().getSimpleName() : "null") + ")" +
+                            ", isActive=" + dto.getIsActive());
+                        
                         // Tính toán thống kê cho mỗi nhà hàng
                         List<Orders> todayOrdersList = orderRepository.findOrdersByRestaurantAndDate(restaurant.getId(), today);
                         dto.setTodayOrders(todayOrdersList.size());
+                        System.out.println("  📊 Today Orders for restaurant " + restaurant.getId() + ": " + todayOrdersList.size());
                         
                         Long todayRevenue = orderRepository.sumRevenueByRestaurantAndDate(restaurant.getId(), today);
                         dto.setTodayRevenue(todayRevenue != null ? todayRevenue : 0L);
+                        System.out.println("  💰 Today Revenue for restaurant " + restaurant.getId() + ": " + (todayRevenue != null ? todayRevenue : 0L));
+                        
+                        // Debug: Log tất cả đơn hàng hôm nay để kiểm tra
+                        if (!todayOrdersList.isEmpty()) {
+                            System.out.println("  📋 Today's orders details:");
+                            for (Orders order : todayOrdersList) {
+                                System.out.println("    - Order ID: " + order.getId() + 
+                                    ", Status: " + order.getStatus() + 
+                                    ", Payment Status: " + order.getPaymentStatus() + 
+                                    ", Total Price: " + order.getTotalPrice() +
+                                    ", Create Date: " + order.getCreateDate());
+                            }
+                        }
                         
                         List<Orders> allOrders = orderRepository.findByRestaurantId(restaurant.getId());
                         dto.setTotalOrders(allOrders.size());
+                        System.out.println("  📦 Total Orders for restaurant " + restaurant.getId() + ": " + allOrders.size());
                         
                         restaurantDTOs.add(dto);
                         System.out.println("✅ Added restaurant DTO: " + dto.getId() + " - " + dto.getTitle() + 
-                            " (Today Orders: " + dto.getTodayOrders() + ", Today Revenue: " + dto.getTodayRevenue() + ")");
+                            " (isApproved: " + dto.getIsApproved() + ", isActive: " + dto.getIsActive() + 
+                            ", Today Orders: " + dto.getTodayOrders() + ", Today Revenue: " + dto.getTodayRevenue() + ")");
                     } else {
                         System.out.println("⚠️ Warning: RestaurantDTO is null for restaurant ID: " + restaurant.getId());
                     }

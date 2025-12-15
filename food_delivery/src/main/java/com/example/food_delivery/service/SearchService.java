@@ -59,7 +59,11 @@ public class SearchService implements SearchServiceImp {
             if (keyword == null || keyword.trim().isEmpty()) {
                 return new ArrayList<>();
             }
-            return restaurantRepository.searchRestaurants(keyword.trim());
+            // Tìm restaurants theo keyword, sau đó filter chỉ lấy những cái đã được duyệt và đang hoạt động
+            List<Restaurant> results = restaurantRepository.searchRestaurants(keyword.trim());
+            return results.stream()
+                .filter(r -> r.getIsApproved() != null && r.getIsApproved() && r.isActive())
+                .collect(java.util.stream.Collectors.toList());
         } catch (Exception e) {
             System.err.println("Error searching restaurants: " + e.getMessage());
             e.printStackTrace();
@@ -226,11 +230,15 @@ public class SearchService implements SearchServiceImp {
         try {
             List<Restaurant> restaurants;
             
-            // Start with keyword search or all restaurants
+            // Start with keyword search or all restaurants (chỉ lấy restaurants đã được duyệt)
             if (keyword != null && !keyword.trim().isEmpty()) {
-                restaurants = new ArrayList<>(searchRestaurants(keyword.trim()));
+                List<Restaurant> searchResults = searchRestaurants(keyword.trim());
+                // Filter chỉ lấy restaurants đã được duyệt và đang hoạt động
+                restaurants = searchResults.stream()
+                    .filter(r -> r.getIsApproved() != null && r.getIsApproved() && r.isActive())
+                    .collect(java.util.stream.Collectors.toList());
             } else {
-                restaurants = new ArrayList<>(restaurantRepository.findAll());
+                restaurants = new ArrayList<>(restaurantRepository.findApprovedAndActiveRestaurants());
             }
             
             // Filter by categories (restaurants that have foods in these categories)

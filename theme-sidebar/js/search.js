@@ -308,8 +308,8 @@ function renderRestaurantCard(restaurant) {
     
     // Free delivery badge - luôn dành chỗ để đảm bảo chiều cao đều
     const freeDeliveryBadge = (restaurant.freeShip || restaurant.isFreeShip) ?
-        '<span class="badge badge-success"><i class="mdi mdi-truck-fast-outline"></i> Free delivery</span>' :
-        '<span class="badge badge-success" style="visibility: hidden;"><i class="mdi mdi-truck-fast-outline"></i> Free delivery</span>';
+        '<span class="badge badge-success"><i class="mdi mdi-truck-fast-outline"></i> Miễn phí giao hàng</span>' :
+        '<span class="badge badge-success" style="visibility: hidden;"><i class="mdi mdi-truck-fast-outline"></i> Miễn phí giao hàng</span>';
     
     return `
         <div class="col-md-6 col-lg-4 mb-4">
@@ -339,8 +339,8 @@ function renderFoodCard(food) {
     
     // Free delivery badge - luôn dành chỗ để đảm bảo chiều cao đều
     const freeDeliveryBadge = (food.freeShip || food.isFreeShip) ?
-        '<span class="badge badge-success"><i class="mdi mdi-truck-fast-outline"></i> Free delivery</span>' :
-        '<span class="badge badge-success" style="visibility: hidden;"><i class="mdi mdi-truck-fast-outline"></i> Free delivery</span>';
+        '<span class="badge badge-success"><i class="mdi mdi-truck-fast-outline"></i> Miễn phí giao hàng</span>' :
+        '<span class="badge badge-success" style="visibility: hidden;"><i class="mdi mdi-truck-fast-outline"></i> Miễn phí giao hàng</span>';
     
     return `
         <div class="col-md-6 col-lg-4 mb-4">

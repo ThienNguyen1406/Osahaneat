@@ -54,9 +54,22 @@ public class DriverService {
      */
     public List<OrderDTO> getAvailableOrders() {
         try {
+            System.out.println("=== DriverService.getAvailableOrders() ===");
+            
             // Đơn hàng có status = "created" hoặc "ready" và chưa có driver
             List<String> availableStatuses = List.of("created", "ready");
+            System.out.println("Looking for orders with statuses: " + availableStatuses);
+            
             List<Orders> orders = orderRepository.findByDriverIdIsNullAndStatusIn(availableStatuses);
+            System.out.println("Found " + orders.size() + " available orders");
+            
+            // Log chi tiết từng đơn hàng
+            for (Orders order : orders) {
+                System.out.println("  - Order ID: " + order.getId() + 
+                    ", Status: " + order.getStatus() + 
+                    ", Driver ID: " + (order.getDriver() != null ? order.getDriver().getId() : "null") +
+                    ", Restaurant ID: " + (order.getRestaurant() != null ? order.getRestaurant().getId() : "null"));
+            }
             
             // Convert to DTO
             List<OrderDTO> orderDTOs = new ArrayList<>();
@@ -64,8 +77,12 @@ public class DriverService {
                 OrderDTO dto = orderService.getOrderByIdAsDTO(order.getId());
                 if (dto != null) {
                     orderDTOs.add(dto);
+                } else {
+                    System.err.println("Warning: Could not convert order " + order.getId() + " to DTO");
                 }
             }
+            
+            System.out.println("Converted to " + orderDTOs.size() + " DTOs");
             return orderDTOs;
         } catch (Exception e) {
             System.err.println("Error getting available orders: " + e.getMessage());

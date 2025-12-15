@@ -92,8 +92,12 @@ public interface OrderRepository extends JpaRepository<Orders, Integer> {
     
     /**
      * Tính tổng doanh thu của nhà hàng trong ngày
+     * Tính từ các đơn hàng được tạo trong ngày và đã thanh toán (status = 'delivered' hoặc payment_status = 'PAID')
+     * Nếu không có đơn delivered/paid, tính từ tất cả đơn hàng trong ngày (trừ cancelled)
      */
-    @Query("SELECT COALESCE(SUM(o.totalPrice), 0) FROM orders o WHERE o.restaurant.id = :restaurantId AND o.status = 'delivered' AND DATE(o.deliveredAt) = DATE(:date)")
+    @Query("SELECT COALESCE(SUM(o.totalPrice), 0) FROM orders o WHERE o.restaurant.id = :restaurantId " +
+           "AND DATE(o.createDate) = DATE(:date) " +
+           "AND (o.status = 'delivered' OR o.paymentStatus = 'PAID' OR (o.status != 'cancelled' AND o.paymentStatus != 'FAILED'))")
     Long sumRevenueByRestaurantAndDate(int restaurantId, Date date);
     
     /**

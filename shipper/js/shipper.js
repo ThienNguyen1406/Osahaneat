@@ -377,6 +377,19 @@ const VIETMAP_TILE_URL = `https://maps.vietmap.vn/api/tm/{z}/{x}/{y}@2x.png?apik
 let shipperMapInstance = null;
 
 function showOrderMap(orderId, userLat, userLng, userAddress) {
+    console.log("=== showOrderMap() called from shipper.js ===");
+    console.log("Order ID:", orderId);
+    console.log("User Lat:", userLat);
+    console.log("User Lng:", userLng);
+    console.log("User Address:", userAddress);
+    
+    // Validate coordinates
+    if (!userLat || !userLng || isNaN(userLat) || isNaN(userLng)) {
+        console.warn("⚠️ Invalid coordinates, using default (Ho Chi Minh City)");
+        userLat = 10.8231;
+        userLng = 106.6297;
+    }
+    
     // Set modal content
     $('#map-order-id').text(orderId);
     $('#map-user-address').text(userAddress || `${userLat}, ${userLng}`);
@@ -385,10 +398,27 @@ function showOrderMap(orderId, userLat, userLng, userAddress) {
     // Show modal
     $('#mapModal').modal('show');
     
-    // Initialize map after modal is shown
-    $('#mapModal').on('shown.bs.modal', function() {
+    // Initialize map after modal is shown (remove previous handlers to avoid duplicates)
+    $('#mapModal').off('shown.bs.modal').on('shown.bs.modal', function() {
         setTimeout(function() {
-            initShipperMap(userLat, userLng, userAddress);
+            // Use initShipperVietmap from vietmap.js if available, otherwise use initShipperMap
+            if (typeof initShipperVietmap === 'function') {
+                console.log("✅ Using initShipperVietmap from vietmap.js");
+                initShipperVietmap({
+                    userLat: userLat,
+                    userLng: userLng,
+                    userAddress: userAddress,
+                    orderId: orderId,
+                    containerId: 'vietmap-container'
+                });
+            } else if (typeof initShipperMap === 'function') {
+                console.log("✅ Using initShipperMap from shipper.js");
+                initShipperMap(userLat, userLng, userAddress);
+            } else {
+                console.error("❌ Neither initShipperVietmap nor initShipperMap found!");
+                alert('Lỗi: Không thể tải bản đồ. Vui lòng reload trang.');
+                $('#map-shipper-address').text('Lỗi: Không thể tải bản đồ');
+            }
         }, 300);
     });
 }

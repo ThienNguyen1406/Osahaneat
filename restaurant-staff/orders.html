@@ -174,6 +174,289 @@
             }
         }
 
+        // Define functions globally BEFORE document.ready to ensure they're accessible
+        // Make function globally accessible
+        window.updateOrderStatus = function(orderId, status) {
+            console.log('=== updateOrderStatus ===');
+            console.log('Order ID:', orderId);
+            console.log('New Status:', status);
+            
+            const statusText = {
+                'processing': 'bắt đầu chế biến',
+                'ready': 'hoàn thành',
+                'completed': 'hoàn tất',
+                'cancelled': 'hủy'
+            }[status] || status;
+            
+            if (!confirm(`Xác nhận ${statusText} đơn hàng #${orderId}?`)) {
+                return;
+            }
+            
+            // Disable button to prevent double click
+            let $orderCard = $(`.order-card-enhanced[data-order-id="${orderId}"]`);
+            if ($orderCard.length === 0) {
+                $orderCard = $(`.order-card[data-order-id="${orderId}"]`);
+            }
+            if ($orderCard.length === 0) {
+                $orderCard = $(`.order-card-staff[data-order-id="${orderId}"]`);
+            }
+            if ($orderCard.length === 0) {
+                $orderCard = $(`[data-order-id="${orderId}"]`);
+            }
+            $orderCard.find('button').prop('disabled', true);
+            
+            if (typeof StaffApiService === 'undefined' || typeof StaffApiService.updateOrderStatus !== 'function') {
+                console.error('StaffApiService.updateOrderStatus is not available!');
+                alert('Lỗi: Chức năng cập nhật đơn hàng chưa sẵn sàng. Vui lòng reload trang.');
+                $orderCard.find('button').prop('disabled', false);
+                return;
+            }
+            
+            StaffApiService.updateOrderStatus(orderId, status)
+                .done(function(response) {
+                    console.log('Update order status response:', response);
+                    if (response && (response.success || response.isSuccess)) {
+                        alert('Cập nhật trạng thái thành công!');
+                        setTimeout(function() {
+                            if (typeof loadOrdersPage === 'function') {
+                                loadOrdersPage();
+                            } else {
+                                location.reload();
+                            }
+                        }, 500);
+                    } else {
+                        alert('Lỗi: ' + (response.desc || response.message || 'Không thể cập nhật trạng thái'));
+                        $orderCard.find('button').prop('disabled', false);
+                    }
+                })
+                .fail(function(xhr) {
+                    console.error('Update order status error:', xhr);
+                    let errorMsg = 'Lỗi khi cập nhật trạng thái';
+                    if (xhr.responseJSON) {
+                        errorMsg = xhr.responseJSON.desc || xhr.responseJSON.message || errorMsg;
+                    } else if (xhr.status === 403 || xhr.status === 401) {
+                        errorMsg = 'Bạn không có quyền cập nhật đơn hàng này.';
+                    } else if (xhr.status === 0) {
+                        errorMsg = 'Không thể kết nối đến server.';
+                    }
+                    alert(errorMsg);
+                    $orderCard.find('button').prop('disabled', false);
+                });
+        };
+
+        // Make function globally accessible
+        window.openChatWithUser = function(orderId, userId, userName) {
+            console.log('=== openChatWithUser ===');
+            console.log('Order ID:', orderId);
+            console.log('User ID:', userId);
+            console.log('User Name:', userName);
+            
+            if (!userId || userId <= 0) {
+                alert('Không thể lấy thông tin khách hàng!');
+                return;
+            }
+            
+            window.currentChatOrderId = orderId;
+            window.currentChatUserId = userId;
+            window.currentChatUserName = userName;
+            
+            const chatModal = `
+                <div class="modal fade" id="chatModal" tabindex="-1" role="dialog">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header bg-primary text-white">
+                                <h5 class="modal-title">
+                                    <i class="fas fa-comments mr-2"></i>Chat với ${escapeHtml(userName)}
+                                </h5>
+                                <button type="button" class="close text-white" data-dismiss="modal">
+                                    <span>&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body" style="height: 400px; overflow-y: auto;" id="chatMessages">
+                                <div class="text-center py-3">
+                                    <i class="fas fa-spinner fa-spin"></i> Đang tải tin nhắn...
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="input-group w-100">
+                                    <input type="text" class="form-control" id="chatMessageInput" placeholder="Nhập tin nhắn...">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-primary" onclick="window.sendChatMessage && window.sendChatMessage()">
+                                            <i class="fas fa-paper-plane"></i> Gửi
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            $('#chatModal').remove();
+            $('body').append(chatModal);
+            $('#chatModal').modal('show');
+            
+            if (window.loadChatConversation) {
+                window.loadChatConversation(userId);
+            } else {
+                console.error('loadChatConversation function not found!');
+                $('#chatMessages').html('<div class="alert alert-danger">Lỗi: Không thể tải chức năng chat. Vui lòng reload trang.</div>');
+            }
+            
+            $('#chatMessageInput').off('keypress').on('keypress', function(e) {
+                if (e.which === 13) {
+                    if (window.sendChatMessage) {
+                        window.sendChatMessage();
+                    }
+                }
+            });
+        };
+
+        // Make function globally accessible
+        window.loadChatConversation = function(userId) {
+            console.log('Loading chat conversation with user:', userId);
+            
+            $.ajax({
+                method: 'GET',
+                url: `http://localhost:82/message/${userId}`,
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                },
+                dataType: 'json'
+            })
+            .done(function(response) {
+                console.log('Chat conversation response:', response);
+                const messages = response && response.data ? (Array.isArray(response.data) ? response.data : []) : [];
+                if (window.renderChatMessages) {
+                    window.renderChatMessages(messages);
+                } else {
+                    console.error('renderChatMessages function not found!');
+                    $('#chatMessages').html('<div class="alert alert-danger">Lỗi: Không thể hiển thị tin nhắn.</div>');
+                }
+            })
+            .fail(function(xhr) {
+                console.error('Error loading chat conversation:', xhr);
+                $('#chatMessages').html('<div class="alert alert-danger">Không thể tải tin nhắn!</div>');
+            });
+        };
+
+        // Make function globally accessible
+        window.renderChatMessages = function(messages) {
+            const container = $('#chatMessages');
+            if (messages.length === 0) {
+                container.html('<div class="text-center py-3 text-muted">Chưa có tin nhắn nào. Hãy bắt đầu cuộc trò chuyện!</div>');
+                return;
+            }
+            
+            const token = localStorage.getItem('token');
+            let currentUserId = 0;
+            if (token) {
+                const decoded = decodeToken(token);
+                if (decoded && decoded.userId) {
+                    currentUserId = decoded.userId;
+                } else if (decoded && decoded.sub) {
+                    currentUserId = parseInt(decoded.sub) || 0;
+                }
+            }
+            
+            let html = '';
+            messages.forEach(function(msg) {
+                const isFromMe = msg.senderId === currentUserId;
+                const senderName = msg.senderName || msg.senderUserName || 'N/A';
+                const time = formatDate(msg.createDate);
+                
+                html += `
+                    <div class="mb-3 ${isFromMe ? 'text-right' : 'text-left'}">
+                        <div class="d-inline-block p-2 rounded ${isFromMe ? 'bg-primary text-white' : 'bg-light'}" style="max-width: 70%;">
+                            <div class="small ${isFromMe ? 'text-white-50' : 'text-muted'}">${escapeHtml(senderName)}</div>
+                            <div>${escapeHtml(msg.content || '')}</div>
+                            <div class="small ${isFromMe ? 'text-white-50' : 'text-muted'} mt-1">${time}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.html(html);
+            container.scrollTop(container[0].scrollHeight);
+        };
+
+        // Make function globally accessible
+        window.sendChatMessage = function() {
+            const input = $('#chatMessageInput');
+            const content = input.val().trim();
+            const userId = window.currentChatUserId;
+            
+            if (!content) {
+                return;
+            }
+            
+            if (!userId || userId <= 0) {
+                alert('Không thể gửi tin nhắn!');
+                return;
+            }
+            
+            console.log('Sending message to user:', userId, 'Content:', content);
+            input.prop('disabled', true);
+            
+            $.ajax({
+                method: 'POST',
+                url: 'http://localhost:82/message',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                },
+                data: JSON.stringify({
+                    receiverId: userId,
+                    content: content
+                }),
+                dataType: 'json'
+            })
+            .done(function(response) {
+                console.log('Message sent successfully:', response);
+                input.val('').prop('disabled', false);
+                if (window.loadChatConversation) {
+                    window.loadChatConversation(userId);
+                }
+            })
+            .fail(function(xhr) {
+                console.error('Error sending message:', xhr);
+                alert('Không thể gửi tin nhắn!');
+                input.prop('disabled', false);
+            });
+        };
+
+        // Make function globally accessible
+        window.cancelOrder = function(orderId) {
+            if (!confirm(`Bạn có chắc muốn hủy đơn hàng #${orderId}?`)) {
+                return;
+            }
+            
+            if (typeof StaffApiService === 'undefined' || typeof StaffApiService.updateOrderStatus !== 'function') {
+                console.error('StaffApiService.updateOrderStatus is not available!');
+                alert('Lỗi: Chức năng hủy đơn hàng chưa sẵn sàng. Vui lòng reload trang.');
+                return;
+            }
+            
+            StaffApiService.updateOrderStatus(orderId, 'cancelled')
+                .done(function(response) {
+                    if (response && (response.success || response.isSuccess)) {
+                        alert('Hủy đơn hàng thành công!');
+                        if (typeof loadOrdersPage === 'function') {
+                            loadOrdersPage();
+                        } else {
+                            location.reload();
+                        }
+                    } else {
+                        alert('Lỗi: ' + (response.desc || 'Không thể hủy đơn hàng'));
+                    }
+                })
+                .fail(function(xhr) {
+                    alert('Lỗi khi hủy đơn hàng');
+                    console.error(xhr);
+                });
+        };
+
         $(document).ready(function() {
             if (!isAuthenticated()) {
                 alert('Vui lòng đăng nhập!');
@@ -407,10 +690,10 @@
             if (currentStatus === 'created') {
                 return `
                     <div class="order-status-actions mt-3">
-                        <button class="btn btn-status btn-success btn-block" onclick="updateOrderStatus(${order.id}, 'processing')">
+                        <button class="btn btn-status btn-success btn-block" onclick="window.updateOrderStatus && window.updateOrderStatus(${order.id}, 'processing')">
                             <i class="fas fa-check mr-1"></i>Nhận đơn
                         </button>
-                        <button class="btn btn-status btn-danger btn-block mt-2" onclick="cancelOrder(${order.id})">
+                        <button class="btn btn-status btn-danger btn-block mt-2" onclick="window.cancelOrder && window.cancelOrder(${order.id})">
                             <i class="fas fa-times mr-1"></i>Hủy đơn
                         </button>
                     </div>
@@ -418,7 +701,7 @@
             } else if (currentStatus === 'processing') {
                 return `
                     <div class="order-status-actions mt-3">
-                        <button class="btn btn-status btn-success btn-block" onclick="updateOrderStatus(${order.id}, 'ready')">
+                        <button class="btn btn-status btn-success btn-block" onclick="window.updateOrderStatus && window.updateOrderStatus(${order.id}, 'ready')">
                             <i class="fas fa-check mr-1"></i>Sẵn sàng
                         </button>
                     </div>
@@ -426,10 +709,10 @@
             } else if (currentStatus === 'ready') {
                 return `
                     <div class="order-status-actions mt-3">
-                        <button class="btn btn-status btn-primary btn-block mb-2" onclick="updateOrderStatus(${order.id}, 'completed')">
+                        <button class="btn btn-status btn-primary btn-block mb-2" onclick="window.updateOrderStatus && window.updateOrderStatus(${order.id}, 'completed')">
                             <i class="fas fa-check-double mr-1"></i>Hoàn tất
                         </button>
-                        <button class="btn btn-status btn-info btn-block" onclick="openChatWithUser(${order.id}, ${order.userId || 0}, '${escapeHtml(order.userFullName || order.userName || 'Khách hàng')}')">
+                        <button class="btn btn-status btn-info btn-block" onclick="window.openChatWithUser && window.openChatWithUser(${order.id}, ${order.userId || 0}, '${escapeHtml(order.userFullName || order.userName || 'Khách hàng')}')">
                             <i class="fas fa-comments mr-1"></i>Liên hệ
                         </button>
                     </div>
@@ -448,289 +731,6 @@
             // Open support chat for this order
             console.log('Open support chat for order:', orderId);
             alert('Mở chat hỗ trợ cho đơn hàng #' + orderId);
-        }
-        
-        function openChatWithUser(orderId, userId, userName) {
-            console.log('=== openChatWithUser ===');
-            console.log('Order ID:', orderId);
-            console.log('User ID:', userId);
-            console.log('User Name:', userName);
-            
-            if (!userId || userId <= 0) {
-                alert('Không thể lấy thông tin khách hàng!');
-                return;
-            }
-            
-            // Store order and user info for chat
-            window.currentChatOrderId = orderId;
-            window.currentChatUserId = userId;
-            window.currentChatUserName = userName;
-            
-            // Open chat modal or redirect to chat page
-            // For now, we'll open a simple chat interface
-            const chatModal = `
-                <div class="modal fade" id="chatModal" tabindex="-1" role="dialog">
-                    <div class="modal-dialog modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header bg-primary text-white">
-                                <h5 class="modal-title">
-                                    <i class="fas fa-comments mr-2"></i>Chat với ${escapeHtml(userName)}
-                                </h5>
-                                <button type="button" class="close text-white" data-dismiss="modal">
-                                    <span>&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body" style="height: 400px; overflow-y: auto;" id="chatMessages">
-                                <div class="text-center py-3">
-                                    <i class="fas fa-spinner fa-spin"></i> Đang tải tin nhắn...
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <div class="input-group w-100">
-                                    <input type="text" class="form-control" id="chatMessageInput" placeholder="Nhập tin nhắn...">
-                                    <div class="input-group-append">
-                                        <button class="btn btn-primary" onclick="sendChatMessage()">
-                                            <i class="fas fa-paper-plane"></i> Gửi
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            // Remove existing modal if any
-            $('#chatModal').remove();
-            
-            // Add modal to body
-            $('body').append(chatModal);
-            
-            // Show modal
-            $('#chatModal').modal('show');
-            
-            // Load conversation
-            loadChatConversation(userId);
-            
-            // Handle Enter key
-            $('#chatMessageInput').on('keypress', function(e) {
-                if (e.which === 13) {
-                    sendChatMessage();
-                }
-            });
-        }
-        
-        function loadChatConversation(userId) {
-            console.log('Loading chat conversation with user:', userId);
-            
-            $.ajax({
-                method: 'GET',
-                url: `http://localhost:82/message/${userId}`,
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json'
-                },
-                dataType: 'json'
-            })
-            .done(function(response) {
-                console.log('Chat conversation response:', response);
-                const messages = response && response.data ? (Array.isArray(response.data) ? response.data : []) : [];
-                renderChatMessages(messages);
-            })
-            .fail(function(xhr) {
-                console.error('Error loading chat conversation:', xhr);
-                $('#chatMessages').html('<div class="alert alert-danger">Không thể tải tin nhắn!</div>');
-            });
-        }
-        
-        function renderChatMessages(messages) {
-            const container = $('#chatMessages');
-            if (messages.length === 0) {
-                container.html('<div class="text-center py-3 text-muted">Chưa có tin nhắn nào. Hãy bắt đầu cuộc trò chuyện!</div>');
-                return;
-            }
-            
-            // Get current user ID from token
-            const token = localStorage.getItem('token');
-            let currentUserId = 0;
-            if (token) {
-                const decoded = decodeToken(token);
-                if (decoded && decoded.userId) {
-                    currentUserId = decoded.userId;
-                } else if (decoded && decoded.sub) {
-                    // Try 'sub' field
-                    currentUserId = parseInt(decoded.sub) || 0;
-                }
-            }
-            
-            let html = '';
-            messages.forEach(function(msg) {
-                const isFromMe = msg.senderId === currentUserId;
-                const senderName = msg.senderName || msg.senderUserName || 'N/A';
-                const time = formatDate(msg.createDate);
-                
-                html += `
-                    <div class="mb-3 ${isFromMe ? 'text-right' : 'text-left'}">
-                        <div class="d-inline-block p-2 rounded ${isFromMe ? 'bg-primary text-white' : 'bg-light'}" style="max-width: 70%;">
-                            <div class="small ${isFromMe ? 'text-white-50' : 'text-muted'}">${escapeHtml(senderName)}</div>
-                            <div>${escapeHtml(msg.content || '')}</div>
-                            <div class="small ${isFromMe ? 'text-white-50' : 'text-muted'} mt-1">${time}</div>
-                        </div>
-                    </div>
-                `;
-            });
-            
-            container.html(html);
-            container.scrollTop(container[0].scrollHeight);
-        }
-        
-        function sendChatMessage() {
-            const input = $('#chatMessageInput');
-            const content = input.val().trim();
-            const userId = window.currentChatUserId;
-            
-            if (!content) {
-                return;
-            }
-            
-            if (!userId || userId <= 0) {
-                alert('Không thể gửi tin nhắn!');
-                return;
-            }
-            
-            console.log('Sending message to user:', userId, 'Content:', content);
-            
-            // Disable input
-            input.prop('disabled', true);
-            
-            $.ajax({
-                method: 'POST',
-                url: 'http://localhost:82/message',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json'
-                },
-                data: JSON.stringify({
-                    receiverId: userId,
-                    content: content
-                }),
-                dataType: 'json'
-            })
-            .done(function(response) {
-                console.log('Message sent successfully:', response);
-                input.val('').prop('disabled', false);
-                // Reload conversation
-                loadChatConversation(userId);
-            })
-            .fail(function(xhr) {
-                console.error('Error sending message:', xhr);
-                alert('Không thể gửi tin nhắn!');
-                input.prop('disabled', false);
-            });
-        }
-
-        function updateOrderStatus(orderId, status) {
-            console.log('=== updateOrderStatus ===');
-            console.log('Order ID:', orderId);
-            console.log('New Status:', status);
-            
-            const statusText = {
-                'processing': 'bắt đầu chế biến',
-                'ready': 'hoàn thành',
-                'completed': 'hoàn tất',
-                'cancelled': 'hủy'
-            }[status] || status;
-            
-            if (!confirm(`Xác nhận ${statusText} đơn hàng #${orderId}?`)) {
-                return;
-            }
-            
-            // Disable button to prevent double click
-            // Try multiple selectors to find the order card
-            let $orderCard = $(`.order-card-enhanced[data-order-id="${orderId}"]`);
-            if ($orderCard.length === 0) {
-                $orderCard = $(`.order-card[data-order-id="${orderId}"]`);
-            }
-            if ($orderCard.length === 0) {
-                $orderCard = $(`.order-card-staff[data-order-id="${orderId}"]`);
-            }
-            if ($orderCard.length === 0) {
-                // Try to find by order ID in any card
-                $orderCard = $(`[data-order-id="${orderId}"]`);
-            }
-            $orderCard.find('button').prop('disabled', true);
-            
-            StaffApiService.updateOrderStatus(orderId, status)
-                .done(function(response) {
-                    console.log('Update order status response:', response);
-                    if (response && (response.success || response.isSuccess)) {
-                        alert('Cập nhật trạng thái thành công!');
-                        // Reload orders after a short delay
-                        setTimeout(function() {
-                            loadOrdersPage();
-                        }, 500);
-                    } else {
-                        alert('Lỗi: ' + (response.desc || response.message || 'Không thể cập nhật trạng thái'));
-                        // Re-enable buttons
-                        let $orderCard = $(`.order-card-enhanced[data-order-id="${orderId}"]`);
-                        if ($orderCard.length === 0) {
-                            $orderCard = $(`.order-card[data-order-id="${orderId}"]`);
-                        }
-                        if ($orderCard.length === 0) {
-                            $orderCard = $(`.order-card-staff[data-order-id="${orderId}"]`);
-                        }
-                        if ($orderCard.length === 0) {
-                            $orderCard = $(`[data-order-id="${orderId}"]`);
-                        }
-                        $orderCard.find('button').prop('disabled', false);
-                    }
-                })
-                .fail(function(xhr) {
-                    console.error('Update order status error:', xhr);
-                    console.error('Status code:', xhr.status);
-                    console.error('Response:', xhr.responseText);
-                    let errorMsg = 'Lỗi khi cập nhật trạng thái';
-                    if (xhr.responseJSON) {
-                        errorMsg = xhr.responseJSON.desc || xhr.responseJSON.message || errorMsg;
-                    } else if (xhr.status === 403 || xhr.status === 401) {
-                        errorMsg = 'Bạn không có quyền cập nhật đơn hàng này. Đơn hàng có thể không thuộc về nhà hàng của bạn.';
-                    } else if (xhr.status === 0) {
-                        errorMsg = 'Không thể kết nối đến server. Vui lòng kiểm tra kết nối mạng.';
-                    }
-                    alert(errorMsg);
-                    // Re-enable buttons
-                    let $orderCard = $(`.order-card-enhanced[data-order-id="${orderId}"]`);
-                    if ($orderCard.length === 0) {
-                        $orderCard = $(`.order-card[data-order-id="${orderId}"]`);
-                    }
-                    if ($orderCard.length === 0) {
-                        $orderCard = $(`.order-card-staff[data-order-id="${orderId}"]`);
-                    }
-                    if ($orderCard.length === 0) {
-                        $orderCard = $(`[data-order-id="${orderId}"]`);
-                    }
-                    $orderCard.find('button').prop('disabled', false);
-                });
-        }
-
-        function cancelOrder(orderId) {
-            if (!confirm(`Bạn có chắc muốn hủy đơn hàng #${orderId}?`)) {
-                return;
-            }
-            
-            StaffApiService.updateOrderStatus(orderId, 'cancelled')
-                .done(function(response) {
-                    if (response && (response.success || response.isSuccess)) {
-                        alert('Hủy đơn hàng thành công!');
-                        loadOrdersPage();
-                    } else {
-                        alert('Lỗi: ' + (response.desc || 'Không thể hủy đơn hàng'));
-                    }
-                })
-                .fail(function(xhr) {
-                    alert('Lỗi khi hủy đơn hàng');
-                    console.error(xhr);
-                });
         }
 
         function formatDate(dateString) {

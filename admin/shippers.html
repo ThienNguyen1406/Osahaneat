@@ -177,10 +177,11 @@
       <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
       <script src="js/api.js"></script>
       <script src="js/admin.js"></script>
-      <script src="js/admin-users.js"></script>
+      <!-- KHÔNG load admin-users.js để tránh conflict -->
+      <!-- <script src="js/admin-users.js"></script> -->
       <script>
-         // Override loadUsers to load shippers instead
-         function loadUsers(keyword = '') {
+         // Function riêng để load shippers (không override loadUsers từ admin-users.js)
+         function loadShippers(keyword = '') {
              console.log("Loading shippers with keyword:", keyword);
              
              const tbody = $('#dataTable tbody');
@@ -188,18 +189,60 @@
              
              AdminApiService.getDrivers(keyword)
                  .done(function(response) {
-                     console.log("Shippers response:", response);
+                     console.log("=== Shippers API Response ===");
+                     console.log("Full response:", response);
+                     console.log("Response type:", typeof response);
+                     console.log("Response.status:", response?.status);
+                     console.log("Response.success:", response?.success);
+                     console.log("Response.isSuccess:", response?.isSuccess);
+                     console.log("Response.data:", response?.data);
+                     console.log("Response.data type:", typeof response?.data);
+                     console.log("Response.data isArray:", Array.isArray(response?.data));
                      
-                     if (response && (response.isSuccess || response.success) && response.data) {
-                         const shippers = Array.isArray(response.data) ? response.data : [];
+                     let shippers = [];
+                     
+                     // Kiểm tra nhiều format response
+                     if (response) {
+                         if (response.data && Array.isArray(response.data)) {
+                             shippers = response.data;
+                             console.log("Extracted shippers from response.data:", shippers.length);
+                         } else if (Array.isArray(response)) {
+                             shippers = response;
+                             console.log("Response is direct array:", shippers.length);
+                         } else if (response.status === 200 && response.data) {
+                             shippers = Array.isArray(response.data) ? response.data : [];
+                             console.log("Extracted from status 200:", shippers.length);
+                         }
+                     }
+                     
+                     console.log("Final shippers array:", shippers);
+                     console.log("Shippers count:", shippers.length);
+                     
+                     if (shippers.length > 0) {
                          renderShippers(shippers);
                      } else {
-                        tbody.html('<tr><td colspan="8" class="text-center py-4 text-muted">Không có dữ liệu</td></tr>');
+                         console.warn("No shippers found in response");
+                         tbody.html('<tr><td colspan="8" class="text-center py-4 text-muted"><i class="feather-truck mr-2"></i>Chưa có shipper nào trong hệ thống</td></tr>');
                      }
                  })
-                 .fail(function(xhr) {
-                    console.error("Error loading shippers:", xhr);
-                    tbody.html('<tr><td colspan="8" class="text-center py-4 text-danger">Lỗi khi tải dữ liệu</td></tr>');
+                 .fail(function(xhr, status, error) {
+                    console.error("=== Error loading shippers ===");
+                    console.error("XHR:", xhr);
+                    console.error("Status:", status);
+                    console.error("Error:", error);
+                    console.error("Response Text:", xhr.responseText);
+                    console.error("Response JSON:", xhr.responseJSON);
+                    
+                    let errorMsg = 'Lỗi khi tải dữ liệu';
+                    if (xhr.status === 401 || xhr.status === 403) {
+                        errorMsg = 'Bạn không có quyền truy cập. Vui lòng đăng nhập lại.';
+                    } else if (xhr.status === 0) {
+                        errorMsg = 'Không thể kết nối đến server. Vui lòng kiểm tra backend có đang chạy không.';
+                    } else if (xhr.responseJSON && xhr.responseJSON.desc) {
+                        errorMsg = xhr.responseJSON.desc;
+                    }
+                    
+                    tbody.html(`<tr><td colspan="8" class="text-center py-4 text-danger"><i class="feather-alert-circle mr-2"></i>${errorMsg}</td></tr>`);
                  });
          }
          
@@ -213,7 +256,10 @@
             
             let html = '';
             shippers.forEach(function(shipper) {
-                const statusBadge = shipper.isActive !== false 
+                console.log("Rendering shipper:", shipper);
+                
+                // Status badge - mặc định là hoạt động nếu không có field isActive
+                const statusBadge = (shipper.isActive === undefined || shipper.isActive !== false) 
                     ? '<span class="badge badge-success"><i class="feather-check-circle mr-1"></i>Hoạt động</span>'
                     : '<span class="badge badge-danger"><i class="feather-x-circle mr-1"></i>Không hoạt động</span>';
                 
@@ -278,7 +324,7 @@
             .done(function(response) {
                 if (response && (response.success || response.isSuccess)) {
                     alert('Duyệt shipper thành công!');
-                    loadUsers();
+                    loadShippers();
                 } else {
                     alert('Lỗi: ' + (response?.desc || 'Không thể duyệt shipper'));
                 }
@@ -307,7 +353,7 @@
                 if (response && (response.success || response.isSuccess)) {
                     const newPassword = response.desc?.match(/123456/) ? '123456' : '123456';
                     alert(`Cấp lại mật khẩu thành công!\n\nMật khẩu mới: ${newPassword}`);
-                    loadUsers();
+                    loadShippers();
                 } else {
                     alert('Lỗi: ' + (response?.desc || 'Không thể cấp lại mật khẩu'));
                 }
@@ -335,7 +381,7 @@
             .done(function(response) {
                 if (response && (response.success || response.isSuccess)) {
                     alert('Xóa shipper thành công!');
-                    loadUsers();
+                    loadShippers();
                 } else {
                     alert('Lỗi: ' + (response?.desc || 'Không thể xóa shipper'));
                 }
@@ -345,6 +391,12 @@
                 alert(errorMsg);
             });
         }
+         
+         // Load shippers when page loads
+         $(document).ready(function() {
+             console.log("=== shippers.html page loaded ===");
+             loadShippers();
+         });
          
          // Setup search
          $('#searchBtn, #mobileSearchBtn').on('click', function() {

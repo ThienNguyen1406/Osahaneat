@@ -1207,5 +1207,6 @@ public class RestaurantOwnerController {
             return new ResponseEntity<>(responseData, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    
 }
 

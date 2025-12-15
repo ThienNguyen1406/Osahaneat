@@ -63,7 +63,8 @@ public class RestaurantService implements RestaurantServiceImp {
     public List<RestaurantDTO> getHomePageRestaurant() {
         List<RestaurantDTO> restaurantDTOS = new ArrayList<>();
         PageRequest  pageRequest = PageRequest.of(0, 6);
-        Page<Restaurant> listData = restaurantReponsitory.findAll(pageRequest);
+        // Chỉ lấy restaurants đã được duyệt và đang hoạt động
+        Page<Restaurant> listData = restaurantReponsitory.findApprovedAndActiveRestaurants(pageRequest);
 
         for(Restaurant restaurant : listData){
             RestaurantDTO restaurantDTO = new RestaurantDTO();
@@ -184,6 +185,8 @@ public class RestaurantService implements RestaurantServiceImp {
             restaurantDTO.setAddress(data.getAddress());
             restaurantDTO.setOpenDate(data.getOpenDate());
             restaurantDTO.setId(data.getId());
+            restaurantDTO.setIsActive(data.isActive());
+            restaurantDTO.setIsApproved(data.getIsApproved());
 
             //listCategory - lấy từ menu_restaurant
             if (data.getLisMenuRestaurant() != null && !data.getLisMenuRestaurant().isEmpty()) {
@@ -207,7 +210,9 @@ public class RestaurantService implements RestaurantServiceImp {
                             if (foodId <= 0) {
                                 System.err.println("⚠️ WARNING: Food has invalid ID: " + foodId + ", Title: " + food.getTitle());
                             }
-                            menuDTO.setTitle(food.getTitle());
+                            // Việt hóa tên món ăn
+                            String translatedTitle = com.example.food_delivery.util.FoodNameTranslator.translateAdvanced(food.getTitle());
+                            menuDTO.setTitle(translatedTitle);
                             menuDTO.setDescription(food.getDesc());
                             menuDTO.setPrice(food.getPrice());
                             menuDTO.setTimeShip(food.getTime_ship());
