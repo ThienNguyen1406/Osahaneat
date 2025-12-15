@@ -611,6 +611,9 @@
                                     <button class="btn btn-sm btn-outline-primary" onclick="editRestaurant(${restaurant.id})">
                                         <i class="fas fa-edit mr-1"></i>Chỉnh sửa
                                     </button>
+                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteRestaurant(${restaurant.id}, '${(restaurant.title || '').replace(/'/g, "\\'")}')">
+                                        <i class="fas fa-trash mr-1"></i>Xóa
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -765,7 +768,8 @@
             window.location.href = `menu.html?restaurantId=${restaurantId}`;
         }
 
-        function deleteRestaurant(restaurantId, restaurantName) {
+        // Function to delete restaurant - assigned to window for global access
+        window.deleteRestaurant = function(restaurantId, restaurantName) {
             if (!confirm(`Bạn có chắc chắn muốn xóa cửa hàng "${restaurantName}"?\n\nLưu ý: Hành động này không thể hoàn tác!`)) {
                 return;
             }
@@ -820,7 +824,7 @@
                     
                     alert(errorMsg);
                 });
-        }
+        };
 
         // Preview image functions
         function previewAddRestaurantImage(event) {
