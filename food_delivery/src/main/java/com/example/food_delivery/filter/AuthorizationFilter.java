@@ -27,6 +27,13 @@ public class AuthorizationFilter extends OncePerRequestFilter {
         
         log.debug("AuthorizationFilter - Path: {}, Method: {}", path, method);
         
+        // Skip authorization check for forgot-password endpoint (public, no authentication required)
+        if (path.equals("/user/forgot-password") && method.equals("POST")) {
+            log.info("AuthorizationFilter - Allowing public access to POST /user/forgot-password");
+            filterChain.doFilter(request, response);
+            return;
+        }
+        
         // Check if endpoint requires admin role
         if (requiresAdminRole(path, method)) {
             // Check authentication from SecurityContext (set by CustomJwtFilter)
@@ -113,14 +120,16 @@ public class AuthorizationFilter extends OncePerRequestFilter {
             return !method.equals("GET");
         }
         // User endpoints - allow /user/me, /user/profile, /user/avatar, /user/address, /user/payment-method for regular users
+        // Allow /user/forgot-password for public access (no authentication required)
         // Other /user endpoints require admin
         if (path.startsWith("/user")) {
             if (path.equals("/user/me") || 
                 path.equals("/user/profile") || 
                 path.equals("/user/avatar") ||
+                path.equals("/user/forgot-password") || // Public endpoint for password reset requests
                 path.startsWith("/user/address") ||
                 path.startsWith("/user/payment-method")) {
-                return false; // Allow regular users to access their own profile, addresses, and payment methods
+                return false; // Allow regular users to access their own profile, addresses, and payment methods, or public forgot-password
             }
             return true; // Other /user endpoints require admin
         }

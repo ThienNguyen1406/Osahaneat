@@ -105,6 +105,10 @@
                         <div class="sb-nav-link-icon"><i class="feather-shield"></i></div>
                         Quản lý phân quyền
                      </a>
+                     <a class="nav-link" href="password-reset-requests.html">
+                        <div class="sb-nav-link-icon"><i class="feather-key"></i></div>
+                        Yêu cầu quên mật khẩu
+                     </a>
                   </div>
                </div>
                <div class="sb-sidenav-footer">
@@ -135,7 +139,7 @@
                            </div>
                            <div class="card-body">
                               <div class="table-responsive">
-                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                 <table class="table table-bordered" id="shippersTable" width="100%" cellspacing="0">
                                     <thead>
                                        <tr>
                                           <th><i class="feather-hash mr-1"></i>ID</th>
@@ -184,7 +188,7 @@
          function loadShippers(keyword = '') {
              console.log("Loading shippers with keyword:", keyword);
              
-             const tbody = $('#dataTable tbody');
+             const tbody = $('#shippersTable tbody');
              tbody.html('<tr><td colspan="8" class="text-center py-4"><i class="feather-loader"></i> Đang tải...</td></tr>');
              
              AdminApiService.getDrivers(keyword)
@@ -218,7 +222,15 @@
                      console.log("Final shippers array:", shippers);
                      console.log("Shippers count:", shippers.length);
                      
+                     // Validate shippers array
+                     if (!Array.isArray(shippers)) {
+                         console.error("Shippers is not an array!", typeof shippers);
+                         tbody.html('<tr><td colspan="8" class="text-center py-4 text-danger"><i class="feather-alert-circle mr-2"></i>Lỗi: Dữ liệu không đúng định dạng</td></tr>');
+                         return;
+                     }
+                     
                      if (shippers.length > 0) {
+                         console.log("Calling renderShippers with", shippers.length, "shippers");
                          renderShippers(shippers);
                      } else {
                          console.warn("No shippers found in response");
@@ -242,61 +254,135 @@
                         errorMsg = xhr.responseJSON.desc;
                     }
                     
+                    const tbody = $('#shippersTable tbody');
                     tbody.html(`<tr><td colspan="8" class="text-center py-4 text-danger"><i class="feather-alert-circle mr-2"></i>${errorMsg}</td></tr>`);
                  });
          }
          
          function renderShippers(shippers) {
-             const tbody = $('#dataTable tbody');
+             console.log("=== renderShippers called ===");
+             console.log("Shippers to render:", shippers);
+             console.log("Shippers count:", shippers ? shippers.length : 0);
              
-             if (shippers.length === 0) {
+             // Destroy DataTable nếu có
+             if ($.fn.DataTable && $.fn.DataTable.isDataTable('#shippersTable')) {
+                 console.log("Destroying existing DataTable...");
+                 $('#shippersTable').DataTable().destroy();
+             }
+             
+             const tbody = $('#shippersTable tbody');
+             if (!tbody || tbody.length === 0) {
+                 console.error("Cannot find #shippersTable tbody!");
+                 return;
+             }
+             
+             console.log("Clearing tbody...");
+             tbody.empty(); // Clear existing rows
+             
+             if (!shippers || !Array.isArray(shippers) || shippers.length === 0) {
                 tbody.html('<tr><td colspan="8" class="text-center py-4 text-muted"><i class="feather-truck mr-2"></i>Chưa có shipper nào</td></tr>');
                 return;
             }
             
-            let html = '';
-            shippers.forEach(function(shipper) {
-                console.log("Rendering shipper:", shipper);
+            // Build HTML string trực tiếp để đảm bảo render đúng
+            let htmlRows = '';
+            
+            shippers.forEach(function(shipper, index) {
+                console.log(`--- Rendering shipper ${index + 1} ---`);
+                console.log("Shipper object:", shipper);
                 
-                // Status badge - mặc định là hoạt động nếu không có field isActive
-                const statusBadge = (shipper.isActive === undefined || shipper.isActive !== false) 
-                    ? '<span class="badge badge-success"><i class="feather-check-circle mr-1"></i>Hoạt động</span>'
-                    : '<span class="badge badge-danger"><i class="feather-x-circle mr-1"></i>Không hoạt động</span>';
-                
-                const isApproved = shipper.isApproved !== false && shipper.isApproved !== null;
-                const approvalBadge = isApproved
-                    ? '<span class="badge badge-success"><i class="feather-check-circle mr-1"></i>Đã duyệt</span>'
-                    : '<span class="badge badge-warning"><i class="feather-clock mr-1"></i>Chờ duyệt</span>';
-                
-                const titleEscaped = (shipper.fullName || shipper.userName || '').replace(/'/g, "\\'");
-                
-                html += `
-                    <tr>
-                        <td>${shipper.id || 'N/A'}</td>
-                        <td>${shipper.userName || 'N/A'}</td>
-                        <td>${shipper.fullName || 'N/A'}</td>
-                        <td>${shipper.phoneNumber || 'N/A'}</td>
-                        <td>${shipper.email || shipper.userName || 'N/A'}</td>
-                        <td>${statusBadge}</td>
-                        <td>${approvalBadge}</td>
-                        <td>
-                            ${!isApproved ? `
-                                <button class="btn btn-sm btn-success mr-1" onclick="approveShipper(${shipper.id}, '${titleEscaped}')" title="Duyệt">
-                                    <i class="feather-check"></i>
-                                </button>
-                            ` : ''}
-                            <button class="btn btn-sm btn-info mr-1" onclick="resetPassword(${shipper.id}, '${titleEscaped}')" title="Cấp lại mật khẩu">
-                                <i class="feather-key"></i>
-                            </button>
-                            <button class="btn btn-sm btn-danger" onclick="deleteShipper(${shipper.id}, '${titleEscaped}')" title="Xóa">
-                                <i class="feather-trash-2"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `;
+                try {
+                    // Lấy các giá trị với fallback và đảm bảo không null/undefined
+                    const id = shipper.id != null ? String(shipper.id) : (shipper.userId != null ? String(shipper.userId) : 'N/A');
+                    const userName = shipper.userName != null && shipper.userName !== '' ? String(shipper.userName) : 'N/A';
+                    const fullName = shipper.fullName != null && shipper.fullName !== '' ? String(shipper.fullName) : 'N/A';
+                    const phoneNumber = shipper.phoneNumber != null && shipper.phoneNumber !== '' ? String(shipper.phoneNumber) : 'N/A';
+                    
+                    // Email - nếu empty thì dùng userName (vì userName thường là email)
+                    let email = 'N/A';
+                    if (shipper.email != null && shipper.email !== '' && typeof shipper.email === 'string' && !shipper.email.match(/\d{2}:\d{2}:\d{2}/)) {
+                        email = shipper.email;
+                    } else if (userName !== 'N/A' && userName.includes('@')) {
+                        email = userName; // userName là email
+                    }
+                    
+                    console.log(`  ID: ${id}, UserName: ${userName}, FullName: ${fullName}, Phone: ${phoneNumber}, Email: ${email}`);
+                    
+                    // Status badge
+                    const statusBadge = '<span class="badge badge-success"><i class="feather-check-circle mr-1"></i>Hoạt động</span>';
+                    
+                    // Approval badge
+                    const isApproved = shipper.isApproved === true;
+                    const approvalBadge = isApproved
+                        ? '<span class="badge badge-success"><i class="feather-check-circle mr-1"></i>Đã duyệt</span>'
+                        : '<span class="badge badge-warning"><i class="feather-clock mr-1"></i>Chờ duyệt</span>';
+                    
+                    // Escape cho onclick
+                    const displayName = (fullName !== 'N/A') ? fullName : userName;
+                    const escapedName = displayName.replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, ' ').replace(/\r/g, '').replace(/\\/g, '\\\\');
+                    
+                    // Build approve button HTML
+                    const approveBtnHtml = !isApproved 
+                        ? '<button class="btn btn-sm btn-success mr-1" onclick="approveShipper(' + id + ', \'' + escapedName + '\')" title="Duyệt"><i class="feather-check"></i></button>'
+                        : '';
+                    
+                    // Build row HTML
+                    htmlRows += '<tr>' +
+                        '<td>' + escapeHtml(id) + '</td>' +
+                        '<td>' + escapeHtml(userName) + '</td>' +
+                        '<td>' + escapeHtml(fullName) + '</td>' +
+                        '<td>' + escapeHtml(phoneNumber) + '</td>' +
+                        '<td>' + escapeHtml(email) + '</td>' +
+                        '<td>' + statusBadge + '</td>' +
+                        '<td>' + approvalBadge + '</td>' +
+                        '<td>' +
+                            approveBtnHtml +
+                            '<button class="btn btn-sm btn-info mr-1" onclick="resetPassword(' + id + ', \'' + escapedName + '\')" title="Cấp lại mật khẩu"><i class="feather-key"></i></button>' +
+                            '<button class="btn btn-sm btn-danger" onclick="deleteShipper(' + id + ', \'' + escapedName + '\')" title="Xóa"><i class="feather-trash-2"></i></button>' +
+                        '</td>' +
+                    '</tr>';
+                    
+                    console.log(`  ✅ Row ${index + 1} HTML built successfully`);
+                } catch (error) {
+                    console.error(`  ❌ Error rendering shipper ${index + 1}:`, error);
+                    console.error("  Shipper data:", shipper);
+                }
             });
-             
-             tbody.html(html);
+            
+            // Set HTML một lần
+            console.log("Setting HTML to tbody...");
+            console.log("HTML length:", htmlRows.length);
+            console.log("HTML preview (first 500 chars):", htmlRows.substring(0, 500));
+            
+            tbody.html(htmlRows);
+            
+            // Verify HTML was set
+            setTimeout(function() {
+                const rowsAfter = tbody.find('tr').length;
+                console.log("=== renderShippers completed ===");
+                console.log("Total rows in table:", rowsAfter);
+                console.log("First row HTML:", tbody.find('tr').first().html());
+                
+                if (rowsAfter === 0) {
+                    console.error("❌ ERROR: No rows found after setting HTML!");
+                    console.error("tbody HTML:", tbody.html());
+                } else {
+                    console.log("✅ Successfully rendered", rowsAfter, "rows");
+                }
+            }, 100);
+         }
+         
+         // Helper function để escape HTML
+         function escapeHtml(text) {
+             if (text == null) return 'N/A';
+             const map = {
+                 '&': '&amp;',
+                 '<': '&lt;',
+                 '>': '&gt;',
+                 '"': '&quot;',
+                 "'": '&#039;'
+             };
+             return String(text).replace(/[&<>"']/g, function(m) { return map[m]; });
          }
          
          function showAddShipperModal() {
@@ -401,14 +487,14 @@
          // Setup search
          $('#searchBtn, #mobileSearchBtn').on('click', function() {
              const keyword = $('#searchInput').val() || $('#mobileSearchInput').val() || '';
-             loadUsers(keyword);
+             loadShippers(keyword);
          });
          
          $('#searchInput, #mobileSearchInput').on('keypress', function(e) {
              if (e.which === 13) {
                  e.preventDefault();
                  const keyword = $(this).val() || '';
-                 loadUsers(keyword);
+                 loadShippers(keyword);
              }
          });
       </script>

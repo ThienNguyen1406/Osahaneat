@@ -235,5 +235,41 @@ public class UserSearchController {
             return new ResponseEntity<>(responseData, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    
+    /**
+     * GET /search/suggestions?keyword={keyword}&limit={limit} - Lấy gợi ý tìm kiếm cho autocomplete
+     * Public endpoint
+     * Returns limited results for quick autocomplete suggestions
+     */
+    @GetMapping("/suggestions")
+    public ResponseEntity<?> searchSuggestions(
+            @RequestParam String keyword,
+            @RequestParam(defaultValue = "10") int limit) {
+        ResponseData responseData = new ResponseData();
+        try {
+            if (keyword == null || keyword.trim().isEmpty()) {
+                responseData.setStatus(400);
+                responseData.setSuccess(false);
+                responseData.setData(null);
+                responseData.setDesc("Từ khóa tìm kiếm không được để trống!");
+                return new ResponseEntity<>(responseData, HttpStatus.BAD_REQUEST);
+            }
+            
+            Map<String, Object> suggestions = searchServiceImp.searchSuggestions(keyword.trim(), limit);
+            responseData.setStatus(200);
+            responseData.setSuccess(true);
+            responseData.setData(suggestions);
+            responseData.setDesc("Lấy gợi ý tìm kiếm thành công!");
+            return new ResponseEntity<>(responseData, HttpStatus.OK);
+        } catch (Exception e) {
+            System.err.println("Error getting search suggestions: " + e.getMessage());
+            e.printStackTrace();
+            responseData.setStatus(500);
+            responseData.setSuccess(false);
+            responseData.setData(null);
+            responseData.setDesc("Lỗi server khi lấy gợi ý tìm kiếm: " + e.getMessage());
+            return new ResponseEntity<>(responseData, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
 

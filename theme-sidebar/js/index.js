@@ -931,33 +931,71 @@ function renderFoodItemsToContainer(foodItems, container, categoryName) {
 // Setup search handlers when document is ready
 $(document).ready(function() {
     console.log("=== Setting up home search handlers ===");
+    console.log("jQuery version:", $.fn.jquery);
+    console.log("ApiService available:", typeof ApiService !== 'undefined');
+    
     // Wait a bit to ensure DOM is fully ready
     setTimeout(function() {
-        setupHomeSearch();
+        console.log("🔍 Calling setupHomeSearch after 100ms delay");
+        if (typeof setupHomeSearch === 'function') {
+            setupHomeSearch();
+        } else {
+            console.error("❌ setupHomeSearch is not a function!");
+        }
     }, 100);
 });
 
 // Also setup immediately if DOM is already ready
 if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    console.log("🔍 DOM already ready, calling setupHomeSearch");
     setTimeout(function() {
-        setupHomeSearch();
+        if (typeof setupHomeSearch === 'function') {
+            setupHomeSearch();
+        } else {
+            console.error("❌ setupHomeSearch is not a function!");
+        }
     }, 100);
 }
 
 // Force setup after a delay to ensure all scripts are loaded
 setTimeout(function() {
-    if ($('#home-search-btn').length > 0 && !$('#home-search-btn').data('handler-attached')) {
+    console.log("🔍 Force setup check after 500ms");
+    const searchBtn = $('#home-search-btn');
+    console.log("Search button found:", searchBtn.length > 0);
+    console.log("Handler attached:", searchBtn.data('handler-attached'));
+    
+    if (searchBtn.length > 0 && !searchBtn.data('handler-attached')) {
         console.log("🔍 Force re-attaching search handlers");
-        setupHomeSearch();
+        if (typeof setupHomeSearch === 'function') {
+            setupHomeSearch();
+        } else {
+            console.error("❌ setupHomeSearch is not a function!");
+        }
+    } else if (searchBtn.length === 0) {
+        console.error("❌ Search button still not found after 500ms!");
     }
 }, 500);
+
+// Another attempt after 1 second
+setTimeout(function() {
+    console.log("🔍 Final setup check after 1 second");
+    const searchBtn = $('#home-search-btn');
+    if (searchBtn.length > 0 && !searchBtn.data('handler-attached')) {
+        console.log("🔍 Final attempt to attach search handlers");
+        if (typeof setupHomeSearch === 'function') {
+            setupHomeSearch();
+        }
+    }
+}, 1000);
 
 // Debounce function for autocomplete
 let autocompleteTimeout = null;
 let lastAutocompleteKeyword = '';
 
-function setupHomeSearch() {
+// Make function globally available for debugging
+window.setupHomeSearch = function() {
     console.log("=== setupHomeSearch() called ===");
+    console.log("Current URL:", window.location.href);
     
     // Check if elements exist
     const searchBtn = $('#home-search-btn');
@@ -965,9 +1003,9 @@ function setupHomeSearch() {
     const searchForm = $('#home-search-form');
     const clearBtn = $('#clear-search-btn');
     
-    console.log("Search button found:", searchBtn.length > 0);
-    console.log("Search input found:", searchInput.length > 0);
-    console.log("Search form found:", searchForm.length > 0);
+    console.log("Search button found:", searchBtn.length > 0, "Element:", searchBtn[0]);
+    console.log("Search input found:", searchInput.length > 0, "Element:", searchInput[0]);
+    console.log("Search form found:", searchForm.length > 0, "Element:", searchForm[0]);
     console.log("Clear button found:", clearBtn.length > 0);
     
     if (searchBtn.length === 0 || searchInput.length === 0) {
@@ -986,16 +1024,55 @@ function setupHomeSearch() {
     
     // Mark as attached to prevent duplicate handlers
     searchBtn.data('handler-attached', true);
+    console.log("✅ Event handlers attached to search button");
+    
+    // Test if button is clickable
+    console.log("Button HTML:", searchBtn[0]?.outerHTML);
+    console.log("Button type:", searchBtn.attr('type'));
+    console.log("Button onclick:", searchBtn.attr('onclick'));
     
     // Search button click - use both click and mousedown to ensure it works
     searchBtn.on('click', function(e) {
-        console.log("🔍 Search button clicked!");
+        console.log("🔍🔍🔍🔍🔍 Search button clicked! 🔍🔍🔍🔍🔍");
+        console.log("Event:", e);
+        console.log("Button element:", this);
         e.preventDefault();
         e.stopPropagation();
         e.stopImmediatePropagation();
-        performHomeSearch();
+        console.log("Calling performHomeSearch()...");
+        console.log("performHomeSearch type:", typeof performHomeSearch);
+        
+        try {
+            if (typeof performHomeSearch === 'function') {
+                console.log("✅ performHomeSearch is a function, calling it...");
+                performHomeSearch();
+                console.log("✅ performHomeSearch called");
+            } else {
+                console.error("❌ performHomeSearch is not a function!");
+                console.error("Type:", typeof performHomeSearch);
+                console.error("Available functions:", Object.keys(window).filter(k => k.includes('Search') || k.includes('search')));
+                alert("Lỗi: Hàm tìm kiếm chưa được khởi tạo. Vui lòng refresh trang.");
+            }
+        } catch (error) {
+            console.error("❌❌❌ Error in performHomeSearch:", error);
+            console.error("Error message:", error.message);
+            console.error("Error stack:", error.stack);
+            alert("Lỗi khi tìm kiếm: " + error.message);
+        }
         return false;
     });
+    
+    // Also attach to button directly using native event
+    if (searchBtn[0]) {
+        searchBtn[0].addEventListener('click', function(e) {
+            console.log("🔍 Native event listener triggered!");
+            e.preventDefault();
+            if (typeof performHomeSearch === 'function') {
+                performHomeSearch();
+            }
+        });
+        console.log("✅ Native event listener also attached");
+    }
     
     // Also handle mousedown as backup
     searchBtn.on('mousedown', function(e) {
@@ -1081,18 +1158,28 @@ function setupHomeSearch() {
     // Ensure restaurant links work correctly (they should navigate to detail page)
     // This is correct behavior - restaurant cards should go to detail page
     // Food cards will open modal (handled by food-modal.js)
-}
+};
+
+// Make performHomeSearch globally available for debugging (will be defined below)
 
 function performHomeSearch() {
+    console.log("🔍🔍🔍 === performHomeSearch() START === 🔍🔍🔍");
+    // console.trace("Call stack:"); // Commented out to avoid potential issues
+    
     const keyword = $('#home-search-input').val().trim();
+    console.log("Input value:", $('#home-search-input').val());
+    console.log("Keyword after trim:", keyword);
     
     if (!keyword) {
+        console.warn("⚠️ Keyword is empty!");
         alert('Vui lòng nhập từ khóa tìm kiếm!');
         return;
     }
     
     console.log("=== performHomeSearch() called ===");
     console.log("Keyword:", keyword);
+    console.log("Keyword length:", keyword.length);
+    console.log("Keyword encoded:", encodeURIComponent(keyword));
     
     // Show loading
     showHomeSearchLoading();
@@ -1119,40 +1206,204 @@ function performHomeSearch() {
     }
     
     // Search all
-    if (typeof ApiService === 'undefined' || typeof ApiService.searchAll !== 'function') {
-        console.error("❌ ApiService.searchAll is not available!");
+    if (typeof ApiService === 'undefined') {
+        console.error("❌ ApiService is not defined!");
         showHomeSearchError('Chức năng tìm kiếm chưa sẵn sàng. Vui lòng thử lại sau.');
         return;
     }
     
-    ApiService.searchAll(keyword)
-        .done(function(response) {
+    if (typeof ApiService.searchAll !== 'function') {
+        console.error("❌ ApiService.searchAll is not a function!");
+        console.error("ApiService object:", ApiService);
+        showHomeSearchError('Chức năng tìm kiếm chưa sẵn sàng. Vui lòng thử lại sau.');
+        return;
+    }
+    
+    console.log("✅ ApiService.searchAll is available, calling API...");
+    console.log("API_BASE_URL:", typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : 'NOT DEFINED');
+    console.log("Calling API with keyword:", keyword);
+    console.log("Full URL will be:", `${typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : 'http://localhost:82'}/search/all?keyword=${encodeURIComponent(keyword)}`);
+    
+    const searchPromise = ApiService.searchAll(keyword);
+    console.log("Search promise created:", searchPromise);
+    console.log("Promise type:", typeof searchPromise);
+    
+    searchPromise
+        .done(function(response, textStatus, xhr) {
+            console.log("✅✅✅ API call succeeded! ✅✅✅");
             console.log("=== Home Search API Response ===");
-            console.log("Full response:", response);
             
-            const isSuccess = response && (response.isSuccess === true || response.success === true || response.status === 200);
-            const hasData = response && response.data;
+            // If response is a string (from dataType: 'text'), parse it
+            let parsedResponse = response;
+            if (typeof response === 'string') {
+                console.log("⚠️ Response is string, parsing JSON...");
+                try {
+                    let responseText = response.trim();
+                    
+                    // Find the last complete JSON object by counting braces
+                    let braceCount = 0;
+                    let lastValidBrace = -1;
+                    let inString = false;
+                    let escapeNext = false;
+                    
+                    for (let i = 0; i < responseText.length; i++) {
+                        const char = responseText[i];
+                        
+                        if (escapeNext) {
+                            escapeNext = false;
+                            continue;
+                        }
+                        
+                        if (char === '\\') {
+                            escapeNext = true;
+                            continue;
+                        }
+                        
+                        if (char === '"') {
+                            inString = !inString;
+                            continue;
+                        }
+                        
+                        if (!inString) {
+                            if (char === '{') {
+                                braceCount++;
+                            } else if (char === '}') {
+                                braceCount--;
+                                if (braceCount === 0) {
+                                    lastValidBrace = i;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    
+                    if (lastValidBrace > 0) {
+                        responseText = responseText.substring(0, lastValidBrace + 1);
+                        console.log("✅ Found complete JSON ending at position:", lastValidBrace);
+                    }
+                    
+                    parsedResponse = JSON.parse(responseText);
+                    console.log("✅ Successfully parsed JSON from string!");
+                } catch (parseError) {
+                    console.error("❌ Failed to parse JSON from string:", parseError);
+                    showHomeSearchError('Lỗi khi xử lý dữ liệu từ server. Vui lòng thử lại.');
+                    return;
+                }
+            }
             
-            console.log("isSuccess:", isSuccess, "hasData:", hasData);
+            // Use xhr.responseJSON if available (set by api.js success handler)
+            if (xhr && xhr.responseJSON) {
+                parsedResponse = xhr.responseJSON;
+                console.log("✅ Using xhr.responseJSON");
+            }
             
-            if (isSuccess && hasData) {
-                // Check if data has restaurants and foods keys
-                if (typeof response.data === 'object' && (response.data.restaurants || response.data.foods)) {
-                    console.log("✅ Rendering home search results...");
-                    console.log("Restaurants:", response.data.restaurants?.length || 0);
-                    console.log("Foods:", response.data.foods?.length || 0);
-                    renderHomeSearchResults(response.data);
+            console.log("Full response:", JSON.stringify(parsedResponse, null, 2));
+            console.log("Response type:", typeof parsedResponse);
+            console.log("Response.isSuccess:", parsedResponse?.isSuccess);
+            console.log("Response.success:", parsedResponse?.success);
+            console.log("Response.status:", parsedResponse?.status);
+            console.log("Response.data:", parsedResponse?.data);
+            console.log("Response.data type:", typeof parsedResponse?.data);
+            console.log("Response.data keys:", parsedResponse?.data ? Object.keys(parsedResponse.data) : 'no data');
+            
+            // Use parsedResponse instead of response from now on
+            response = parsedResponse;
+            
+            // Check cả isSuccess, success, và status === 200
+            // Nếu response là array trực tiếp (không có wrapper), coi như thành công
+            const isDirectArray = Array.isArray(response);
+            
+            // Kiểm tra status có thể là number hoặc string "200"
+            const statusValue = response?.status;
+            const statusOk = statusValue === 200 || statusValue === '200' || parseInt(statusValue) === 200;
+            
+            const isSuccess = isDirectArray || (response && (
+                response.isSuccess === true || 
+                response.success === true || 
+                statusOk ||
+                (typeof statusValue === 'number' && statusValue >= 200 && statusValue < 300)
+            ));
+            const hasData = isDirectArray || (response && response.data);
+            
+            console.log("isDirectArray:", isDirectArray, "isSuccess:", isSuccess, "hasData:", hasData);
+            console.log("response.status:", statusValue, "type:", typeof statusValue, "statusOk:", statusOk);
+            
+            // Nếu response là array trực tiếp, xử lý như restaurants
+            if (isDirectArray) {
+                console.log("✅ Response is direct array, treating as restaurants...");
+                renderHomeSearchRestaurants(response);
+                return;
+            }
+            
+            // Nếu có data, luôn cố gắng render (kể cả khi isSuccess = false)
+            if (hasData && response.data) {
+                console.log("✅ Has data, checking format...");
+                console.log("response.data type:", typeof response.data);
+                console.log("response.data keys:", Object.keys(response.data || {}));
+                
+                // Check if data has restaurants and foods keys (even if they're empty arrays)
+                if (typeof response.data === 'object' && ('restaurants' in response.data || 'foods' in response.data)) {
+                    console.log("✅ Data has restaurants or foods keys");
+                    const restaurants = response.data.restaurants || [];
+                    const foods = response.data.foods || [];
+                    console.log("Restaurants:", restaurants.length, "type:", typeof restaurants, "isArray:", Array.isArray(restaurants));
+                    console.log("Foods:", foods.length, "type:", typeof foods, "isArray:", Array.isArray(foods));
+                    
+                    // Always render, even if arrays are empty (will show "no results" message)
+                    console.log("🔍 Calling renderHomeSearchResults with:", {
+                        restaurants: Array.isArray(restaurants) ? restaurants.length : 0,
+                        foods: Array.isArray(foods) ? foods.length : 0
+                    });
+                    
+                    const renderData = {
+                        restaurants: Array.isArray(restaurants) ? restaurants : [],
+                        foods: Array.isArray(foods) ? foods : []
+                    };
+                    
+                    console.log("🔍 About to call renderHomeSearchResults with:", {
+                        restaurantsCount: renderData.restaurants.length,
+                        foodsCount: renderData.foods.length
+                    });
+                    console.log("renderHomeSearchResults type:", typeof renderHomeSearchResults);
+                    
+                    if (typeof renderHomeSearchResults !== 'function') {
+                        console.error("❌ renderHomeSearchResults is not a function!");
+                        showHomeSearchError("Lỗi: Hàm render không tồn tại!");
+                        return;
+                    }
+                    
+                    try {
+                        renderHomeSearchResults(renderData);
+                        console.log("✅✅✅ renderHomeSearchResults called successfully ✅✅✅");
+                    } catch (error) {
+                        console.error("❌❌❌ Error calling renderHomeSearchResults:", error);
+                        console.error("Error message:", error.message);
+                        console.error("Error stack:", error.stack);
+                        showHomeSearchError("Lỗi khi hiển thị kết quả: " + error.message);
+                    }
                 } else if (Array.isArray(response.data)) {
                     // If data is array, treat as restaurants
                     console.log("⚠️ Data is array, treating as restaurants...");
                     renderHomeSearchRestaurants(response.data);
                 } else {
                     console.warn("⚠️ Data format not recognized:", response.data);
+                    console.warn("Data keys:", Object.keys(response.data || {}));
                     showHomeSearchNoResults();
                 }
+            } else if (isSuccess && !hasData) {
+                // Success but no data
+                console.warn("⚠️ Response successful but no data");
+                showHomeSearchNoResults();
             } else {
                 console.warn("⚠️ Response not successful or no data");
-                showHomeSearchNoResults();
+                console.warn("isSuccess:", isSuccess, "hasData:", hasData);
+                console.warn("Response object:", response);
+                // Nếu có status 200 nhưng không có data, vẫn hiển thị "no results" thay vì error
+                if (statusOk) {
+                    showHomeSearchNoResults();
+                } else {
+                    showHomeSearchError('Không thể tìm kiếm. Vui lòng thử lại sau.');
+                }
             }
         })
         .fail(function(xhr, status, error) {
@@ -1160,55 +1411,279 @@ function performHomeSearch() {
             console.error("Status:", status);
             console.error("Error:", error);
             console.error("XHR:", xhr);
-            showHomeSearchError('Không thể tìm kiếm. Vui lòng thử lại sau.');
+            console.error("Status code:", xhr.status);
+            
+            // Special handling for parsererror - try to parse responseText manually
+            if (status === 'parsererror' && xhr.responseText) {
+                console.log("⚠️ Parser error detected, attempting manual JSON parse...");
+                console.log("Response text length:", xhr.responseText.length);
+                console.log("Response text preview (first 500 chars):", xhr.responseText.substring(0, 500));
+                console.log("Response text preview (last 200 chars):", xhr.responseText.substring(Math.max(0, xhr.responseText.length - 200)));
+                
+                try {
+                    // Try to parse the response text manually
+                    let responseText = xhr.responseText.trim();
+                    
+                    // Strategy 1: Find the last complete JSON object by counting braces
+                    let braceCount = 0;
+                    let lastValidBrace = -1;
+                    let inString = false;
+                    let escapeNext = false;
+                    
+                    for (let i = 0; i < responseText.length; i++) {
+                        const char = responseText[i];
+                        
+                        if (escapeNext) {
+                            escapeNext = false;
+                            continue;
+                        }
+                        
+                        if (char === '\\') {
+                            escapeNext = true;
+                            continue;
+                        }
+                        
+                        if (char === '"') {
+                            inString = !inString;
+                            continue;
+                        }
+                        
+                        if (!inString) {
+                            if (char === '{') {
+                                braceCount++;
+                            } else if (char === '}') {
+                                braceCount--;
+                                if (braceCount === 0) {
+                                    lastValidBrace = i;
+                                }
+                            }
+                        }
+                    }
+                    
+                    // If we found a complete JSON object, use it
+                    if (lastValidBrace > 0) {
+                        console.log("✅ Found complete JSON object ending at position:", lastValidBrace);
+                        responseText = responseText.substring(0, lastValidBrace + 1);
+                    } else {
+                        // Strategy 2: Try to find the last closing brace and work backwards
+                        let lastBrace = responseText.lastIndexOf('}');
+                        if (lastBrace > 0) {
+                            console.log("⚠️ Using last brace at position:", lastBrace);
+                            // Try to find the matching opening brace
+                            let openBrace = responseText.lastIndexOf('{', lastBrace);
+                            if (openBrace >= 0) {
+                                responseText = responseText.substring(openBrace, lastBrace + 1);
+                            } else {
+                                responseText = responseText.substring(0, lastBrace + 1);
+                            }
+                        }
+                    }
+                    
+                    console.log("Attempting to parse JSON (length:", responseText.length, ")...");
+                    const response = JSON.parse(responseText);
+                    console.log("✅ Successfully parsed JSON manually!");
+                    console.log("Parsed response:", response);
+                    
+                    // Process the successfully parsed response
+                    if (response && (response.isSuccess === true || response.success === true || response.status === 200)) {
+                        console.log("✅ Response indicates success, processing data...");
+                        const restaurants = response.data?.restaurants || [];
+                        const foods = response.data?.foods || [];
+                        console.log("Restaurants:", restaurants.length, "Foods:", foods.length);
+                        
+                        if (restaurants.length > 0 || foods.length > 0) {
+                            renderHomeSearchResults(restaurants, foods);
+                        } else {
+                            showHomeSearchNoResults();
+                        }
+                        return; // Exit early since we handled it
+                    }
+                } catch (parseError) {
+                    console.error("❌ Failed to parse JSON manually:", parseError);
+                    console.error("Parse error message:", parseError.message);
+                    
+                    // Try one more strategy: extract JSON from responseText using regex
+                    try {
+                        const jsonMatch = xhr.responseText.match(/\{[\s\S]*\}/);
+                        if (jsonMatch && jsonMatch[0]) {
+                            console.log("⚠️ Trying regex extraction...");
+                            const response = JSON.parse(jsonMatch[0]);
+                            console.log("✅ Successfully parsed JSON using regex!");
+                            
+                            if (response && (response.isSuccess === true || response.success === true || response.status === 200)) {
+                                const restaurants = response.data?.restaurants || [];
+                                const foods = response.data?.foods || [];
+                                
+                                if (restaurants.length > 0 || foods.length > 0) {
+                                    renderHomeSearchResults(restaurants, foods);
+                                } else {
+                                    showHomeSearchNoResults();
+                                }
+                                return;
+                            }
+                        }
+                    } catch (regexParseError) {
+                        console.error("❌ Regex extraction also failed:", regexParseError);
+                    }
+                }
+            }
+            
+            console.error("Response text:", xhr.responseText ? xhr.responseText.substring(0, 1000) : 'No response text');
+            
+            // Show appropriate error message
+            let errorMessage = 'Không thể tìm kiếm. Vui lòng thử lại sau.';
+            
+            if (status === 'timeout') {
+                errorMessage = 'Yêu cầu tìm kiếm quá thời gian chờ. Vui lòng thử lại.';
+            } else if (status === 'error' && xhr.readyState === 0) {
+                errorMessage = 'Không thể kết nối đến server. Vui lòng kiểm tra kết nối mạng.';
+            } else if (xhr.status === 404) {
+                errorMessage = 'API tìm kiếm không tìm thấy. Vui lòng liên hệ quản trị viên.';
+            } else if (xhr.status >= 500) {
+                errorMessage = 'Lỗi server. Vui lòng thử lại sau.';
+            } else if (xhr.status === 400) {
+                errorMessage = 'Từ khóa tìm kiếm không hợp lệ.';
+            }
+            
+            showHomeSearchError(errorMessage);
         });
 }
 
-function renderHomeSearchResults(results) {
+// Make performHomeSearch globally available for debugging
+// This will be set after function is defined
+
+function renderHomeSearchResults(results, foodsParam) {
+    console.log("🔍🔍🔍 === renderHomeSearchResults() START === 🔍🔍🔍");
     const container = $('#search-results-container');
     
+    console.log("Container selector: #search-results-container");
+    console.log("Container found:", container.length > 0);
+    console.log("Container element:", container[0]);
+    
     if (container.length === 0) {
-        console.error("Search results container not found");
+        console.error("❌ Search results container not found!");
+        console.error("Trying to find alternative containers...");
+        console.error("search-results-section:", $('#search-results-section').length);
+        console.error("default-content-section:", $('#default-content-section').length);
+        // Try to find and show the section
+        const searchSection = $('#search-results-section');
+        if (searchSection.length > 0) {
+            searchSection.show();
+            console.log("✅ Search section shown");
+        }
         return;
     }
     
     console.log("=== renderHomeSearchResults() called ===");
+    console.log("Results:", results);
+    console.log("Results type:", typeof results);
+    console.log("Foods param:", foodsParam);
+    
+    // Handle both calling styles:
+    // 1. renderHomeSearchResults({restaurants: [], foods: []})
+    // 2. renderHomeSearchResults(restaurants, foods)
+    let restaurants = [];
+    let foods = [];
+    
+    if (foodsParam !== undefined) {
+        // Called with 2 parameters: (restaurants, foods)
+        console.log("✅ Called with 2 parameters");
+        restaurants = Array.isArray(results) ? results : [];
+        foods = Array.isArray(foodsParam) ? foodsParam : [];
+    } else if (results && typeof results === 'object') {
+        // Called with 1 parameter: {restaurants: [], foods: []}
+        console.log("✅ Called with 1 parameter (object)");
+        restaurants = Array.isArray(results.restaurants) ? results.restaurants : [];
+        foods = Array.isArray(results.foods) ? results.foods : [];
+    } else {
+        console.warn("⚠️ Unknown results format, defaulting to empty arrays");
+        restaurants = [];
+        foods = [];
+    }
+    
+    console.log("Final restaurants count:", restaurants.length);
+    console.log("Final foods count:", foods.length);
+    
+    console.log("Restaurants array length:", restaurants.length);
+    console.log("Foods array length:", foods.length);
+    console.log("Restaurants is array:", Array.isArray(restaurants));
+    console.log("Foods is array:", Array.isArray(foods));
     
     let html = '';
     let hasResults = false;
     
     // Restaurants section
-    if (results && results.restaurants && Array.isArray(results.restaurants) && results.restaurants.length > 0) {
-        console.log("✅ Rendering", results.restaurants.length, "restaurants");
+    if (restaurants.length > 0) {
+        console.log("✅ Rendering", restaurants.length, "restaurants");
         html += '<h5 class="mt-4 mb-3">Nhà hàng</h5>';
         html += '<div class="row">';
-        results.restaurants.forEach(function(restaurant) {
-            html += renderHomeRestaurantCard(restaurant);
+        restaurants.forEach(function(restaurant) {
+            const cardHtml = renderHomeRestaurantCard(restaurant);
+            html += cardHtml;
+            console.log("Restaurant card HTML length:", cardHtml.length);
         });
         html += '</div>';
         hasResults = true;
+    } else {
+        console.log("⚠️ No restaurants found");
     }
     
     // Foods section
-    if (results && results.foods && Array.isArray(results.foods) && results.foods.length > 0) {
-        console.log("✅ Rendering", results.foods.length, "foods");
+    if (foods.length > 0) {
+        console.log("✅ Rendering", foods.length, "foods");
         html += '<h5 class="mt-4 mb-3">Món ăn</h5>';
         html += '<div class="row">';
-        results.foods.forEach(function(food) {
-            html += renderHomeFoodCard(food);
+        let foodCount = 0;
+        foods.forEach(function(food) {
+            try {
+                const cardHtml = renderHomeFoodCard(food);
+                if (cardHtml && cardHtml.trim() !== '') {
+                    html += cardHtml;
+                    foodCount++;
+                    if (foodCount <= 3) {
+                        console.log("Food card", foodCount, "HTML length:", cardHtml.length);
+                    }
+                } else {
+                    console.warn("⚠️ Empty card HTML for food:", food.id, food.title);
+                }
+            } catch (error) {
+                console.error("❌ Error rendering food card:", error);
+                console.error("Food data:", food);
+            }
         });
         html += '</div>';
+        console.log("✅ Rendered", foodCount, "food cards out of", foods.length);
         hasResults = true;
+    } else {
+        console.log("⚠️ No foods found");
     }
     
-    if (!hasResults || !html) {
+    if (!hasResults) {
         console.warn("⚠️ No results to display");
         showHomeSearchNoResults();
         return;
     }
     
     console.log("✅ Rendering HTML, length:", html.length);
-    container.html(html);
+    console.log("HTML preview (first 500 chars):", html.substring(0, 500));
+    
+    try {
+        container.html(html);
+        console.log("✅ HTML set to container successfully");
+        console.log("Container HTML length after set:", container.html().length);
+        
+        // Verify it was set
+        setTimeout(function() {
+            const verifyHtml = container.html();
+            console.log("✅ Verification - Container HTML length:", verifyHtml.length);
+            if (verifyHtml.length === 0) {
+                console.error("❌ Container HTML was cleared! Something is wrong.");
+            }
+        }, 100);
+    } catch (error) {
+        console.error("❌ Error setting HTML to container:", error);
+        console.error("Error stack:", error.stack);
+    }
 }
 
 function renderHomeSearchRestaurants(restaurants) {
@@ -1466,62 +1941,44 @@ function showSearchSuggestions(keyword) {
     suggestionsDiv.show();
     console.log("✅ Suggestions div shown, loading...");
     
-    // Call search API to get suggestions
-    if (typeof ApiService === 'undefined' || typeof ApiService.searchAll !== 'function') {
-        console.error("❌ ApiService.searchAll is not available!");
+    // Call search suggestions API to get suggestions
+    if (typeof ApiService === 'undefined' || typeof ApiService.searchSuggestions !== 'function') {
+        console.error("❌ ApiService.searchSuggestions is not available!");
         suggestionsList.html('<div class="suggestion-item text-center py-2"><small class="text-muted">Lỗi: API không khả dụng</small></div>');
         return;
     }
     
-    ApiService.searchAll(keyword)
+    ApiService.searchSuggestions(keyword, 10)
         .done(function(response) {
             console.log("=== Search Suggestions API Response ===");
             console.log("Full response:", response);
-            console.log("Response type:", typeof response);
-            console.log("Response.isSuccess:", response?.isSuccess);
-            console.log("Response.success:", response?.success);
-            console.log("Response.status:", response?.status);
-            console.log("Response.data:", response?.data);
-            console.log("Response.data type:", typeof response?.data);
             
             const isSuccess = response && (response.isSuccess === true || response.success === true || response.status === 200);
             const hasData = response && response.data;
             
-            console.log("isSuccess:", isSuccess, "hasData:", hasData);
-            
             if (isSuccess && hasData) {
                 let suggestions = [];
-                const keywordLower = keyword.toLowerCase();
                 
-                // Get foods from response - check multiple possible paths
+                // Get foods from response (already filtered and translated by backend)
                 let foods = [];
                 if (response.data.foods && Array.isArray(response.data.foods)) {
                     foods = response.data.foods;
                 } else if (response.data.food && Array.isArray(response.data.food)) {
                     foods = response.data.food;
-                } else if (Array.isArray(response.data) && response.data.length > 0 && response.data[0].title) {
-                    // If data is directly an array of foods
-                    foods = response.data;
                 }
                 
                 foods.forEach(function(food) {
                     if (food && food.title) {
-                        const foodTitleLower = food.title.toLowerCase();
-                        // Lấy tất cả foods có chứa keyword, ưu tiên những cái bắt đầu bằng keyword
-                        if (foodTitleLower.includes(keywordLower)) {
-                            const priority = foodTitleLower.startsWith(keywordLower) ? 1 : 2;
-                            suggestions.push({
-                                type: 'food',
-                                title: food.title,
-                                id: food.id,
-                                price: food.price || 0,
-                                priority: priority
-                            });
-                        }
+                        suggestions.push({
+                            type: 'food',
+                            title: food.title,
+                            id: food.id,
+                            price: food.price || 0
+                        });
                     }
                 });
                 
-                // Get restaurants from response - check multiple possible paths
+                // Get restaurants from response (already filtered by backend)
                 let restaurants = [];
                 if (response.data.restaurants && Array.isArray(response.data.restaurants)) {
                     restaurants = response.data.restaurants;
@@ -1531,87 +1988,23 @@ function showSearchSuggestions(keyword) {
                 
                 restaurants.forEach(function(restaurant) {
                     if (restaurant && restaurant.title) {
-                        const restaurantTitleLower = restaurant.title.toLowerCase();
-                        // Lấy tất cả restaurants có chứa keyword, ưu tiên những cái bắt đầu bằng keyword
-                        if (restaurantTitleLower.includes(keywordLower)) {
-                            const priority = restaurantTitleLower.startsWith(keywordLower) ? 1 : 2;
-                            suggestions.push({
-                                type: 'restaurant',
-                                title: restaurant.title,
-                                id: restaurant.id,
-                                priority: priority
-                            });
-                        }
+                        suggestions.push({
+                            type: 'restaurant',
+                            title: restaurant.title,
+                            id: restaurant.id
+                        });
                     }
                 });
-                
-                // Sắp xếp theo priority (bắt đầu bằng keyword trước), sau đó theo tên
-                suggestions.sort(function(a, b) {
-                    if (a.priority !== b.priority) {
-                        return a.priority - b.priority;
-                    }
-                    return a.title.localeCompare(b.title);
-                });
-                
-                // Limit to 10 suggestions
-                suggestions = suggestions.slice(0, 10);
                 
                 if (suggestions.length > 0) {
                     renderSearchSuggestions(suggestions, keyword);
                 } else {
                     suggestionsList.html('<div class="suggestion-item text-center py-2"><small class="text-muted">Không tìm thấy gợi ý</small></div>');
                 }
-                } else {
-                    console.warn("⚠️ Response format invalid:", response);
-                    // Fallback: try to get data even without success flag
-                    let suggestions = [];
-                    const keywordLower = keyword.toLowerCase();
-                    
-                    if (response && response.data) {
-                        // Try to get foods from various possible paths
-                        let foods = [];
-                        if (response.data.foods && Array.isArray(response.data.foods)) {
-                            foods = response.data.foods;
-                        } else if (response.data.food && Array.isArray(response.data.food)) {
-                            foods = response.data.food;
-                        }
-                        
-                        foods.forEach(function(food) {
-                            if (food && food.title && food.title.toLowerCase().includes(keywordLower)) {
-                                suggestions.push({
-                                    type: 'food',
-                                    title: food.title,
-                                    id: food.id,
-                                    price: food.price || 0
-                                });
-                            }
-                        });
-                        
-                        // Try to get restaurants from various possible paths
-                        let restaurants = [];
-                        if (response.data.restaurants && Array.isArray(response.data.restaurants)) {
-                            restaurants = response.data.restaurants;
-                        } else if (response.data.restaurant && Array.isArray(response.data.restaurant)) {
-                            restaurants = response.data.restaurant;
-                        }
-                        
-                        restaurants.forEach(function(restaurant) {
-                            if (restaurant && restaurant.title && restaurant.title.toLowerCase().includes(keywordLower)) {
-                                suggestions.push({
-                                    type: 'restaurant',
-                                    title: restaurant.title,
-                                    id: restaurant.id
-                                });
-                            }
-                        });
-                    }
-                    
-                    if (suggestions.length > 0) {
-                        renderSearchSuggestions(suggestions.slice(0, 10), keyword);
-                    } else {
-                        suggestionsList.html('<div class="suggestion-item text-center py-2"><small class="text-muted">Không tìm thấy gợi ý</small></div>');
-                    }
-                }
+            } else {
+                console.warn("⚠️ Response format invalid:", response);
+                suggestionsList.html('<div class="suggestion-item text-center py-2"><small class="text-muted">Không tìm thấy gợi ý</small></div>');
+            }
         })
         .fail(function(xhr, status, error) {
             console.error("=== Search Suggestions API Error ===");
@@ -1679,4 +2072,36 @@ function hideSearchSuggestions() {
         suggestionsDiv.hide();
     }
 }
+
+// Make functions globally available for debugging (after all functions are defined)
+$(document).ready(function() {
+    if (typeof performHomeSearch !== 'undefined') {
+        window.performHomeSearch = performHomeSearch;
+        console.log("✅ performHomeSearch made globally available");
+    }
+    if (typeof renderHomeSearchResults !== 'undefined') {
+        window.renderHomeSearchResults = renderHomeSearchResults;
+        console.log("✅ renderHomeSearchResults made globally available");
+    }
+    
+    // Final attempt to setup search handlers
+    setTimeout(function() {
+        console.log("🔍 Final setup attempt - checking if handlers are attached");
+        const searchBtn = $('#home-search-btn');
+        if (searchBtn.length > 0) {
+            console.log("Search button exists:", searchBtn.length > 0);
+            console.log("Handler attached:", searchBtn.data('handler-attached'));
+            if (!searchBtn.data('handler-attached')) {
+                console.log("🔍 Handlers not attached, calling setupHomeSearch...");
+                if (typeof window.setupHomeSearch === 'function') {
+                    window.setupHomeSearch();
+                } else {
+                    console.error("❌ window.setupHomeSearch is not a function!");
+                }
+            }
+        } else {
+            console.error("❌ Search button not found in final check!");
+        }
+    }, 1500);
+});
 

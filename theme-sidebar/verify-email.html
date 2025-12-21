@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xác nhận email - OSAHANEAT</title>
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="vendor/icons/feather.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .verification-container {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        .verification-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+        .verification-icon.success {
+            color: #28a745;
+        }
+        .verification-icon.error {
+            color: #dc3545;
+        }
+        .verification-icon.loading {
+            color: #667eea;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .message {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .btn-home {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 40px;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+            transition: transform 0.2s;
+        }
+        .btn-home:hover {
+            transform: scale(1.05);
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="verification-container">
+        <div id="loadingState">
+            <i class="feather-loader verification-icon loading"></i>
+            <h2>Đang xác nhận email...</h2>
+            <p class="message">Vui lòng đợi trong giây lát</p>
+        </div>
+        
+        <div id="successState" style="display: none;">
+            <i class="feather-check-circle verification-icon success"></i>
+            <h2>Xác nhận thành công!</h2>
+            <p class="message">Email của bạn đã được xác nhận. Bây giờ bạn có thể đăng nhập và sử dụng tài khoản.</p>
+            <a href="index.html" class="btn-home">Đi tới trang chủ</a>
+        </div>
+        
+        <div id="errorState" style="display: none;">
+            <i class="feather-x-circle verification-icon error"></i>
+            <h2>Xác nhận thất bại</h2>
+            <p class="message" id="errorMessage">Token không hợp lệ hoặc đã hết hạn. Vui lòng đăng ký lại hoặc liên hệ với quản trị viên.</p>
+            <a href="register.html" class="btn-home">Đăng ký lại</a>
+        </div>
+    </div>
+
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script>
+        const API_BASE_URL = 'http://localhost:82';
+        
+        $(document).ready(function() {
+            // Lấy token từ URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+            
+            if (!token) {
+                showError('Không tìm thấy token xác nhận trong URL!');
+                return;
+            }
+            
+            // Gọi API xác nhận email
+            verifyEmail(token);
+        });
+        
+        function verifyEmail(token) {
+            $.ajax({
+                method: 'GET',
+                url: `${API_BASE_URL}/auth/verify-email?token=${encodeURIComponent(token)}`,
+                dataType: 'json',
+                timeout: 10000
+            })
+            .done(function(response) {
+                console.log("Verification response:", response);
+                
+                if (response && (response.success || response.status === 200)) {
+                    showSuccess();
+                } else {
+                    const errorMsg = response?.desc || 'Xác nhận email thất bại!';
+                    showError(errorMsg);
+                }
+            })
+            .fail(function(xhr) {
+                console.error("Verification error:", xhr);
+                const errorMsg = xhr.responseJSON?.desc || 'Lỗi khi xác nhận email. Vui lòng thử lại sau.';
+                showError(errorMsg);
+            });
+        }
+        
+        function showSuccess() {
+            $('#loadingState').hide();
+            $('#errorState').hide();
+            $('#successState').show();
+        }
+        
+        function showError(message) {
+            $('#loadingState').hide();
+            $('#successState').hide();
+            $('#errorMessage').text(message);
+            $('#errorState').show();
+        }
+    </script>
+</body>
+</html>
+

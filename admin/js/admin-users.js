@@ -4,6 +4,7 @@
 
 let currentEditUserId = null;
 let dataTable = null;
+let originalUserData = {}; // Store original data for cancel
 
 $(document).ready(function() {
     console.log("=== admin-users.js loaded ===");
@@ -224,21 +225,48 @@ function renderUsersTable(users) {
             ? '<span class="badge badge-danger">ADMIN</span>'
             : '<span class="badge badge-primary">USER</span>';
         
+        // Escape HTML for data attributes
+        const escapedUserName = (user.userName || '').replace(/"/g, '&quot;');
+        const escapedFullName = (user.fullName || '').replace(/"/g, '&quot;');
+        const escapedPhoneNumber = (user.phoneNumber || '').replace(/"/g, '&quot;');
+        
         html += `
-            <tr>
+            <tr data-user-id="${user.id}" data-edit-mode="false">
                 <td>${user.id || 'N/A'}</td>
-                <td>${user.userName || 'N/A'}</td>
-                <td>${user.fullName || 'N/A'}</td>
-                <td>${user.phoneNumber || 'N/A'}</td>
+                <td class="editable-cell" data-field="userName" data-original="${escapedUserName}">
+                    <span class="cell-display">${user.userName || 'N/A'}</span>
+                    <input type="text" class="form-control form-control-sm cell-edit" value="${escapedUserName}" style="display: none;" />
+                </td>
+                <td class="editable-cell" data-field="fullName" data-original="${escapedFullName}">
+                    <span class="cell-display">${user.fullName || 'N/A'}</span>
+                    <input type="text" class="form-control form-control-sm cell-edit" value="${escapedFullName}" style="display: none;" />
+                </td>
+                <td class="editable-cell" data-field="phoneNumber" data-original="${escapedPhoneNumber}">
+                    <span class="cell-display">${user.phoneNumber || 'N/A'}</span>
+                    <input type="text" class="form-control form-control-sm cell-edit" value="${escapedPhoneNumber}" style="display: none;" />
+                </td>
                 <td>${roleBadge}</td>
                 <td>${createDate}</td>
                 <td>
-                    <button class="btn btn-sm btn-primary edit-user-btn" data-id="${user.id}" title="Sửa">
-                        <i class="feather-edit"></i>
-                    </button>
-                    <button class="btn btn-sm btn-danger delete-user-btn" data-id="${user.id}" title="Xóa">
-                        <i class="feather-trash-2"></i>
-                    </button>
+                    <div class="action-buttons-view">
+                        <button class="btn btn-sm btn-info reset-password-btn mr-1" data-id="${user.id}" data-name="${(user.fullName || user.userName || 'User').replace(/'/g, "\\'")}" title="Cấp lại mật khẩu">
+                            <i class="feather-key"></i>
+                        </button>
+                        <button class="btn btn-sm btn-primary edit-user-btn mr-1" data-id="${user.id}" title="Sửa">
+                            <i class="feather-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger delete-user-btn" data-id="${user.id}" title="Xóa">
+                            <i class="feather-trash-2"></i>
+                        </button>
+                    </div>
+                    <div class="action-buttons-edit" style="display: none;">
+                        <button class="btn btn-sm btn-success save-inline-edit-btn mr-1" data-id="${user.id}" title="Lưu">
+                            <i class="feather-check"></i>
+                        </button>
+                        <button class="btn btn-sm btn-secondary cancel-inline-edit-btn" data-id="${user.id}" title="Hủy">
+                            <i class="feather-x"></i>
+                        </button>
+                    </div>
                 </td>
             </tr>
         `;
@@ -417,16 +445,53 @@ function setupEventHandlers() {
         saveUser();
     });
     
-    // Edit user button (event delegation)
+    // Edit user button (event delegation) - Switch to inline edit mode
     $(document).on('click', '.edit-user-btn', function() {
         const userId = $(this).data('id');
-        editUser(userId);
+        const $row = $(this).closest('tr');
+        enterInlineEditMode($row, userId);
+    });
+    
+    // Save inline edit button
+    $(document).on('click', '.save-inline-edit-btn', function() {
+        const userId = $(this).data('id');
+        const $row = $(this).closest('tr');
+        saveInlineEdit($row, userId);
+    });
+    
+    // Cancel inline edit button
+    $(document).on('click', '.cancel-inline-edit-btn', function() {
+        const userId = $(this).data('id');
+        const $row = $(this).closest('tr');
+        cancelInlineEdit($row, userId);
+    });
+    
+    // Allow Enter key to save in edit mode
+    $(document).on('keydown', '.cell-edit', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const $row = $(this).closest('tr');
+            const userId = $row.data('user-id');
+            saveInlineEdit($row, userId);
+        } else if (e.key === 'Escape') {
+            e.preventDefault();
+            const $row = $(this).closest('tr');
+            const userId = $row.data('user-id');
+            cancelInlineEdit($row, userId);
+        }
     });
     
     // Delete user button (event delegation)
     $(document).on('click', '.delete-user-btn', function() {
         const userId = $(this).data('id');
         deleteUser(userId);
+    });
+    
+    // Reset password button click
+    $(document).on('click', '.reset-password-btn', function() {
+        const userId = $(this).data('id');
+        const userName = $(this).data('name');
+        resetUserPassword(userId, userName);
     });
 }
 
@@ -438,45 +503,148 @@ function resetUserForm() {
     currentEditUserId = null;
 }
 
-function editUser(userId) {
-    console.log("Editing user ID:", userId);
+/**
+ * Enter inline edit mode for a row (Excel-like editing)
+ */
+function enterInlineEditMode($row, userId) {
+    console.log("Entering inline edit mode for user ID:", userId);
     
-    AdminApiService.getUserById(userId)
+    // Cancel any other row in edit mode
+    $('tr[data-edit-mode="true"]').each(function() {
+        const $otherRow = $(this);
+        const otherUserId = $otherRow.data('user-id');
+        cancelInlineEdit($otherRow, otherUserId);
+    });
+    
+    // Store original data
+    originalUserData[userId] = {
+        userName: $row.find('[data-field="userName"] .cell-display').text().trim(),
+        fullName: $row.find('[data-field="fullName"] .cell-display').text().trim(),
+        phoneNumber: $row.find('[data-field="phoneNumber"] .cell-display').text().trim()
+    };
+    
+    // Switch to edit mode
+    $row.attr('data-edit-mode', 'true');
+    $row.addClass('editing-row');
+    
+    // Hide display, show inputs
+    $row.find('.cell-display').hide();
+    $row.find('.cell-edit').show();
+    
+    // Hide view buttons, show edit buttons
+    $row.find('.action-buttons-view').hide();
+    $row.find('.action-buttons-edit').show();
+    
+    // Focus first input
+    $row.find('.cell-edit').first().focus().select();
+}
+
+/**
+ * Save inline edit changes
+ */
+function saveInlineEdit($row, userId) {
+    console.log("Saving inline edit for user ID:", userId);
+    
+    // Get values from inputs
+    const userName = $row.find('[data-field="userName"] .cell-edit').val().trim();
+    const fullName = $row.find('[data-field="fullName"] .cell-edit').val().trim();
+    const phoneNumber = $row.find('[data-field="phoneNumber"] .cell-edit').val().trim();
+    
+    // Validate
+    if (!userName) {
+        alert('Username không được để trống!');
+        $row.find('[data-field="userName"] .cell-edit').focus();
+        return;
+    }
+    
+    // Prepare update data
+    const userData = {
+        userName: userName,
+        fullName: fullName || null,
+        phoneNumber: phoneNumber || null
+    };
+    
+    // Disable buttons during save
+    $row.find('.save-inline-edit-btn, .cancel-inline-edit-btn').prop('disabled', true);
+    
+    // Call API to update
+    AdminApiService.updateUser(userId, userData)
         .done(function(response) {
-            console.log("User data:", response);
-            // Support both ResponseData and ApiResponse formats
-            let user = null;
-            if (response) {
-                if (response.data) {
-                    user = response.data;
-                } else if (response.result) {
-                    user = response.result;
-                }
-            }
-            if (user) {
-                currentEditUserId = user.id;
-                $('#userName').val(user.userName || '');
-                $('#userName').prop('readonly', true);
-                $('#fullname').val(user.fullName || '');
-                $('#phoneNumber').val(user.phoneNumber || '');
-                $('#password').val('');
-                $('#password').prop('required', false);
-                $('#password').closest('.form-group').show();
+            console.log("Update user response:", response);
+            const isSuccess = (response && response.status === 200 && (response.isSuccess || response.success)) ||
+                              (response && response.code === 200);
+            if (isSuccess) {
+                // Update display values
+                $row.find('[data-field="userName"] .cell-display').text(userName || 'N/A');
+                $row.find('[data-field="fullName"] .cell-display').text(fullName || 'N/A');
+                $row.find('[data-field="phoneNumber"] .cell-display').text(phoneNumber || 'N/A');
                 
-                $('#userModalLabel').text('Sửa thông tin người dùng');
-                $('#userModal').modal('show');
+                // Exit edit mode
+                exitInlineEditMode($row);
+                
+                // Show success message
+                const $successBadge = $('<span class="badge badge-success ml-2">Đã lưu</span>');
+                $row.find('td:first').append($successBadge);
+                setTimeout(function() {
+                    $successBadge.fadeOut(function() {
+                        $(this).remove();
+                    });
+                }, 2000);
             } else {
-                alert('Không tìm thấy người dùng!');
+                const errorMsg = (response && response.desc) || 
+                                (response && response.message) || 
+                                'Cập nhật thất bại!';
+                alert(errorMsg);
+                $row.find('.save-inline-edit-btn, .cancel-inline-edit-btn').prop('disabled', false);
             }
         })
         .fail(function(xhr) {
-            console.error('Error getting user:', xhr);
-            let errorMsg = "Không thể lấy thông tin người dùng!";
-            if (xhr.responseJSON && xhr.responseJSON.message) {
-                errorMsg = xhr.responseJSON.message;
+            console.error('Error updating user:', xhr);
+            let errorMsg = "Không thể cập nhật người dùng!";
+            if (xhr.responseJSON && (xhr.responseJSON.desc || xhr.responseJSON.message)) {
+                errorMsg = xhr.responseJSON.desc || xhr.responseJSON.message;
             }
             alert(errorMsg);
+            $row.find('.save-inline-edit-btn, .cancel-inline-edit-btn').prop('disabled', false);
         });
+}
+
+/**
+ * Cancel inline edit and restore original values
+ */
+function cancelInlineEdit($row, userId) {
+    console.log("Cancelling inline edit for user ID:", userId);
+    
+    // Restore original values if available
+    if (originalUserData[userId]) {
+        const original = originalUserData[userId];
+        $row.find('[data-field="userName"] .cell-edit').val(original.userName);
+        $row.find('[data-field="fullName"] .cell-edit').val(original.fullName);
+        $row.find('[data-field="phoneNumber"] .cell-edit').val(original.phoneNumber);
+    }
+    
+    // Exit edit mode
+    exitInlineEditMode($row);
+    
+    // Clean up
+    delete originalUserData[userId];
+}
+
+/**
+ * Exit inline edit mode
+ */
+function exitInlineEditMode($row) {
+    // Hide inputs, show display
+    $row.find('.cell-edit').hide();
+    $row.find('.cell-display').show();
+    
+    // Hide edit buttons, show view buttons
+    $row.find('.action-buttons-edit').hide();
+    $row.find('.action-buttons-view').show();
+    
+    // Remove edit mode
+    $row.attr('data-edit-mode', 'false');
+    $row.removeClass('editing-row');
 }
 
 function saveUser() {
@@ -591,6 +759,31 @@ function saveUser() {
                 alert(errorMsg);
             });
     }
+}
+
+function resetUserPassword(userId, userName) {
+    if (!confirm(`Bạn có chắc chắn muốn cấp lại mật khẩu cho user "${userName}"?\n\nMật khẩu mặc định sẽ là: 123456\n\nEmail thông báo sẽ được gửi đến user.`)) {
+        return;
+    }
+    
+    console.log("Resetting password for user ID:", userId);
+    
+    AdminApiService.resetUserPassword(userId)
+        .done(function(response) {
+            console.log("Reset password response:", response);
+            if (response && (response.success || response.isSuccess)) {
+                const newPassword = response.desc?.match(/123456/) ? '123456' : '123456';
+                alert(`✅ Cấp lại mật khẩu thành công!\n\nMật khẩu mới: ${newPassword}\n\nEmail thông báo đã được gửi đến user.`);
+                loadUsers(); // Reload users list
+            } else {
+                alert('Lỗi: ' + (response?.desc || 'Không thể cấp lại mật khẩu'));
+            }
+        })
+        .fail(function(xhr) {
+            console.error('Error resetting password:', xhr);
+            const errorMsg = xhr.responseJSON?.desc || 'Lỗi khi cấp lại mật khẩu';
+            alert(errorMsg);
+        });
 }
 
 function deleteUser(userId) {

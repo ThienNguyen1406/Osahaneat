@@ -1,6 +1,7 @@
 package com.example.food_delivery.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -64,6 +65,7 @@ public class Food {
 
     @ManyToOne
     @JoinColumn(name = "cate_id")
+    @JsonIgnoreProperties({"lisFood", "lisMenuRestaurant"}) // Prevent circular reference
     private Category category;
 
     public boolean isFreeShip() {
@@ -75,6 +77,7 @@ public class Food {
     }
 
     @OneToMany(mappedBy = "food")
+    @JsonIgnore // Prevent circular reference: Food -> RatingFood -> Food
     private Set<RatingFood> listRatingFood;
 
     @OneToMany(mappedBy = "food")

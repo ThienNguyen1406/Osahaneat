@@ -106,9 +106,12 @@ public class AuthenticationService implements AuthenticationServiceImp {
             String jit = signToken.getJWTClaimsSet().getJWTID();
             Date expiryTime = signToken.getJWTClaimsSet().getExpirationTime();
 
+            // Save to database
             InvalidatedToken invalidatedToken =
                     InvalidatedToken.builder().expiryTime(expiryTime).id(jit).build();
             invalidatedTokenRepository.save(invalidatedToken);
+            
+            log.info("✅ Token blacklisted: {}", jit);
         } catch (AppException exception) {
             log.info("Token already expired");
         }
@@ -119,6 +122,7 @@ public class AuthenticationService implements AuthenticationServiceImp {
         var expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
         var jit = signedJWT.getJWTClaimsSet().getJWTID();
 
+        // Save old token to database
         invalidatedTokenRepository.save(
                 InvalidatedToken.builder().id(jit).expiryTime(expiryTime).build());
 
@@ -150,8 +154,12 @@ public class AuthenticationService implements AuthenticationServiceImp {
         var verified = signedJWT.verify(verifier);
         if (!(verified && expiryTime.after(new Date()))) throw new AppException(ErrorCode.UNAUTHENTICATED);
 
-        if (invalidatedTokenRepository.existsById(signedJWT.getJWTClaimsSet().getJWTID()))
+        String jit = signedJWT.getJWTClaimsSet().getJWTID();
+        
+        // Check database for blacklisted token
+        if (invalidatedTokenRepository.existsById(jit)) {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
+        }
 
         return signedJWT;
     }

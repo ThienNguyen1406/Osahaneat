@@ -21,6 +21,8 @@ public class SecurityConfiguration {
     private static final String[] PUBLIC_ENDPOINTS = {
         "/auth/**",
         "/login/**",
+        "/verify-email.html",
+        "/user/forgot-password", // Allow forgot password request without authentication
         "/roles/**",
         "/permissions/**",
         // "/order/**", // Removed - orders should require authentication

@@ -120,5 +120,68 @@ public class FoodNameTranslator {
         
         return result;
     }
+    
+    /**
+     * Reverse translation: Chuyển từ khóa tiếng Việt sang tiếng Anh để tìm kiếm trong database
+     * Ví dụ: "gà" -> "chicken", "cơm" -> "rice", "gà bơ" -> "butter chicken"
+     * 
+     * @param vietnameseKeyword Từ khóa tiếng Việt
+     * @return Danh sách các từ khóa tiếng Anh tương ứng (có thể nhiều từ)
+     */
+    public static java.util.List<String> reverseTranslate(String vietnameseKeyword) {
+        java.util.List<String> englishKeywords = new java.util.ArrayList<>();
+        
+        if (vietnameseKeyword == null || vietnameseKeyword.trim().isEmpty()) {
+            return englishKeywords;
+        }
+        
+        String keyword = vietnameseKeyword.trim().toLowerCase();
+        
+        // Reverse mapping: từ tiếng Việt sang tiếng Anh
+        // Tạo reverse map từ TRANSLATION_MAP
+        Map<String, String> reverseMap = new HashMap<>();
+        for (Map.Entry<String, String> entry : TRANSLATION_MAP.entrySet()) {
+            reverseMap.put(entry.getValue().toLowerCase(), entry.getKey());
+        }
+        
+        // Thêm các mapping đặc biệt
+        reverseMap.put("gà bơ", "butter chicken");
+        reverseMap.put("gà", "chicken");
+        reverseMap.put("cơm", "rice");
+        reverseMap.put("mì ý", "pasta");
+        reverseMap.put("mì", "pasta");
+        reverseMap.put("bánh dosa", "dosa");
+        reverseMap.put("dosa", "dosa");
+        reverseMap.put("bánh idly", "idly");
+        reverseMap.put("idly", "idly");
+        reverseMap.put("bánh samosa", "samosa");
+        reverseMap.put("samosa", "samosa");
+        reverseMap.put("tráng miệng", "dessert");
+        
+        // Tìm kiếm exact match trước
+        if (reverseMap.containsKey(keyword)) {
+            englishKeywords.add(reverseMap.get(keyword));
+        }
+        
+        // Tìm kiếm partial match (keyword chứa trong value)
+        for (Map.Entry<String, String> entry : reverseMap.entrySet()) {
+            String vietnameseValue = entry.getKey();
+            String englishKey = entry.getValue();
+            
+            // Nếu keyword chứa từ tiếng Việt hoặc ngược lại
+            if (keyword.contains(vietnameseValue) || vietnameseValue.contains(keyword)) {
+                if (!englishKeywords.contains(englishKey)) {
+                    englishKeywords.add(englishKey);
+                }
+            }
+        }
+        
+        // Nếu không tìm thấy, trả về keyword gốc (có thể là tiếng Anh hoặc không có trong map)
+        if (englishKeywords.isEmpty()) {
+            englishKeywords.add(keyword);
+        }
+        
+        return englishKeywords;
+    }
 }
 

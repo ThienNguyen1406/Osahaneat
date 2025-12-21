@@ -19,6 +19,41 @@
       <link href="css/styles.css" rel="stylesheet" />
       <!-- Datatables css -->
       <link href="vendor/dataTables/dataTables/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+      <!-- Custom Restaurant Grid Styles -->
+      <style>
+         .restaurant-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid #e0e0e0;
+            height: 100%;
+         }
+         .restaurant-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+         }
+         .restaurant-card .card-img-wrapper {
+            border-radius: 4px 4px 0 0;
+            height: 200px;
+            overflow: hidden;
+            background: #f8f9fa;
+         }
+         .restaurant-card .card-body {
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+         }
+         .restaurant-card .card-title {
+            color: #333;
+            line-height: 1.4;
+            font-size: 1.1rem;
+            font-weight: 600;
+            min-height: 2.5rem;
+         }
+         @media (max-width: 768px) {
+            .restaurant-card .card-img-wrapper {
+               height: 150px !important;
+            }
+         }
+      </style>
    </head>
    <body class="sb-nav-fixed">
       <nav class="sb-topnav navbar navbar-expand navbar-light bg-white shadow-sm">
@@ -78,6 +113,10 @@
                         <div class="sb-nav-link-icon"><i class="feather-shield"></i></div>
                         Quản lý phân quyền
                      </a>
+                     <a class="nav-link" href="password-reset-requests.html">
+                        <div class="sb-nav-link-icon"><i class="feather-key"></i></div>
+                        Yêu cầu quên mật khẩu
+                     </a>
                   </div>
                </div>
                <div class="sb-sidenav-footer">
@@ -110,27 +149,11 @@
                               Danh sách Nhà hàng
                            </div>
                            <div class="card-body">
-                              <div class="table-responsive">
-                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                    <thead>
-                                       <tr class="text-uppercase">
-                                          <th>Ảnh</th>
-                                          <th>Tên nhà hàng</th>
-                                          <th>Mô tả ngắn</th>
-                                          <th>Trạng thái</th>
-                                          <th>Miễn phí ship</th>
-                                          <th>Đánh giá</th>
-                                          <th>Hành động</th>
-                                       </tr>
-                                    </thead>
-                                    <tbody id="restaurants-tbody">
-                                       <tr>
-                                          <td colspan="6" class="text-center text-muted">
-                                             <i class="feather-loader spinner-border spinner-border-sm"></i> Đang tải dữ liệu...
-                                          </td>
-                                       </tr>
-                                    </tbody>
-                                 </table>
+                              <!-- Grid Container for Restaurants -->
+                              <div id="restaurants-grid-container" class="row">
+                                 <div class="col-12 text-center text-muted py-5">
+                                    <i class="feather-loader spinner-border spinner-border-sm"></i> Đang tải dữ liệu...
+                                 </div>
                               </div>
                            </div>
                         </div>

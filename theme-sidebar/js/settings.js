@@ -748,9 +748,9 @@ function initAddressMap() {
         window.addressMarker = null;
     }
     
-    // Get current location or use default (Ho Chi Minh City)
-    let centerLat = 10.8231;
-    let centerLng = 106.6297;
+    // Get current location or use default (Ha Noi)
+    let centerLat = 21.0285;
+    let centerLng = 105.8542;
     
     // Try to get current location
     if (navigator.geolocation) {
@@ -764,7 +764,7 @@ function initAddressMap() {
             },
             function(error) {
                 console.warn('⚠️ Error getting location:', error);
-                console.log("Using default location (Ho Chi Minh City)");
+                console.log("Using default location (Ha Noi)");
                 initMapWithCenter(centerLat, centerLng);
             },
             {

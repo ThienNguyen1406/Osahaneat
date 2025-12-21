@@ -13,11 +13,12 @@ public interface RestaurantReponsitory extends JpaRepository<Restaurant, Integer
     // Search restaurants by title
     List<Restaurant> findByTitleContainingIgnoreCase(String keyword);
     
-    // Search restaurants by title or subtitle or description
-    @Query("SELECT r FROM restaurant r WHERE LOWER(r.title) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-           "OR LOWER(r.subtitle) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-           "OR LOWER(r.description) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-           "OR LOWER(r.address) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    // Search restaurants by title or subtitle or description (supports Vietnamese)
+    @Query("SELECT r FROM restaurant r WHERE " +
+           "(r.title IS NOT NULL AND r.title LIKE CONCAT('%', :keyword, '%')) " +
+           "OR (r.subtitle IS NOT NULL AND r.subtitle LIKE CONCAT('%', :keyword, '%')) " +
+           "OR (r.description IS NOT NULL AND r.description LIKE CONCAT('%', :keyword, '%')) " +
+           "OR (r.address IS NOT NULL AND r.address LIKE CONCAT('%', :keyword, '%'))")
     List<Restaurant> searchRestaurants(@Param("keyword") String keyword);
     
     // Find restaurants by owner ID

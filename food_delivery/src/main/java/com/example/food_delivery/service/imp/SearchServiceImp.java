@@ -29,5 +29,8 @@ public interface SearchServiceImp {
     List<Food> searchFoodsFiltered(String keyword, String sort, Integer priceRange, List<Integer> categoryIds);
     
     List<Restaurant> searchRestaurantsFiltered(String keyword, String sort, Integer priceRange, List<Integer> categoryIds);
+    
+    // Search suggestions for autocomplete (limited results, fast)
+    Map<String, Object> searchSuggestions(String keyword, int limit);
 }
 

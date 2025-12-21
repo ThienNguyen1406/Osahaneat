@@ -269,17 +269,26 @@ const AdminApiService = {
 
     getRestaurants: function() {
         // Use admin endpoint if available, fallback to public endpoint
+        const endpoint = `${API_BASE_URL}/admin/restaurant`;
+        console.log("=== AdminApiService.getRestaurants() called ===");
+        console.log("Endpoint URL:", endpoint);
+        console.log("API_BASE_URL:", API_BASE_URL);
+        console.log("Headers:", getHeaders());
+        
         return $.ajax({
             method: 'GET',
-            url: `${API_BASE_URL}/admin/restaurant`,
+            url: endpoint,
             headers: getHeaders(),
             dataType: 'json'
         }).fail(function(xhr) {
+            console.error("Admin endpoint failed, status:", xhr.status);
             // Fallback to public endpoint if admin endpoint fails
             if (xhr.status === 404 || xhr.status === 403) {
+                const fallbackEndpoint = `${API_BASE_URL}/restaurant`;
+                console.log("Trying fallback endpoint:", fallbackEndpoint);
                 return $.ajax({
                     method: 'GET',
-                    url: `${API_BASE_URL}/restaurant`,
+                    url: fallbackEndpoint,
                     headers: getHeaders(),
                     dataType: 'json'
                 });
@@ -653,6 +662,18 @@ const AdminApiService = {
             dataType: 'json'
         });
     },
+    
+    /**
+     * GET /user/by-role/{roleName} - Lấy danh sách users theo role
+     */
+    getUsersByRole: function(roleName) {
+        return $.ajax({
+            method: 'GET',
+            url: `${API_BASE_URL}/user/by-role/${encodeURIComponent(roleName)}`,
+            headers: getHeaders(),
+            dataType: 'json'
+        });
+    },
 
     /**
      * POST /admin/role - Tạo role mới
@@ -723,6 +744,65 @@ const AdminApiService = {
         return $.ajax({
             method: 'PUT',
             url: `${API_BASE_URL}/admin/shipper/${shipperId}/reset-password`,
+            headers: getHeaders(),
+            contentType: 'application/json',
+            data: JSON.stringify({ password: newPassword || '123456' }),
+            dataType: 'json'
+        });
+    },
+
+    // ==================== Password Reset Management APIs ====================
+    /**
+     * GET /user/password-reset-requests - Lấy danh sách yêu cầu quên mật khẩu
+     */
+    getPasswordResetRequests: function(status) {
+        let url = `${API_BASE_URL}/user/password-reset-requests`;
+        if (status) {
+            url += `?status=${encodeURIComponent(status)}`;
+        }
+        return $.ajax({
+            method: 'GET',
+            url: url,
+            headers: getHeaders(),
+            dataType: 'json'
+        });
+    },
+
+    /**
+     * PUT /user/password-reset-requests/{id}/approve - Duyệt yêu cầu quên mật khẩu
+     */
+    approvePasswordResetRequest: function(requestId, adminNotes) {
+        return $.ajax({
+            method: 'PUT',
+            url: `${API_BASE_URL}/user/password-reset-requests/${requestId}/approve`,
+            headers: getHeaders(),
+            contentType: 'application/json',
+            data: JSON.stringify({ adminNotes: adminNotes || '' }),
+            dataType: 'json'
+        });
+    },
+
+    /**
+     * PUT /user/password-reset-requests/{id}/reject - Từ chối yêu cầu quên mật khẩu
+     */
+    rejectPasswordResetRequest: function(requestId, adminNotes) {
+        return $.ajax({
+            method: 'PUT',
+            url: `${API_BASE_URL}/user/password-reset-requests/${requestId}/reject`,
+            headers: getHeaders(),
+            contentType: 'application/json',
+            data: JSON.stringify({ adminNotes: adminNotes || '' }),
+            dataType: 'json'
+        });
+    },
+
+    /**
+     * PUT /user/{id}/reset-password - Reset password cho user (Admin only)
+     */
+    resetUserPassword: function(userId, newPassword) {
+        return $.ajax({
+            method: 'PUT',
+            url: `${API_BASE_URL}/user/${userId}/reset-password`,
             headers: getHeaders(),
             contentType: 'application/json',
             data: JSON.stringify({ password: newPassword || '123456' }),

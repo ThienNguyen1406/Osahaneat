@@ -19,6 +19,52 @@
       <link href="css/styles.css?v=2.0" rel="stylesheet" />
       <!-- Datatables css -->
       <link href="vendor/dataTables/dataTables/css/dataTables.bootstrap4.min.css?v=2.0" rel="stylesheet">
+      <!-- Inline Edit Styles -->
+      <style>
+         /* Inline editing styles */
+         tr.editing-row {
+            background-color: #fff3cd !important;
+         }
+         
+         tr.editing-row td {
+            padding: 0.5rem !important;
+         }
+         
+         .editable-cell {
+            position: relative;
+            min-width: 120px;
+         }
+         
+         .cell-display {
+            display: inline-block;
+            padding: 0.375rem 0.5rem;
+            min-height: 31px;
+            line-height: 1.5;
+         }
+         
+         .cell-edit {
+            width: 100%;
+            padding: 0.375rem 0.5rem;
+            border: 2px solid #007bff;
+            border-radius: 4px;
+            background-color: #fff;
+         }
+         
+         .cell-edit:focus {
+            outline: none;
+            border-color: #0056b3;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+         }
+         
+         .action-buttons-view,
+         .action-buttons-edit {
+            white-space: nowrap;
+         }
+         
+         .action-buttons-edit .btn {
+            min-width: 36px;
+         }
+      </style>
    </head>
    <body class="sb-nav-fixed">
       <nav class="sb-topnav navbar navbar-expand navbar-light bg-white shadow-sm">
@@ -104,6 +150,10 @@
                      <a class="nav-link" href="permissions.html">
                         <div class="sb-nav-link-icon"><i class="feather-shield"></i></div>
                         Quản lý phân quyền
+                     </a>
+                     <a class="nav-link" href="password-reset-requests.html">
+                        <div class="sb-nav-link-icon"><i class="feather-key"></i></div>
+                        Yêu cầu quên mật khẩu
                      </a>
                   </div>
                </div>

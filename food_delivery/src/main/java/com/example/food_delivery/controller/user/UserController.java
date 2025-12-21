@@ -229,5 +229,59 @@ public class UserController {
         // Return relative path for database storage
         return "user/avatar/" + filename;
     }
+
+    /**
+     * POST /user/forgot-password - Gửi yêu cầu quên mật khẩu
+     * Không yêu cầu authentication
+     */
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody java.util.Map<String, String> request) {
+        ResponseData responseData = new ResponseData();
+        try {
+            System.out.println("=== POST /user/forgot-password called ===");
+            System.out.println("Request body: " + request);
+            
+            String username = request.get("username");
+            String reason = request.get("reason");
+            
+            System.out.println("Username: " + username);
+            System.out.println("Reason: " + reason);
+            
+            if (username == null || username.trim().isEmpty()) {
+                System.err.println("❌ Username is empty");
+                responseData.setStatus(400);
+                responseData.setSuccess(false);
+                responseData.setData(null);
+                responseData.setDesc("Username/Email không được để trống!");
+                return new ResponseEntity<>(responseData, HttpStatus.BAD_REQUEST);
+            }
+            
+            var resetRequest = userService.createPasswordResetRequestByUsername(username.trim(), reason);
+            
+            System.out.println("✅ Password reset request created successfully: ID=" + resetRequest.getId());
+            System.out.println("Request status: " + resetRequest.getStatus());
+            System.out.println("User ID: " + (resetRequest.getUser() != null ? resetRequest.getUser().getId() : "null"));
+            
+            responseData.setStatus(200);
+            responseData.setSuccess(true);
+            responseData.setData(resetRequest);
+            responseData.setDesc("Yêu cầu quên mật khẩu đã được gửi thành công! Admin sẽ xử lý yêu cầu của bạn sớm nhất có thể.");
+            return new ResponseEntity<>(responseData, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            responseData.setStatus(400);
+            responseData.setSuccess(false);
+            responseData.setData(null);
+            responseData.setDesc(e.getMessage());
+            return new ResponseEntity<>(responseData, HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            System.err.println("Error creating password reset request: " + e.getMessage());
+            e.printStackTrace();
+            responseData.setStatus(500);
+            responseData.setSuccess(false);
+            responseData.setData(null);
+            responseData.setDesc("Lỗi server khi tạo yêu cầu quên mật khẩu: " + e.getMessage());
+            return new ResponseEntity<>(responseData, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
 

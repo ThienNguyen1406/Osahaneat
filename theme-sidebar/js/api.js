@@ -650,10 +650,111 @@ const ApiService = {
         console.log("URL:", `${API_BASE_URL}/search/all?keyword=${encodeURIComponent(keyword)}`);
         
         // Search is public endpoint, no need for auth headers
+        // Use 'text' dataType to avoid jQuery's automatic JSON parsing issues
+        // We'll parse manually in the success handler
         return $.ajax({
             method: 'GET',
             url: `${API_BASE_URL}/search/all?keyword=${encodeURIComponent(keyword)}`,
-            dataType: 'json'
+            dataType: 'text', // Changed to 'text' to handle large responses
+            timeout: 10000, // 10 seconds timeout
+            success: function(data, textStatus, xhr) {
+                // Parse JSON manually from text response
+                try {
+                    let responseText = data.trim();
+                    console.log("Raw response length:", responseText.length);
+                    
+                    // Strategy: Try to find the longest valid JSON substring
+                    // Start from the beginning and try to parse progressively smaller substrings
+                    let parsed = null;
+                    let validJson = null;
+                    
+                    // First, try to find the last complete JSON object by counting braces
+                    let braceCount = 0;
+                    let lastValidBrace = -1;
+                    let inString = false;
+                    let escapeNext = false;
+                    
+                    for (let i = 0; i < responseText.length; i++) {
+                        const char = responseText[i];
+                        
+                        if (escapeNext) {
+                            escapeNext = false;
+                            continue;
+                        }
+                        
+                        if (char === '\\') {
+                            escapeNext = true;
+                            continue;
+                        }
+                        
+                        if (char === '"') {
+                            inString = !inString;
+                            continue;
+                        }
+                        
+                        if (!inString) {
+                            if (char === '{') {
+                                braceCount++;
+                            } else if (char === '}') {
+                                braceCount--;
+                                if (braceCount === 0) {
+                                    lastValidBrace = i;
+                                    // Don't break - continue to find if there are multiple complete objects
+                                }
+                            }
+                        }
+                    }
+                    
+                    // If we found a complete JSON object, try to parse it
+                    if (lastValidBrace > 0) {
+                        const candidateJson = responseText.substring(0, lastValidBrace + 1);
+                        try {
+                            parsed = JSON.parse(candidateJson);
+                            validJson = candidateJson;
+                            console.log("✅ Successfully parsed JSON ending at position:", lastValidBrace);
+                        } catch (e) {
+                            console.warn("⚠️ Failed to parse candidate JSON, trying fallback method...");
+                        }
+                    }
+                    
+                    // Fallback: Try parsing from the start, progressively removing characters from the end
+                    if (!parsed) {
+                        console.log("Trying fallback parsing method...");
+                        for (let endPos = responseText.length; endPos > 0; endPos--) {
+                            try {
+                                const candidate = responseText.substring(0, endPos);
+                                parsed = JSON.parse(candidate);
+                                validJson = candidate;
+                                console.log("✅ Successfully parsed JSON using fallback, length:", endPos);
+                                break;
+                            } catch (e) {
+                                // Continue trying shorter substrings
+                            }
+                        }
+                    }
+                    
+                    if (!parsed) {
+                        throw new Error("Could not find valid JSON in response");
+                    }
+                    
+                    // Set responseJSON so .done() callback receives parsed object
+                    xhr.responseJSON = parsed;
+                } catch (e) {
+                    console.error("❌ Error parsing JSON in searchAll success handler:", e);
+                    console.error("Response text preview (first 500 chars):", data ? data.substring(0, 500) : "null");
+                    console.error("Response text preview (last 500 chars):", data ? data.substring(Math.max(0, data.length - 500)) : "null");
+                    // Still set responseJSON to null so .fail() is called
+                    xhr.responseJSON = null;
+                    throw e;
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("=== searchAll AJAX Error ===");
+                console.error("Status:", status);
+                console.error("Error:", error);
+                console.error("XHR status:", xhr.status);
+                console.error("Response text length:", xhr.responseText ? xhr.responseText.length : 0);
+            }
         });
     },
 
@@ -672,6 +773,17 @@ const ApiService = {
             method: 'GET',
             url: `${API_BASE_URL}/search/food?keyword=${encodeURIComponent(keyword)}`,
             dataType: 'json'
+        });
+    },
+
+    searchSuggestions: function(keyword, limit) {
+        // Search suggestions for autocomplete - public endpoint
+        limit = limit || 10;
+        return $.ajax({
+            method: 'GET',
+            url: `${API_BASE_URL}/search/suggestions?keyword=${encodeURIComponent(keyword)}&limit=${limit}`,
+            dataType: 'json',
+            timeout: 5000 // 5 seconds timeout for quick suggestions
         });
     },
 

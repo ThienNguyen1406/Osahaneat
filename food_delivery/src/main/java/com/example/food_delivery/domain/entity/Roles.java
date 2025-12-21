@@ -1,6 +1,7 @@
 package com.example.food_delivery.domain.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -15,6 +16,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @Entity(name="roles")
+@JsonIgnoreProperties({"users"}) // Prevent circular reference: Roles -> Users -> Roles -> ...
 public class Roles {
 
     @Id

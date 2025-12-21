@@ -31,18 +31,36 @@ function loadRestaurants() {
     AdminApiService.getRestaurants()
         .done(function(response) {
             console.log("=== Restaurants API Response ===", response);
+            console.log("Response type:", typeof response);
+            console.log("Response keys:", Object.keys(response || {}));
             
             let restaurants = [];
             if (response && response.status === 200 && response.data) {
                 restaurants = Array.isArray(response.data) ? response.data : [];
             } else if (response && response.isSuccess && response.data) {
                 restaurants = Array.isArray(response.data) ? response.data : [];
+            } else if (response && response.success && response.data) {
+                restaurants = Array.isArray(response.data) ? response.data : [];
+            } else if (Array.isArray(response)) {
+                // Response is directly an array
+                restaurants = response;
+            } else if (response && response.data && Array.isArray(response.data)) {
+                restaurants = response.data;
+            }
+            
+            console.log("Parsed restaurants:", restaurants);
+            console.log("Number of restaurants:", restaurants.length);
+            if (restaurants.length > 0) {
+                console.log("First restaurant sample:", restaurants[0]);
+                console.log("First restaurant keys:", Object.keys(restaurants[0]));
             }
             
             renderRestaurants(restaurants);
         })
         .fail(function(xhr, status, error) {
             console.error("Error loading restaurants:", error);
+            console.error("XHR status:", xhr.status);
+            console.error("XHR response:", xhr.responseText);
             showError("Không thể tải danh sách nhà hàng!");
             renderRestaurants([]);
         });
@@ -53,32 +71,34 @@ let restaurantsDataTable = null;
 function renderRestaurants(restaurants) {
     console.log("=== renderRestaurants() called ===", restaurants);
     
-    const tbody = $('#restaurants-tbody');
-    if (tbody.length === 0) {
-        console.warn("Restaurants tbody not found");
+    const gridContainer = $('#restaurants-grid-container');
+    if (gridContainer.length === 0) {
+        console.warn("Restaurants grid container not found");
         return;
-    }
-    
-    // Destroy existing DataTable if it exists
-    if (restaurantsDataTable) {
-        restaurantsDataTable.destroy();
-        restaurantsDataTable = null;
     }
     
     if (restaurants.length === 0) {
-        tbody.html('<tr><td colspan="7" class="text-center text-muted">Không có nhà hàng nào</td></tr>');
-        // Initialize DataTable even with empty data
-        initializeDataTable();
+        gridContainer.html('<div class="col-12 text-center text-muted py-5">Không có nhà hàng nào</div>');
         return;
     }
     
+    // Build HTML cards for grid layout
     let html = '';
     restaurants.forEach(function(restaurant) {
+        console.log("Processing restaurant:", restaurant);
+        console.log("Restaurant ID:", restaurant.id);
+        console.log("Restaurant title:", restaurant.title);
+        console.log("Restaurant subtitle:", restaurant.subtitle);
+        console.log("Restaurant keys:", Object.keys(restaurant));
+        
         // Fix image URL - extract filename from path if needed
         let imageUrl = 'img/list/1.png';
         if (restaurant.image) {
             if (restaurant.image.startsWith('http')) {
                 imageUrl = restaurant.image;
+            } else if (restaurant.image.startsWith('/')) {
+                // Already a full path
+                imageUrl = `http://localhost:82${restaurant.image}`;
             } else {
                 // Extract filename from path like "/restaurant/file/restaurant1.jpg" -> "restaurant1.jpg"
                 let filename = restaurant.image;
@@ -89,91 +109,107 @@ function renderRestaurants(restaurants) {
                 imageUrl = `http://localhost:82/restaurant/file/${filename}`;
             }
         }
-        const freeShip = restaurant.isFreeShip || restaurant.freeShip ? 'Có' : 'Không';
+        
+        // Check both isFreeShip and freeShip (Jackson might serialize differently)
+        const isFreeShip = (restaurant.isFreeShip === true || restaurant.freeShip === true);
         const rating = restaurant.rating || 0;
-        const titleEscaped = (restaurant.title || '').replace(/'/g, "\\'");
+        
+        // Get display values - check multiple possible field names
+        const displayTitle = restaurant.title || restaurant.name || restaurant.restaurantName || 'N/A';
+        const displaySubtitle = restaurant.subtitle || restaurant.shortDescription || restaurant.description || 'N/A';
+        const address = restaurant.address || 'N/A';
+        const titleEscaped = displayTitle.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        
+        console.log(`Rendering restaurant ID ${restaurant.id}:`);
+        console.log(`  - Title: "${displayTitle}" (from restaurant.title: "${restaurant.title}", restaurant.name: "${restaurant.name}")`);
+        console.log(`  - Subtitle: "${displaySubtitle}" (from restaurant.subtitle: "${restaurant.subtitle}")`);
         
         // Kiểm tra trạng thái duyệt: null/undefined = chờ duyệt, true = đã duyệt, false = bị từ chối
         const isApproved = restaurant.isApproved;
         let approvalStatus = '';
+        let approvalStatusClass = '';
         if (isApproved === true) {
-            approvalStatus = '<span class="badge badge-success"><i class="feather-check-circle"></i> Đã duyệt</span>';
+            approvalStatus = '<i class="feather-check-circle"></i> Đã duyệt';
+            approvalStatusClass = 'badge-success';
         } else if (isApproved === false) {
-            approvalStatus = '<span class="badge badge-danger"><i class="feather-x-circle"></i> Bị từ chối</span>';
+            approvalStatus = '<i class="feather-x-circle"></i> Bị từ chối';
+            approvalStatusClass = 'badge-danger';
         } else {
             // null hoặc undefined = chờ duyệt
-            approvalStatus = '<span class="badge badge-warning"><i class="feather-clock"></i> Chờ duyệt</span>';
+            approvalStatus = '<i class="feather-clock"></i> Chờ duyệt';
+            approvalStatusClass = 'badge-warning';
         }
         
         // Hiển thị button Duyệt/Từ chối chỉ khi chưa được duyệt (null/undefined) hoặc bị từ chối (false)
         const showApproveButtons = (isApproved === null || isApproved === undefined || isApproved === false);
         
         html += `
-            <tr>
-                <td>
-                    <img src="${imageUrl}" alt="${restaurant.title || ''}" 
-                         style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px;"
-                         onerror="this.src='img/list/1.png'">
-                </td>
-                <td>${escapeHtml(restaurant.title || 'N/A')}</td>
-                <td>${escapeHtml(restaurant.subtitle || 'N/A')}</td>
-                <td>${approvalStatus}</td>
-                <td>${freeShip}</td>
-                <td>${rating.toFixed(1)} <i class="feather-star text-warning"></i></td>
-                <td>
-                    ${showApproveButtons ? `
-                        <button class="btn btn-sm btn-success mr-1" onclick="approveRestaurant(${restaurant.id}, '${titleEscaped}')" title="Duyệt nhà hàng">
-                            <i class="feather-check"></i> Duyệt
-                        </button>
-                        <button class="btn btn-sm btn-danger mr-1" onclick="rejectRestaurant(${restaurant.id}, '${titleEscaped}')" title="Từ chối nhà hàng">
-                            <i class="feather-x"></i> Từ chối
-                        </button>
-                    ` : ''}
-                    <!-- Admin không được sửa nhà hàng -->
-                    <!-- <button class="btn btn-sm btn-primary" onclick="editRestaurant(${restaurant.id})">
-                        <i class="feather-edit"></i> Sửa
-                    </button> -->
-                    <button class="btn btn-sm btn-danger ${showApproveButtons ? '' : 'ml-1'}" onclick="deleteRestaurant(${restaurant.id}, '${titleEscaped}')">
-                        <i class="feather-trash-2"></i> Xóa
-                    </button>
-                </td>
-            </tr>
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-4">
+                <div class="card restaurant-card h-100 shadow-sm">
+                    <div class="card-img-wrapper" style="position: relative;">
+                        <img src="${imageUrl}" alt="${escapeHtml(displayTitle)}" 
+                             class="card-img-top" 
+                             style="width: 100%; height: 100%; object-fit: cover;"
+                             onerror="this.src='img/list/1.png'">
+                        ${isFreeShip ? '<span class="badge badge-success" style="position: absolute; top: 10px; right: 10px;"><i class="feather-truck"></i> Miễn phí ship</span>' : ''}
+                        <span class="badge ${approvalStatusClass}" style="position: absolute; top: 10px; left: 10px;">
+                            ${approvalStatus}
+                        </span>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title mb-2">
+                            ${escapeHtml(displayTitle)}
+                        </h5>
+                        <p class="card-text text-muted small mb-2" style="min-height: 3rem; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+                            ${escapeHtml(displaySubtitle)}
+                        </p>
+                        <div class="mb-2">
+                            <small class="text-muted">
+                                <i class="feather-map-pin"></i> ${escapeHtml(address)}
+                            </small>
+                        </div>
+                        <div class="mb-2">
+                            <small class="text-muted">
+                                <i class="feather-star text-warning"></i> <strong>${rating.toFixed(1)}</strong>
+                            </small>
+                        </div>
+                        <div class="mt-auto pt-2 border-top">
+                            <div class="d-flex flex-wrap gap-2">
+                                ${showApproveButtons ? `
+                                    <button class="btn btn-sm btn-success flex-fill" onclick="approveRestaurant(${restaurant.id}, '${titleEscaped}')" title="Duyệt nhà hàng">
+                                        <i class="feather-check"></i> Duyệt
+                                    </button>
+                                    <button class="btn btn-sm btn-warning flex-fill" onclick="rejectRestaurant(${restaurant.id}, '${titleEscaped}')" title="Từ chối nhà hàng">
+                                        <i class="feather-x"></i> Từ chối
+                                    </button>
+                                ` : ''}
+                                <button class="btn btn-sm btn-danger ${showApproveButtons ? 'flex-fill' : 'w-100'}" onclick="deleteRestaurant(${restaurant.id}, '${titleEscaped}')">
+                                    <i class="feather-trash-2"></i> Xóa
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         `;
     });
     
-    tbody.html(html);
+    console.log("HTML generated, length:", html.length);
+    console.log("First 500 chars of HTML:", html.substring(0, 500));
     
-    // Initialize DataTable after rendering
-    initializeDataTable();
+    // Insert HTML vào grid container
+    gridContainer.html(html);
+    
+    console.log("✅ Restaurants HTML inserted into grid container");
+    console.log("Grid container children count:", gridContainer.children().length);
 }
 
+// No longer need DataTable for grid view
 function initializeDataTable() {
-    if ($.fn.DataTable) {
-        const table = $('#dataTable');
-        if (table.length) {
-            restaurantsDataTable = table.DataTable({
-                language: {
-                    "sProcessing": "Đang xử lý...",
-                    "sLengthMenu": "Hiển thị _MENU_ mục",
-                    "sZeroRecords": "Không tìm thấy dữ liệu",
-                    "sInfo": "Đang hiển thị _START_ đến _END_ trong tổng số _TOTAL_ mục",
-                    "sInfoEmpty": "Đang hiển thị 0 đến 0 trong tổng số 0 mục",
-                    "sInfoFiltered": "(được lọc từ _MAX_ mục)",
-                    "sInfoPostFix": "",
-                    "sSearch": "Tìm kiếm:",
-                    "sUrl": "",
-                    "oPaginate": {
-                        "sFirst": "Đầu",
-                        "sPrevious": "Trước",
-                        "sNext": "Tiếp",
-                        "sLast": "Cuối"
-                    }
-                },
-                order: [[1, 'asc']] // Sort by restaurant name
-            });
-        }
-    }
+    // Grid view doesn't need DataTable
+    console.log("Grid view - DataTable not needed");
 }
+
 
 function escapeHtml(text) {
     if (!text) return '';

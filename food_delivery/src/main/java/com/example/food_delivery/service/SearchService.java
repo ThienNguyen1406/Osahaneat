@@ -7,6 +7,7 @@ import com.example.food_delivery.reponsitory.FoodRepository;
 import com.example.food_delivery.reponsitory.RestaurantReponsitory;
 import com.example.food_delivery.reponsitory.UserReponsitory;
 import com.example.food_delivery.service.imp.SearchServiceImp;
+import com.example.food_delivery.util.FoodNameTranslator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -77,7 +78,42 @@ public class SearchService implements SearchServiceImp {
             if (keyword == null || keyword.trim().isEmpty()) {
                 return new ArrayList<>();
             }
-            return foodRepository.searchFoods(keyword.trim());
+            
+            String searchKeyword = keyword.trim();
+            java.util.Map<Integer, Food> foodsMap = new java.util.HashMap<>();
+            
+            // Tìm với keyword gốc
+            List<Food> foodsByOriginal = foodRepository.searchFoods(searchKeyword);
+            for (Food food : foodsByOriginal) {
+                foodsMap.put(food.getId(), food);
+            }
+            
+            // Reverse translate để tìm với các từ khóa tiếng Anh tương ứng
+            java.util.List<String> englishKeywords = FoodNameTranslator.reverseTranslate(searchKeyword);
+            for (String englishKeyword : englishKeywords) {
+                if (!englishKeyword.equalsIgnoreCase(searchKeyword)) {
+                    List<Food> foodsByEnglish = foodRepository.searchFoods(englishKeyword);
+                    for (Food food : foodsByEnglish) {
+                        foodsMap.put(food.getId(), food);
+                    }
+                }
+            }
+            
+            // Convert Map to List và việt hóa tên món ăn
+            List<Food> foods = new ArrayList<>(foodsMap.values());
+            for (Food food : foods) {
+                if (food.getTitle() != null && !food.getTitle().trim().isEmpty()) {
+                    String translatedTitle = FoodNameTranslator.translateAdvanced(food.getTitle());
+                    food.setTitle(translatedTitle);
+                }
+                if (food.getDesc() != null && !food.getDesc().trim().isEmpty()) {
+                    // Có thể dịch description nếu cần
+                    // String translatedDesc = FoodNameTranslator.translateAdvanced(food.getDesc());
+                    // food.setDesc(translatedDesc);
+                }
+            }
+            
+            return foods;
         } catch (Exception e) {
             System.err.println("Error searching foods: " + e.getMessage());
             e.printStackTrace();
@@ -327,6 +363,174 @@ public class SearchService implements SearchServiceImp {
                 .mapToDouble(r -> r.getRatePoint() > 0 ? (double) r.getRatePoint() : 0.0)
                 .average()
                 .orElse(0.0);
+    }
+    
+    @Override
+    public Map<String, Object> searchSuggestions(String keyword, int limit) {
+        Map<String, Object> results = new HashMap<>();
+        try {
+            if (keyword == null || keyword.trim().isEmpty()) {
+                results.put("foods", new ArrayList<>());
+                results.put("restaurants", new ArrayList<>());
+                return results;
+            }
+            
+            String searchKeyword = keyword.trim();
+            String keywordLower = searchKeyword.toLowerCase();
+            java.util.Map<Integer, Food> foodsMap = new java.util.HashMap<>();
+            
+            // Strategy 1: Tìm trực tiếp với keyword trong database (có thể match với "Rice", "Chicken", v.v.)
+            List<Food> foodsByKeyword = foodRepository.searchFoods(searchKeyword);
+            for (Food food : foodsByKeyword) {
+                foodsMap.put(food.getId(), food);
+            }
+            
+            // Strategy 2: Reverse translate để tìm với tiếng Anh
+            java.util.List<String> englishKeywords = FoodNameTranslator.reverseTranslate(searchKeyword);
+            for (String englishKeyword : englishKeywords) {
+                if (!englishKeyword.equalsIgnoreCase(searchKeyword)) {
+                    List<Food> foodsByEnglish = foodRepository.searchFoods(englishKeyword);
+                    for (Food food : foodsByEnglish) {
+                        foodsMap.put(food.getId(), food);
+                    }
+                }
+            }
+            
+            // Strategy 2b: Nếu keyword là "gà", cũng tìm với "butter chicken" để đảm bảo tìm được "Butter Chicken"
+            if (keywordLower.equals("gà") || keywordLower.equals("ga")) {
+                List<Food> foodsByButterChicken = foodRepository.searchFoods("butter chicken");
+                for (Food food : foodsByButterChicken) {
+                    foodsMap.put(food.getId(), food);
+                }
+                // Cũng tìm với "chicken" để lấy tất cả món gà
+                List<Food> foodsByChicken = foodRepository.searchFoods("chicken");
+                for (Food food : foodsByChicken) {
+                    foodsMap.put(food.getId(), food);
+                }
+            }
+            
+            // Strategy 3: Nếu keyword quá ngắn (1-2 ký tự) HOẶC không tìm thấy kết quả, tìm với các từ khóa tiếng Anh phổ biến
+            if ((searchKeyword.length() <= 2 || foodsMap.isEmpty()) && searchKeyword.length() <= 3) {
+                // Danh sách các từ khóa tiếng Anh phổ biến có thể match với keyword ngắn
+                java.util.List<String> commonKeywords = new ArrayList<>();
+                if (keywordLower.startsWith("c") || keywordLower.equals("c")) {
+                    commonKeywords.add("rice");
+                    commonKeywords.add("chicken");
+                    commonKeywords.add("cơm");
+                } else if (keywordLower.startsWith("g") || keywordLower.equals("g")) {
+                    commonKeywords.add("chicken");
+                    commonKeywords.add("gà");
+                } else if (keywordLower.startsWith("m") || keywordLower.equals("m")) {
+                    commonKeywords.add("pasta");
+                    commonKeywords.add("mì");
+                } else if (keywordLower.startsWith("p") || keywordLower.equals("p")) {
+                    commonKeywords.add("pasta");
+                    commonKeywords.add("pizza");
+                } else if (keywordLower.startsWith("b") || keywordLower.equals("b")) {
+                    commonKeywords.add("burger");
+                    commonKeywords.add("butter");
+                } else if (keywordLower.startsWith("r") || keywordLower.equals("r")) {
+                    commonKeywords.add("rice");
+                }
+                
+                // Tìm với các từ khóa phổ biến
+                for (String commonKeyword : commonKeywords) {
+                    List<Food> foodsByCommon = foodRepository.searchFoods(commonKeyword);
+                    for (Food food : foodsByCommon) {
+                        foodsMap.put(food.getId(), food);
+                    }
+                }
+                
+                // Nếu vẫn không có kết quả, lấy sample và filter sau khi translate
+                if (foodsMap.isEmpty()) {
+                    List<Food> allFoodsSample = foodRepository.findAll();
+                    int sampleSize = Math.min(50, allFoodsSample.size());
+                    for (int i = 0; i < sampleSize; i++) {
+                        Food food = allFoodsSample.get(i);
+                        if (food.getTitle() != null) {
+                            String translatedTitle = FoodNameTranslator.translateAdvanced(food.getTitle());
+                            String titleLower = translatedTitle.toLowerCase();
+                            if (titleLower.startsWith(keywordLower) || titleLower.contains(keywordLower)) {
+                                foodsMap.put(food.getId(), food);
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // Việt hóa và sắp xếp foods
+            List<Food> filteredFoods = new ArrayList<>();
+            List<Food> priorityFoods = new ArrayList<>(); // Bắt đầu bằng keyword
+            List<Food> otherFoods = new ArrayList<>(); // Chứa keyword
+            
+            for (Food food : foodsMap.values()) {
+                if (food.getTitle() != null) {
+                    String translatedTitle = FoodNameTranslator.translateAdvanced(food.getTitle());
+                    food.setTitle(translatedTitle);
+                    String titleLower = translatedTitle.toLowerCase();
+                    
+                    if (titleLower.startsWith(keywordLower)) {
+                        priorityFoods.add(food);
+                    } else if (titleLower.contains(keywordLower)) {
+                        otherFoods.add(food);
+                    }
+                }
+            }
+            
+            // Sắp xếp priority foods theo tên
+            priorityFoods.sort((f1, f2) -> f1.getTitle().compareToIgnoreCase(f2.getTitle()));
+            // Sắp xếp other foods theo tên
+            otherFoods.sort((f1, f2) -> f1.getTitle().compareToIgnoreCase(f2.getTitle()));
+            
+            // Gộp lại: priority trước, sau đó other
+            filteredFoods.addAll(priorityFoods);
+            filteredFoods.addAll(otherFoods);
+            
+            // Giới hạn số lượng
+            if (filteredFoods.size() > limit) {
+                filteredFoods = filteredFoods.subList(0, limit);
+            }
+            
+            // Tìm restaurants
+            List<Restaurant> allRestaurants = searchRestaurants(searchKeyword);
+            List<Restaurant> priorityRestaurants = new ArrayList<>();
+            List<Restaurant> otherRestaurants = new ArrayList<>();
+            
+            for (Restaurant restaurant : allRestaurants) {
+                if (restaurant.getTitle() != null) {
+                    String titleLower = restaurant.getTitle().toLowerCase();
+                    if (titleLower.startsWith(keywordLower)) {
+                        priorityRestaurants.add(restaurant);
+                    } else if (titleLower.contains(keywordLower)) {
+                        otherRestaurants.add(restaurant);
+                    }
+                }
+            }
+            
+            // Sắp xếp restaurants
+            priorityRestaurants.sort((r1, r2) -> r1.getTitle().compareToIgnoreCase(r2.getTitle()));
+            otherRestaurants.sort((r1, r2) -> r1.getTitle().compareToIgnoreCase(r2.getTitle()));
+            
+            List<Restaurant> filteredRestaurants = new ArrayList<>();
+            filteredRestaurants.addAll(priorityRestaurants);
+            filteredRestaurants.addAll(otherRestaurants);
+            
+            // Giới hạn số lượng restaurants
+            int restaurantLimit = Math.max(3, limit / 2);
+            if (filteredRestaurants.size() > restaurantLimit) {
+                filteredRestaurants = filteredRestaurants.subList(0, restaurantLimit);
+            }
+            
+            results.put("foods", filteredFoods);
+            results.put("restaurants", filteredRestaurants);
+            return results;
+        } catch (Exception e) {
+            System.err.println("Error in searchSuggestions: " + e.getMessage());
+            e.printStackTrace();
+            results.put("foods", new ArrayList<>());
+            results.put("restaurants", new ArrayList<>());
+            return results;
+        }
     }
 }
 

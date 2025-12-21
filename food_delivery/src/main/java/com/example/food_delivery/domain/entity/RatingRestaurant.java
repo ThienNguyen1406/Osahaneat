@@ -1,5 +1,6 @@
 package com.example.food_delivery.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -19,10 +20,12 @@ public class RatingRestaurant {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnoreProperties({"roles", "listRatingFood", "listRatingRestaurant"}) // Prevent circular reference
     private Users users;
 
     @ManyToOne
     @JoinColumn(name = "res_id")
+    @JsonIgnoreProperties({"lisRatingRestaurant", "lisMenuRestaurant", "listOrders", "owner"}) // Prevent circular reference
     private  Restaurant restaurant;
 
     @Column(name = "content")

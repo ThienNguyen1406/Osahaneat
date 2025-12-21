@@ -22,6 +22,8 @@ public class SignupRequest {
     String password;
 
     String phoneNumber; // Optional phone number
+    
+    String email; // Email for verification
 
     Set<String> roleName;
 }

@@ -1,6 +1,7 @@
 package com.example.food_delivery.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -16,6 +17,7 @@ import java.util.Set;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity(name = "users")
+@JsonIgnoreProperties({"listRatingFood", "listRatingRestaurant"}) // Prevent unnecessary collections when Users is included as owner
 public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,6 +48,9 @@ public class Users {
 
     @Column(name = "is_approved")
     private Boolean isApproved; // Trạng thái duyệt (cho shipper)
+
+    @Column(name = "email_verified")
+    private Boolean emailVerified = false; // Trạng thái xác nhận email
 
 
 
@@ -177,5 +182,13 @@ public class Users {
 
     public void setIsApproved(Boolean isApproved) {
         this.isApproved = isApproved;
+    }
+
+    public Boolean getEmailVerified() {
+        return emailVerified;
+    }
+
+    public void setEmailVerified(Boolean emailVerified) {
+        this.emailVerified = emailVerified;
     }
 }

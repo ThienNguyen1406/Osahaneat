@@ -285,7 +285,7 @@ function createOrderCard(order, type) {
             </div>
             <div class="order-actions">
                 <button class="btn btn-shipper btn-shipper-info btn-block mb-2" 
-                        onclick="showOrderMap(${orderId}, ${order.userLat || 10.8231}, ${order.userLng || 106.6297}, '${escapeHtml(address)}')">
+                        onclick="showOrderMap(${orderId}, ${order.userLat || 21.0285}, ${order.userLng || 105.8542}, '${escapeHtml(address)}')">
                     <i class="fas fa-map-marked-alt mr-2"></i>Xem bản đồ
                 </button>
                 ${actionsHtml}
@@ -385,9 +385,9 @@ function showOrderMap(orderId, userLat, userLng, userAddress) {
     
     // Validate coordinates
     if (!userLat || !userLng || isNaN(userLat) || isNaN(userLng)) {
-        console.warn("⚠️ Invalid coordinates, using default (Ho Chi Minh City)");
-        userLat = 10.8231;
-        userLng = 106.6297;
+        console.warn("⚠️ Invalid coordinates, using default (Ha Noi)");
+        userLat = 21.0285;
+        userLng = 105.8542;
     }
     
     // Set modal content

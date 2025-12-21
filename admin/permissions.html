@@ -74,22 +74,13 @@
                         <div class="sb-nav-link-icon"><i class="feather-truck"></i></div>
                         Quản lý shipper
                      </a>
-                     <a class="nav-link active" href="permissions.html">
+                     <a class="nav-link active" href="permissions.html" id="nav-permissions">
                         <div class="sb-nav-link-icon"><i class="feather-shield"></i></div>
                         Quản lý phân quyền
                      </a>
-                     <a class="nav-link" href="categories.html">
-                        <div class="sb-nav-link-icon"><i class="feather-tag"></i></div>
-                        Quản lý danh mục
-                     </a>
-                     <a class="nav-link" href="menus.html">
-                        <div class="sb-nav-link-icon"><i class="feather-coffee"></i></div>
-                        Quản lý món ăn
-                     </a>
-                     <a class="nav-link" href="messages.html">
-                        <div class="sb-nav-link-icon"><i class="feather-message-square"></i></div>
-                        Quản lý tin nhắn
-                        <span class="badge badge-pill ml-2 badge-danger" id="sidebar-message-badge" style="display: none;">0</span>
+                     <a class="nav-link" href="password-reset-requests.html">
+                        <div class="sb-nav-link-icon"><i class="feather-key"></i></div>
+                        Yêu cầu quên mật khẩu
                      </a>
                   </div>
                </div>
@@ -187,7 +178,7 @@
                            </div>
                            <div class="card-body">
                               <div class="table-responsive">
-                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                 <table class="table table-bordered" id="rolesTable" width="100%" cellspacing="0">
                                     <thead>
                                        <tr>
                                           <th><i class="feather-hash mr-1"></i>ID</th>
@@ -205,6 +196,197 @@
                                        </tr>
                                     </tbody>
                                  </table>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  
+                  <!-- Users by Role Tabs -->
+                  <div class="row">
+                     <div class="col-xl-12">
+                        <div class="card mb-4">
+                           <div class="card-header">
+                              <i class="fas fa-table mr-1"></i>
+                              Danh sách người dùng theo vai trò
+                           </div>
+                           <div class="card-body">
+                              <!-- Tabs Navigation -->
+                              <ul class="nav nav-tabs mb-3" id="roleTabs" role="tablist">
+                                 <li class="nav-item">
+                                    <a class="nav-link active" id="tab-all" data-toggle="tab" href="#content-all" role="tab" aria-controls="content-all" aria-selected="true" onclick="loadUsersByRole('ALL')">
+                                       <i class="feather-users mr-1"></i>Tất cả
+                                    </a>
+                                 </li>
+                                 <li class="nav-item">
+                                    <a class="nav-link" id="tab-admin" data-toggle="tab" href="#content-admin" role="tab" aria-controls="content-admin" aria-selected="false" onclick="loadUsersByRole('ADMIN')">
+                                       <i class="feather-shield mr-1"></i>Admin
+                                    </a>
+                                 </li>
+                                 <li class="nav-item">
+                                    <a class="nav-link" id="tab-user" data-toggle="tab" href="#content-user" role="tab" aria-controls="content-user" aria-selected="false" onclick="loadUsersByRole('USER')">
+                                       <i class="feather-user mr-1"></i>User
+                                    </a>
+                                 </li>
+                                 <li class="nav-item">
+                                    <a class="nav-link" id="tab-staff" data-toggle="tab" href="#content-staff" role="tab" aria-controls="content-staff" aria-selected="false" onclick="loadUsersByRole('RESTAURANT_STAFF')">
+                                       <i class="feather-utensils mr-1"></i>Staff
+                                    </a>
+                                 </li>
+                                 <li class="nav-item">
+                                    <a class="nav-link" id="tab-owner" data-toggle="tab" href="#content-owner" role="tab" aria-controls="content-owner" aria-selected="false" onclick="loadUsersByRole('RESTAURANT_OWNER')">
+                                       <i class="feather-home mr-1"></i>Owner
+                                    </a>
+                                 </li>
+                                 <li class="nav-item">
+                                    <a class="nav-link" id="tab-driver" data-toggle="tab" href="#content-driver" role="tab" aria-controls="content-driver" aria-selected="false" onclick="loadUsersByRole('DRIVER')">
+                                       <i class="feather-truck mr-1"></i>Driver
+                                    </a>
+                                 </li>
+                              </ul>
+                              
+                              <!-- Tab Content -->
+                              <div class="tab-content" id="roleTabContent">
+                                 <div class="tab-pane fade show active" id="content-all" role="tabpanel" aria-labelledby="tab-all">
+                                    <div class="table-responsive">
+                                       <table class="table table-bordered" id="usersTableAll" width="100%" cellspacing="0">
+                                          <thead>
+                                             <tr>
+                                                <th><i class="feather-hash mr-1"></i>ID</th>
+                                                <th><i class="feather-user mr-1"></i>Tên đăng nhập</th>
+                                                <th><i class="feather-user mr-1"></i>Họ tên</th>
+                                                <th><i class="feather-phone mr-1"></i>Số điện thoại</th>
+                                                <th><i class="feather-mail mr-1"></i>Email</th>
+                                                <th><i class="feather-shield mr-1"></i>Vai trò</th>
+                                                <th><i class="feather-settings mr-1"></i>Thao tác</th>
+                                             </tr>
+                                          </thead>
+                                          <tbody>
+                                             <tr>
+                                                <td colspan="7" class="text-center py-4">
+                                                   <i class="feather-loader"></i> Đang tải...
+                                                </td>
+                                             </tr>
+                                          </tbody>
+                                       </table>
+                                    </div>
+                                 </div>
+                                 <div class="tab-pane fade" id="content-admin" role="tabpanel" aria-labelledby="tab-admin">
+                                    <div class="table-responsive">
+                                       <table class="table table-bordered" id="usersTableAdmin" width="100%" cellspacing="0">
+                                          <thead>
+                                             <tr>
+                                                <th><i class="feather-hash mr-1"></i>ID</th>
+                                                <th><i class="feather-user mr-1"></i>Tên đăng nhập</th>
+                                                <th><i class="feather-user mr-1"></i>Họ tên</th>
+                                                <th><i class="feather-phone mr-1"></i>Số điện thoại</th>
+                                                <th><i class="feather-mail mr-1"></i>Email</th>
+                                                <th><i class="feather-settings mr-1"></i>Thao tác</th>
+                                             </tr>
+                                          </thead>
+                                          <tbody>
+                                             <tr>
+                                                <td colspan="6" class="text-center py-4 text-muted">
+                                                   Chọn tab để xem danh sách
+                                                </td>
+                                             </tr>
+                                          </tbody>
+                                       </table>
+                                    </div>
+                                 </div>
+                                 <div class="tab-pane fade" id="content-user" role="tabpanel" aria-labelledby="tab-user">
+                                    <div class="table-responsive">
+                                       <table class="table table-bordered" id="usersTableUser" width="100%" cellspacing="0">
+                                          <thead>
+                                             <tr>
+                                                <th><i class="feather-hash mr-1"></i>ID</th>
+                                                <th><i class="feather-user mr-1"></i>Tên đăng nhập</th>
+                                                <th><i class="feather-user mr-1"></i>Họ tên</th>
+                                                <th><i class="feather-phone mr-1"></i>Số điện thoại</th>
+                                                <th><i class="feather-mail mr-1"></i>Email</th>
+                                                <th><i class="feather-settings mr-1"></i>Thao tác</th>
+                                             </tr>
+                                          </thead>
+                                          <tbody>
+                                             <tr>
+                                                <td colspan="6" class="text-center py-4 text-muted">
+                                                   Chọn tab để xem danh sách
+                                                </td>
+                                             </tr>
+                                          </tbody>
+                                       </table>
+                                    </div>
+                                 </div>
+                                 <div class="tab-pane fade" id="content-staff" role="tabpanel" aria-labelledby="tab-staff">
+                                    <div class="table-responsive">
+                                       <table class="table table-bordered" id="usersTableStaff" width="100%" cellspacing="0">
+                                          <thead>
+                                             <tr>
+                                                <th><i class="feather-hash mr-1"></i>ID</th>
+                                                <th><i class="feather-user mr-1"></i>Tên đăng nhập</th>
+                                                <th><i class="feather-user mr-1"></i>Họ tên</th>
+                                                <th><i class="feather-phone mr-1"></i>Số điện thoại</th>
+                                                <th><i class="feather-mail mr-1"></i>Email</th>
+                                                <th><i class="feather-settings mr-1"></i>Thao tác</th>
+                                             </tr>
+                                          </thead>
+                                          <tbody>
+                                             <tr>
+                                                <td colspan="6" class="text-center py-4 text-muted">
+                                                   Chọn tab để xem danh sách
+                                                </td>
+                                             </tr>
+                                          </tbody>
+                                       </table>
+                                    </div>
+                                 </div>
+                                 <div class="tab-pane fade" id="content-owner" role="tabpanel" aria-labelledby="tab-owner">
+                                    <div class="table-responsive">
+                                       <table class="table table-bordered" id="usersTableOwner" width="100%" cellspacing="0">
+                                          <thead>
+                                             <tr>
+                                                <th><i class="feather-hash mr-1"></i>ID</th>
+                                                <th><i class="feather-user mr-1"></i>Tên đăng nhập</th>
+                                                <th><i class="feather-user mr-1"></i>Họ tên</th>
+                                                <th><i class="feather-phone mr-1"></i>Số điện thoại</th>
+                                                <th><i class="feather-mail mr-1"></i>Email</th>
+                                                <th><i class="feather-settings mr-1"></i>Thao tác</th>
+                                             </tr>
+                                          </thead>
+                                          <tbody>
+                                             <tr>
+                                                <td colspan="6" class="text-center py-4 text-muted">
+                                                   Chọn tab để xem danh sách
+                                                </td>
+                                             </tr>
+                                          </tbody>
+                                       </table>
+                                    </div>
+                                 </div>
+                                 <div class="tab-pane fade" id="content-driver" role="tabpanel" aria-labelledby="tab-driver">
+                                    <div class="table-responsive">
+                                       <table class="table table-bordered" id="usersTableDriver" width="100%" cellspacing="0">
+                                          <thead>
+                                             <tr>
+                                                <th><i class="feather-hash mr-1"></i>ID</th>
+                                                <th><i class="feather-user mr-1"></i>Tên đăng nhập</th>
+                                                <th><i class="feather-user mr-1"></i>Họ tên</th>
+                                                <th><i class="feather-phone mr-1"></i>Số điện thoại</th>
+                                                <th><i class="feather-mail mr-1"></i>Email</th>
+                                                <th><i class="feather-check-circle mr-1"></i>Duyệt</th>
+                                                <th><i class="feather-settings mr-1"></i>Thao tác</th>
+                                             </tr>
+                                          </thead>
+                                          <tbody>
+                                             <tr>
+                                                <td colspan="7" class="text-center py-4 text-muted">
+                                                   Chọn tab để xem danh sách
+                                                </td>
+                                             </tr>
+                                          </tbody>
+                                       </table>
+                                    </div>
+                                 </div>
                               </div>
                            </div>
                         </div>
@@ -259,8 +441,15 @@
       <script src="js/api.js"></script>
       <script src="js/admin.js"></script>
       <script>
+      </script>
+      <script src="js/scripts.js"></script>
+      <script>
+         // Fix sidebar active state - chạy SAU scripts.js để override
          $(document).ready(function() {
              console.log("=== permissions.html loaded ===");
+             
+             // Không cần fix active state nữa vì đã xóa 3 mục kia
+             console.log("✅ Sidebar cleaned - 3 items removed");
              
              if (typeof isAuthenticated === 'function' && !isAuthenticated()) {
                  alert('Vui lòng đăng nhập để truy cập trang này!');
@@ -271,65 +460,206 @@
              loadRoles();
          });
          
+         // Không cần fix sau window load nữa
+         
          function loadRoles() {
-             const tbody = $('#dataTable tbody');
+             const tbody = $('#rolesTable tbody');
              tbody.html('<tr><td colspan="5" class="text-center py-4"><i class="feather-loader"></i> Đang tải...</td></tr>');
              
              // Load roles from API
              AdminApiService.getRoles()
                  .done(function(response) {
-                     console.log("Roles response:", response);
+                     console.log("=== Roles API Response ===");
+                     console.log("Full response:", response);
+                     console.log("Response type:", typeof response);
+                     console.log("Response.isSuccess:", response?.isSuccess);
+                     console.log("Response.success:", response?.success);
+                     console.log("Response.data:", response?.data);
+                     console.log("Response.data type:", typeof response?.data);
+                     console.log("Response.data isArray:", Array.isArray(response?.data));
                      
-                     if (response && (response.isSuccess || response.success) && response.data) {
-                         const roles = Array.isArray(response.data) ? response.data : [];
+                     let roles = [];
+                     
+                     // Parse response - kiểm tra nhiều format
+                     if (response) {
+                         if (response.data && Array.isArray(response.data)) {
+                             roles = response.data;
+                             console.log("✅ Extracted roles from response.data:", roles.length);
+                         } else if (Array.isArray(response)) {
+                             roles = response;
+                             console.log("✅ Response is direct array:", roles.length);
+                         } else if (response.status === 200 && response.data) {
+                             roles = Array.isArray(response.data) ? response.data : [];
+                             console.log("✅ Extracted from status 200:", roles.length);
+                         }
+                     }
+                     
+                     console.log("Final roles array:", roles);
+                     console.log("Roles count:", roles.length);
+                     
+                     if (roles.length > 0) {
+                         // Log từng role để debug
+                         roles.forEach(function(role, index) {
+                             console.log(`Role ${index + 1}:`, role);
+                             console.log(`  - ID: ${role.id}`);
+                             console.log(`  - roleName: ${role.roleName}`);
+                             console.log(`  - name: ${role.name}`);
+                             console.log(`  - userCount: ${role.userCount}`);
+                             console.log(`  - description: ${role.description}`);
+                         });
+                         
                          renderRoles(roles);
                          updateRoleCounts(roles);
                      } else {
-                         tbody.html('<tr><td colspan="5" class="text-center py-4 text-muted">Không có dữ liệu</td></tr>');
+                         console.warn("⚠️ No roles found in response");
+                         tbody.html('<tr><td colspan="5" class="text-center py-4 text-muted"><i class="feather-shield mr-2"></i>Chưa có vai trò nào trong hệ thống</td></tr>');
                      }
                  })
-                 .fail(function(xhr) {
-                     console.error("Error loading roles:", xhr);
-                     tbody.html('<tr><td colspan="5" class="text-center py-4 text-danger">Lỗi khi tải dữ liệu</td></tr>');
+                 .fail(function(xhr, status, error) {
+                     console.error("=== Error loading roles ===");
+                     console.error("XHR:", xhr);
+                     console.error("Status:", status);
+                     console.error("Error:", error);
+                     console.error("Response Text:", xhr.responseText);
+                     console.error("Response JSON:", xhr.responseJSON);
+                     
+                     let errorMsg = 'Lỗi khi tải dữ liệu';
+                     if (xhr.status === 401 || xhr.status === 403) {
+                         errorMsg = 'Bạn không có quyền truy cập. Vui lòng đăng nhập lại.';
+                     } else if (xhr.status === 0) {
+                         errorMsg = 'Không thể kết nối đến server. Vui lòng kiểm tra backend có đang chạy không.';
+                     } else if (xhr.responseJSON && xhr.responseJSON.desc) {
+                         errorMsg = xhr.responseJSON.desc;
+                     }
+                     
+                     tbody.html(`<tr><td colspan="5" class="text-center py-4 text-danger"><i class="feather-alert-circle mr-2"></i>${errorMsg}</td></tr>`);
                  });
          }
          
          function renderRoles(roles) {
-             const tbody = $('#dataTable tbody');
+             console.log("=== renderRoles called ===");
+             console.log("Roles to render:", roles);
              
-             if (roles.length === 0) {
+             const tbody = $('#rolesTable tbody');
+             
+             if (!roles || roles.length === 0) {
                  tbody.html('<tr><td colspan="5" class="text-center py-4 text-muted"><i class="feather-shield mr-2"></i>Chưa có vai trò nào</td></tr>');
                  return;
              }
              
+             // Build HTML string trực tiếp
              let html = '';
-             roles.forEach(function(role) {
-                 const roleName = role.roleName || role.name || 'N/A';
-                 const userCount = role.userCount || 0;
+             
+             roles.forEach(function(role, index) {
+                 console.log(`--- Rendering role ${index + 1} ---`);
+                 console.log("Role object:", role);
                  
-                 html += `
-                     <tr>
-                         <td>${role.id || 'N/A'}</td>
-                         <td><strong>${roleName}</strong></td>
-                         <td>
-                             <a href="users.html?role=${roleName}" class="badge badge-info" style="cursor: pointer;">
-                                 ${userCount} người dùng
-                             </a>
-                         </td>
-                         <td>${role.description || 'Chưa có mô tả'}</td>
-                         <td>
-                             <button class="btn btn-sm btn-primary mr-1" onclick="editRole(${role.id})" title="Sửa">
-                                 <i class="feather-edit"></i>
-                             </button>
-                             <button class="btn btn-sm btn-danger" onclick="deleteRole(${role.id})" title="Xóa">
-                                 <i class="feather-trash-2"></i>
-                             </button>
-                         </td>
-                     </tr>
-                 `;
+                 try {
+                     // Lấy các giá trị với fallback
+                     const id = role.id != null ? String(role.id) : 'N/A';
+                     const roleName = (role.roleName != null && role.roleName !== '') 
+                         ? String(role.roleName) 
+                         : ((role.name != null && role.name !== '') ? String(role.name) : 'N/A');
+                     const userCount = (role.userCount != null) ? Number(role.userCount) : 0;
+                     const description = (role.description != null && role.description !== '') 
+                         ? String(role.description) 
+                         : 'Chưa có mô tả';
+                     
+                     console.log(`  ID: ${id}, RoleName: ${roleName}, UserCount: ${userCount}, Description: ${description}`);
+                     
+                     // Escape HTML
+                     const escapedRoleName = escapeHtml(roleName);
+                     const escapedDescription = escapeHtml(description);
+                     const escapedRoleNameForUrl = encodeURIComponent(roleName);
+                     
+                     // Build row HTML
+                     html += '<tr>' +
+                         '<td>' + escapeHtml(id) + '</td>' +
+                         '<td><strong>' + escapedRoleName + '</strong></td>' +
+                         '<td>' +
+                             '<a href="users.html?role=' + escapedRoleNameForUrl + '" class="badge badge-info" style="cursor: pointer;">' +
+                                 userCount + ' người dùng' +
+                             '</a>' +
+                         '</td>' +
+                         '<td>' + escapedDescription + '</td>' +
+                         '<td>' +
+                             '<button class="btn btn-sm btn-primary mr-1" onclick="editRole(' + id + ')" title="Sửa">' +
+                                 '<i class="feather-edit"></i>' +
+                             '</button>' +
+                             '<button class="btn btn-sm btn-danger" onclick="deleteRole(' + id + ')" title="Xóa">' +
+                                 '<i class="feather-trash-2"></i>' +
+                             '</button>' +
+                         '</td>' +
+                     '</tr>';
+                     
+                     console.log(`  ✅ Row ${index + 1} HTML built successfully`);
+                 } catch (error) {
+                     console.error(`  ❌ Error rendering role ${index + 1}:`, error);
+                     console.error("  Role data:", role);
+                 }
              });
              
+             // Destroy DataTable nếu có
+             if ($.fn.DataTable && $.fn.DataTable.isDataTable('#rolesTable')) {
+                 console.log("Destroying existing DataTable...");
+                 $('#rolesTable').DataTable().destroy();
+             }
+             
+             // Set HTML một lần
+             console.log("Setting HTML to tbody...");
+             console.log("HTML length:", html.length);
+             console.log("HTML preview (first 500 chars):", html.substring(0, 500));
+             
+             tbody.empty(); // Clear first
              tbody.html(html);
+             
+             // Verify HTML was set
+             setTimeout(function() {
+                 const rowsAfter = tbody.find('tr').length;
+                 console.log("=== renderRoles completed ===");
+                 console.log("Total rows in table:", rowsAfter);
+                 
+                 if (rowsAfter === 0) {
+                     console.error("❌ ERROR: No rows found after setting HTML!");
+                     console.error("tbody HTML:", tbody.html());
+                     console.error("tbody length:", tbody.length);
+                 } else {
+                     console.log("✅ Successfully rendered", rowsAfter, "rows");
+                     console.log("First row HTML:", tbody.find('tr').first().html());
+                 }
+                 
+                 // Initialize DataTable nếu cần (optional)
+                 if ($.fn.DataTable && rowsAfter > 0) {
+                     try {
+                         $('#rolesTable').DataTable({
+                             "language": {
+                                 "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Vietnamese.json"
+                             },
+                             "pageLength": 10,
+                             "order": [[0, "asc"]],
+                             "columnDefs": [
+                                 { "orderable": false, "targets": [4] } // Disable sorting for Actions column
+                             ]
+                         });
+                         console.log("✅ DataTable initialized for rolesTable");
+                     } catch (e) {
+                         console.warn("⚠️ Could not initialize DataTable:", e);
+                     }
+                 }
+             }, 100);
+         }
+         
+         // Helper function để escape HTML
+         function escapeHtml(text) {
+             if (text == null) return 'N/A';
+             const map = {
+                 '&': '&amp;',
+                 '<': '&lt;',
+                 '>': '&gt;',
+                 '"': '&quot;',
+                 "'": '&#039;'
+             };
+             return String(text).replace(/[&<>"']/g, function(m) { return map[m]; });
          }
          
          function updateRoleCounts(roles) {
@@ -482,6 +812,280 @@
          $('#role-form').on('submit', function(e) {
              e.preventDefault();
              saveRole();
+         });
+         
+         // ==================== Users by Role Tabs ====================
+         let currentRoleTab = 'ALL';
+         let usersCache = {}; // Cache để tránh load lại nhiều lần
+         
+         function loadUsersByRole(roleName) {
+             console.log("=== loadUsersByRole called ===");
+             console.log("Role:", roleName);
+             
+             currentRoleTab = roleName;
+             
+             // Xác định table ID dựa trên role
+             let tableId = 'usersTableAll';
+             if (roleName === 'ADMIN') tableId = 'usersTableAdmin';
+             else if (roleName === 'USER') tableId = 'usersTableUser';
+             else if (roleName === 'RESTAURANT_STAFF') tableId = 'usersTableStaff';
+             else if (roleName === 'RESTAURANT_OWNER') tableId = 'usersTableOwner';
+             else if (roleName === 'DRIVER') tableId = 'usersTableDriver';
+             
+             const tbody = $('#' + tableId + ' tbody');
+             
+             // Kiểm tra cache
+             if (usersCache[roleName]) {
+                 console.log("Using cached data for role:", roleName);
+                 renderUsersByRole(roleName, usersCache[roleName], tableId);
+                 return;
+             }
+             
+             // Show loading
+             const colCount = roleName === 'DRIVER' ? 7 : (roleName === 'ALL' ? 7 : 6);
+             tbody.html(`<tr><td colspan="${colCount}" class="text-center py-4"><i class="feather-loader"></i> Đang tải...</td></tr>`);
+             
+             let apiCall;
+             if (roleName === 'ALL') {
+                 // Load tất cả users
+                 apiCall = AdminApiService.getAllUsers();
+             } else {
+                 // Load users theo role
+                 apiCall = AdminApiService.getUsersByRole(roleName);
+             }
+             
+             apiCall
+                 .done(function(response) {
+                     console.log("=== Users by Role API Response ===");
+                     console.log("Role:", roleName);
+                     console.log("Full response:", response);
+                     
+                     let users = [];
+                     
+                     // Parse response
+                     if (response) {
+                         if (response.data && Array.isArray(response.data)) {
+                             users = response.data;
+                         } else if (Array.isArray(response)) {
+                             users = response;
+                         }
+                     }
+                     
+                     console.log("Users count for role", roleName + ":", users.length);
+                     
+                     // Cache data
+                     usersCache[roleName] = users;
+                     
+                     // Render
+                     renderUsersByRole(roleName, users, tableId);
+                 })
+                 .fail(function(xhr, status, error) {
+                     console.error("Error loading users by role:", xhr);
+                     const colCount = roleName === 'DRIVER' ? 7 : (roleName === 'ALL' ? 7 : 6);
+                     let errorMsg = 'Lỗi khi tải dữ liệu';
+                     if (xhr.status === 401 || xhr.status === 403) {
+                         errorMsg = 'Bạn không có quyền truy cập. Vui lòng đăng nhập lại.';
+                     } else if (xhr.responseJSON && xhr.responseJSON.desc) {
+                         errorMsg = xhr.responseJSON.desc;
+                     }
+                     tbody.html(`<tr><td colspan="${colCount}" class="text-center py-4 text-danger"><i class="feather-alert-circle mr-2"></i>${errorMsg}</td></tr>`);
+                 });
+         }
+         
+         function renderUsersByRole(roleName, users, tableId) {
+             console.log("=== renderUsersByRole called ===");
+             console.log("Role:", roleName, "Table ID:", tableId, "Users count:", users.length);
+             
+             const tbody = $('#' + tableId + ' tbody');
+             
+             if (!users || users.length === 0) {
+                 const colCount = roleName === 'DRIVER' ? 7 : (roleName === 'ALL' ? 7 : 6);
+                 tbody.html(`<tr><td colspan="${colCount}" class="text-center py-4 text-muted"><i class="feather-users mr-2"></i>Chưa có người dùng nào</td></tr>`);
+                 return;
+             }
+             
+             // Destroy DataTable nếu có
+             if ($.fn.DataTable && $.fn.DataTable.isDataTable('#' + tableId)) {
+                 $('#' + tableId).DataTable().destroy();
+             }
+             
+             let html = '';
+             
+             users.forEach(function(user, index) {
+                 try {
+                     const id = user.id != null ? String(user.id) : 'N/A';
+                     const userName = (user.userName != null && user.userName !== '') ? String(user.userName) : 'N/A';
+                     const fullName = (user.fullName != null && user.fullName !== '') ? String(user.fullName) : 'N/A';
+                     const phoneNumber = (user.phoneNumber != null && user.phoneNumber !== '') ? String(user.phoneNumber) : 'N/A';
+                     
+                     // Email - nếu empty thì dùng userName (vì userName thường là email)
+                     let email = 'N/A';
+                     if (user.email != null && user.email !== '' && typeof user.email === 'string' && !user.email.match(/\d{2}:\d{2}:\d{2}/)) {
+                         email = user.email;
+                     } else if (userName !== 'N/A' && userName.includes('@')) {
+                         email = userName;
+                     }
+                     
+                     const roleNameDisplay = (user.roleName != null && user.roleName !== '') ? String(user.roleName) : 'N/A';
+                     
+                     // Escape cho onclick
+                     const displayName = (fullName !== 'N/A') ? fullName : userName;
+                     const escapedName = displayName.replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, ' ').replace(/\r/g, '').replace(/\\/g, '\\\\');
+                     
+                     // Build row HTML
+                     if (roleName === 'ALL') {
+                         html += '<tr>' +
+                             '<td>' + escapeHtml(id) + '</td>' +
+                             '<td>' + escapeHtml(userName) + '</td>' +
+                             '<td>' + escapeHtml(fullName) + '</td>' +
+                             '<td>' + escapeHtml(phoneNumber) + '</td>' +
+                             '<td>' + escapeHtml(email) + '</td>' +
+                             '<td><span class="badge badge-info">' + escapeHtml(roleNameDisplay) + '</span></td>' +
+                             '<td>' +
+                                 '<button class="btn btn-sm btn-primary mr-1" onclick="editUser(' + id + ')" title="Sửa">' +
+                                     '<i class="feather-edit"></i>' +
+                                 '</button>' +
+                                 '<button class="btn btn-sm btn-danger" onclick="deleteUser(' + id + ', \'' + escapedName + '\')" title="Xóa">' +
+                                     '<i class="feather-trash-2"></i>' +
+                                 '</button>' +
+                             '</td>' +
+                         '</tr>';
+                     } else if (roleName === 'DRIVER') {
+                         const isApproved = user.isApproved === true;
+                         html += '<tr>' +
+                             '<td>' + escapeHtml(id) + '</td>' +
+                             '<td>' + escapeHtml(userName) + '</td>' +
+                             '<td>' + escapeHtml(fullName) + '</td>' +
+                             '<td>' + escapeHtml(phoneNumber) + '</td>' +
+                             '<td>' + escapeHtml(email) + '</td>' +
+                             '<td>' + 
+                                 (isApproved 
+                                     ? '<span class="badge badge-success"><i class="feather-check-circle mr-1"></i>Đã duyệt</span>'
+                                     : '<span class="badge badge-warning"><i class="feather-clock mr-1"></i>Chờ duyệt</span>') +
+                             '</td>' +
+                             '<td>' +
+                                 (!isApproved ? '<button class="btn btn-sm btn-success mr-1" onclick="approveDriver(' + id + ', \'' + escapedName + '\')" title="Duyệt"><i class="feather-check"></i></button>' : '') +
+                                 '<button class="btn btn-sm btn-primary mr-1" onclick="editUser(' + id + ')" title="Sửa"><i class="feather-edit"></i></button>' +
+                                 '<button class="btn btn-sm btn-danger" onclick="deleteUser(' + id + ', \'' + escapedName + '\')" title="Xóa"><i class="feather-trash-2"></i></button>' +
+                             '</td>' +
+                         '</tr>';
+                     } else {
+                         html += '<tr>' +
+                             '<td>' + escapeHtml(id) + '</td>' +
+                             '<td>' + escapeHtml(userName) + '</td>' +
+                             '<td>' + escapeHtml(fullName) + '</td>' +
+                             '<td>' + escapeHtml(phoneNumber) + '</td>' +
+                             '<td>' + escapeHtml(email) + '</td>' +
+                             '<td>' +
+                                 '<button class="btn btn-sm btn-primary mr-1" onclick="editUser(' + id + ')" title="Sửa">' +
+                                     '<i class="feather-edit"></i>' +
+                                 '</button>' +
+                                 '<button class="btn btn-sm btn-danger" onclick="deleteUser(' + id + ', \'' + escapedName + '\')" title="Xóa">' +
+                                     '<i class="feather-trash-2"></i>' +
+                                 '</button>' +
+                             '</td>' +
+                         '</tr>';
+                     }
+                 } catch (error) {
+                     console.error(`Error rendering user ${index + 1}:`, error);
+                 }
+             });
+             
+             // Set HTML
+             tbody.empty();
+             tbody.html(html);
+             
+             console.log("✅ Rendered", users.length, "users for role", roleName);
+             
+             // Initialize DataTable nếu cần
+             setTimeout(function() {
+                 if ($.fn.DataTable && tbody.find('tr').length > 0) {
+                     try {
+                         $('#' + tableId).DataTable({
+                             "language": {
+                                 "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Vietnamese.json"
+                             },
+                             "pageLength": 10
+                         });
+                         console.log("✅ DataTable initialized for", tableId);
+                     } catch (e) {
+                         console.warn("⚠️ Could not initialize DataTable:", e);
+                     }
+                 }
+             }, 100);
+         }
+         
+         function editUser(id) {
+             alert('Chức năng sửa user đang được phát triển. User ID: ' + id);
+         }
+         
+         function deleteUser(id, name) {
+             if (!confirm(`Bạn có chắc chắn muốn xóa user "${name}"?\n\nHành động này không thể hoàn tác!`)) {
+                 return;
+             }
+             
+             $.ajax({
+                 method: 'DELETE',
+                 url: `${AdminApiService.API_BASE_URL || 'http://localhost:82'}/user/${id}`,
+                 headers: AdminApiService.getHeaders ? AdminApiService.getHeaders() : {
+                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                     'Content-Type': 'application/json'
+                 },
+                 dataType: 'json'
+             })
+             .done(function(response) {
+                 if (response && (response.success || response.isSuccess)) {
+                     alert('Xóa user thành công!');
+                     // Reload current tab
+                     loadUsersByRole(currentRoleTab);
+                     // Clear cache để reload
+                     delete usersCache[currentRoleTab];
+                 } else {
+                     alert('Lỗi: ' + (response?.desc || 'Không thể xóa user'));
+                 }
+             })
+             .fail(function(xhr) {
+                 const errorMsg = xhr.responseJSON?.desc || 'Lỗi khi xóa user';
+                 alert(errorMsg);
+             });
+         }
+         
+         function approveDriver(id, name) {
+             if (!confirm(`Bạn có chắc chắn muốn duyệt driver "${name}"?`)) {
+                 return;
+             }
+             
+             $.ajax({
+                 method: 'PUT',
+                 url: `${AdminApiService.API_BASE_URL || 'http://localhost:82'}/admin/shipper/${id}/approve`,
+                 headers: AdminApiService.getHeaders ? AdminApiService.getHeaders() : {
+                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                     'Content-Type': 'application/json'
+                 },
+                 dataType: 'json'
+             })
+             .done(function(response) {
+                 if (response && (response.success || response.isSuccess)) {
+                     alert('Duyệt driver thành công!');
+                     // Reload current tab
+                     loadUsersByRole(currentRoleTab);
+                     // Clear cache để reload
+                     delete usersCache[currentRoleTab];
+                 } else {
+                     alert('Lỗi: ' + (response?.desc || 'Không thể duyệt driver'));
+                 }
+             })
+             .fail(function(xhr) {
+                 const errorMsg = xhr.responseJSON?.desc || 'Lỗi khi duyệt driver';
+                 alert(errorMsg);
+             });
+         }
+         
+         // Load tất cả users khi trang load
+         $(document).ready(function() {
+             setTimeout(function() {
+                 loadUsersByRole('ALL');
+             }, 500);
          });
       </script>
    </body>

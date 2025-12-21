@@ -260,7 +260,7 @@
                                 </div>
                                 
                                 <div class="mb-2">
-                                    <button class="btn btn-sm btn-outline-primary btn-block" onclick="showOrderMap(${order.id}, ${order.userLat || 10.8231}, ${order.userLng || 106.6297}, '${order.deliveryAddress || ''}')">
+                                    <button class="btn btn-sm btn-outline-primary btn-block" onclick="showOrderMap(${order.id}, ${order.userLat || 21.0285}, ${order.userLng || 105.8542}, '${order.deliveryAddress || ''}')">
                                         <i class="fas fa-map-marked-alt mr-2"></i>Xem bản đồ
                                     </button>
                                 </div>
@@ -381,9 +381,9 @@
                 
                 // Validate coordinates
                 if (!userLat || !userLng || isNaN(userLat) || isNaN(userLng)) {
-                    console.warn("⚠️ Invalid coordinates, using default (Ho Chi Minh City)");
-                    userLat = 10.8231;
-                    userLng = 106.6297;
+                    console.warn("⚠️ Invalid coordinates, using default (Ha Noi)");
+                    userLat = 21.0285;
+                    userLng = 105.8542;
                 }
                 
                 $('#map-order-id').text(orderId);

@@ -28,8 +28,8 @@ function initShipperVietmap(options) {
     console.log("Options:", options);
     
     const {
-        userLat = 10.8231,  // Default: Ho Chi Minh City
-        userLng = 106.6297,
+        userLat = 21.0285,  // Default: Ha Noi
+        userLng = 105.8542,
         shipperLat = null,
         shipperLng = null,
         userAddress = null,

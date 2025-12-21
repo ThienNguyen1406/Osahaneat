@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/login")
+@RequestMapping("/auth")
 public class UserLoginController {
     @Autowired
     LoginServiceImp loginServiceImp;
@@ -177,6 +177,57 @@ public class UserLoginController {
         }
         
         return new ResponseEntity<>(responseData, HttpStatus.OK);
+    }
+
+    /**
+     * GET /auth/verify-email?token=xxx - Xác nhận email đăng ký
+     * Public endpoint - không cần authentication
+     */
+    @GetMapping("/verify-email")
+    public ResponseEntity<?> verifyEmail(@RequestParam String token) {
+        ResponseData responseData = new ResponseData();
+        try {
+            System.out.println("=== GET /auth/verify-email called ===");
+            System.out.println("Token: " + token);
+
+            // Tìm token trong database
+            var tokenOpt = loginServiceImp.verifyEmailToken(token);
+            
+            if (tokenOpt.isEmpty()) {
+                responseData.setStatus(400);
+                responseData.setSuccess(false);
+                responseData.setData(null);
+                responseData.setDesc("Token không hợp lệ hoặc đã hết hạn!");
+                return new ResponseEntity<>(responseData, HttpStatus.BAD_REQUEST);
+            }
+
+            var verificationToken = tokenOpt.get();
+            Users user = verificationToken.getUser();
+            
+            // Đánh dấu email đã được xác nhận
+            user.setEmailVerified(true);
+            loginServiceImp.saveUser(user);
+            
+            // Đánh dấu token đã được sử dụng
+            verificationToken.setUsed(true);
+            loginServiceImp.saveVerificationToken(verificationToken);
+            
+            System.out.println("✅ Email verified successfully for user: " + user.getUserName());
+            
+            responseData.setStatus(200);
+            responseData.setSuccess(true);
+            responseData.setData(user.getUserName());
+            responseData.setDesc("Xác nhận email thành công! Bạn có thể đăng nhập ngay bây giờ.");
+            return new ResponseEntity<>(responseData, HttpStatus.OK);
+        } catch (Exception e) {
+            System.err.println("Error verifying email: " + e.getMessage());
+            e.printStackTrace();
+            responseData.setStatus(500);
+            responseData.setSuccess(false);
+            responseData.setData(null);
+            responseData.setDesc("Lỗi server khi xác nhận email: " + e.getMessage());
+            return new ResponseEntity<>(responseData, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
 

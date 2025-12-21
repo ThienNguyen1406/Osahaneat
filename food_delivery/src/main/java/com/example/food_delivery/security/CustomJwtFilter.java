@@ -49,6 +49,9 @@ public class CustomJwtFilter extends OncePerRequestFilter {
         if (requestUri.startsWith("/order")) {
             log.info("🔍 CustomJwtFilter processing ORDER request: {} {} - Token present: {}", 
                 requestMethod, requestUri, token != null);
+        } else if (requestUri.contains("/forgot-password")) {
+            log.info("🔍 CustomJwtFilter processing FORGOT-PASSWORD request: {} {} - Token present: {}", 
+                requestMethod, requestUri, token != null);
         } else {
             log.debug("🔍 CustomJwtFilter processing request to {} - Token present: {}", requestUri, token != null);
         }

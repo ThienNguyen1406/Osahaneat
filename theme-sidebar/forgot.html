@@ -28,24 +28,34 @@
         <div class="col-md-6 d-flex justify-content-center flex-column px-0">
             <div class="col-lg-6 mx-auto">
                 <h3 class="mb-1">Quên mật khẩu?</h3>
-                <p class="mb-5">Vui lòng nhập địa chỉ email của bạn để tiếp tục</p>
-                <form>
+                <p class="mb-5">Vui lòng nhập địa chỉ email hoặc username của bạn để gửi yêu cầu</p>
+                <form id="forgotPasswordForm">
                     <div class="d-flex align-items-center mb-4">
                         <div class="mr-3 bg-light rounded p-2 osahan-icon"><i class="mdi mdi-email-outline"></i></div>
                         <div class="w-100">
-                            <p class="mb-0 small font-weight-bold text-dark">Địa chỉ Email</p>
-                            <input type="email" class="form-control form-control-sm p-0 border-input border-0 rounded-0" placeholder="Nhập email của bạn">
+                            <p class="mb-0 small font-weight-bold text-dark">Email hoặc Username</p>
+                            <input type="text" id="username" class="form-control form-control-sm p-0 border-input border-0 rounded-0" placeholder="Nhập email hoặc username" required>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="mr-3 bg-light rounded p-2 osahan-icon"><i class="mdi mdi-text"></i></div>
+                        <div class="w-100">
+                            <p class="mb-0 small font-weight-bold text-dark">Lý do (tùy chọn)</p>
+                            <textarea id="reason" class="form-control form-control-sm p-0 border-input border-0 rounded-0" rows="2" placeholder="Nhập lý do quên mật khẩu..."></textarea>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <a href="#" class="btn btn-primary btn-block mb-2" data-toggle="modal" data-target="#myforgotModal">Tiếp tục</a>
+                        <button type="button" class="btn btn-primary btn-block mb-2" id="submitForgotPassword" onclick="submitForgotPasswordForm()">
+                            <span id="submitText">Gửi yêu cầu</span>
+                            <span id="submitLoading" style="display: none;"><i class="mdi mdi-loading mdi-spin"></i> Đang gửi...</span>
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-    <!-- My forgot modal-->
-    <div class="modal fade" id="myforgotModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <!-- Success Modal -->
+    <div class="modal fade" id="successModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
         <div class="modal-dialog bg-white">
             <div class="modal-content">
                 <button type="button" class="close p-2" data-dismiss="modal" aria-label="Close">
@@ -53,12 +63,11 @@
                 </button>
                 <div class="modal-body text-center p-3 d-flex justify-content-center flex-column">
                     <i class="mdi mdi-check-circle-outline text-success mb-4 display-1"></i>
-                    <h2 class="mb-3">Đã gửi email đặt lại mật khẩu</h2>
-                    <p class="m-0 px-lg-3">Chúng tôi vừa gửi email chứa liên kết đặt lại mật khẩu đến <span class="font-weight-bold text-primary">iamosahan@gmail.com</span></p>
+                    <h2 class="mb-3">Yêu cầu đã được gửi!</h2>
+                    <p class="m-0 px-lg-3" id="successMessage">Yêu cầu quên mật khẩu của bạn đã được gửi thành công. Admin sẽ xử lý yêu cầu của bạn sớm nhất có thể.</p>
                 </div>
                 <div class="modal-footer border-0 pb-0 px-3 pt-0">
                     <a href="index.html" class="btn btn-primary btn-block m-0">Đã hiểu</a>
-                    <a href="index.html" class="btn btn-light btn-block mt-2 mb-3">Gửi lại</a>
                 </div>
             </div>
         </div>
@@ -70,6 +79,91 @@
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
     <!-- Custom scripts for all pages-->
     <script src="js/osahan.min.js"></script>
+    
+    <!-- Forgot Password Script -->
+    <script>
+        const API_BASE_URL = 'http://localhost:82';
+        
+        function submitForgotPasswordForm() {
+            console.log("=== submitForgotPasswordForm() called ===");
+            
+            const username = $('#username').val().trim();
+            const reason = $('#reason').val().trim();
+            
+            console.log("Username:", username);
+            console.log("Reason:", reason);
+            
+            if (!username) {
+                alert('Vui lòng nhập email hoặc username!');
+                return;
+            }
+            
+            // Show loading
+            $('#submitText').hide();
+            $('#submitLoading').show();
+            $('#submitForgotPassword').prop('disabled', true);
+            
+            // Send request
+            console.log("=== Sending forgot password request ===");
+            console.log("URL:", `${API_BASE_URL}/user/forgot-password`);
+            
+            $.ajax({
+                method: 'POST',
+                url: `${API_BASE_URL}/user/forgot-password`,
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    username: username,
+                    reason: reason || null
+                }),
+                dataType: 'json'
+            })
+            .done(function(response) {
+                console.log("=== Forgot password request success ===");
+                console.log("Response:", response);
+                
+                if (response && (response.success || response.isSuccess)) {
+                    const successMsg = 'Yêu cầu quên mật khẩu của bạn đã được gửi thành công đến ' + username + '. Admin sẽ xử lý yêu cầu của bạn sớm nhất có thể.';
+                    $('#successMessage').text(successMsg);
+                    $('#successModal').modal('show');
+                    $('#forgotPasswordForm')[0].reset();
+                } else {
+                    console.error("Response indicates failure:", response);
+                    alert('Lỗi: ' + (response?.desc || 'Không thể gửi yêu cầu'));
+                }
+            })
+            .fail(function(xhr, status, error) {
+                console.error("=== Forgot password request failed ===");
+                console.error("XHR:", xhr);
+                console.error("Status:", status);
+                console.error("Error:", error);
+                console.error("Response Text:", xhr.responseText);
+                console.error("Response JSON:", xhr.responseJSON);
+                
+                const errorMsg = xhr.responseJSON?.desc || xhr.responseText || 'Lỗi khi gửi yêu cầu quên mật khẩu';
+                alert(errorMsg);
+            })
+            .always(function() {
+                // Hide loading
+                $('#submitText').show();
+                $('#submitLoading').hide();
+                $('#submitForgotPassword').prop('disabled', false);
+            });
+        }
+        
+        $(document).ready(function() {
+            console.log("=== forgot.html script loaded ===");
+            console.log("jQuery version:", typeof $ !== 'undefined' ? $.fn.jquery : 'jQuery not loaded');
+            console.log("Form element:", $('#forgotPasswordForm').length > 0 ? 'Found' : 'Not found');
+            console.log("Button element:", $('#submitForgotPassword').length > 0 ? 'Found' : 'Not found');
+            
+            // Also handle form submit
+            $('#forgotPasswordForm').on('submit', function(e) {
+                console.log("=== Form submit event triggered ===");
+                e.preventDefault();
+                submitForgotPasswordForm();
+            });
+        });
+    </script>
 
 </body>
 

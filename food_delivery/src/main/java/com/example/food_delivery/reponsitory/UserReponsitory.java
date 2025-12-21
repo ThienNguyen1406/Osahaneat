@@ -16,9 +16,10 @@ public interface UserReponsitory extends JpaRepository <Users,Integer>{
     Optional<Users> findFirstByUserName(String userName);
     Boolean existsByUserName(String username);
     
-    // Search users by username or fullname
-    @Query("SELECT u FROM users u WHERE LOWER(u.userName) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-           "OR LOWER(u.fullName) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    // Search users by username or fullname (supports Vietnamese)
+    @Query("SELECT u FROM users u WHERE " +
+           "(u.userName IS NOT NULL AND u.userName LIKE CONCAT('%', :keyword, '%')) " +
+           "OR (u.fullName IS NOT NULL AND u.fullName LIKE CONCAT('%', :keyword, '%'))")
     List<Users> searchUsers(@Param("keyword") String keyword);
     
     // Find users by role name

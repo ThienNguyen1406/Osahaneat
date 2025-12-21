@@ -132,18 +132,34 @@ function performSearch() {
             console.log("Response.data:", response?.data);
             
             // Check cả isSuccess, success, và status === 200
-            const isSuccess = response && (response.isSuccess === true || response.success === true || response.status === 200);
-            const hasData = response && response.data;
+            // Nếu response là array trực tiếp (không có wrapper), coi như thành công
+            const isDirectArray = Array.isArray(response);
+            const isSuccess = isDirectArray || (response && (response.isSuccess === true || response.success === true || response.status === 200));
+            const hasData = isDirectArray || (response && response.data);
             
-            console.log("isSuccess:", isSuccess, "hasData:", hasData);
+            console.log("isDirectArray:", isDirectArray, "isSuccess:", isSuccess, "hasData:", hasData);
+            
+            // Nếu response là array trực tiếp, xử lý như restaurants
+            if (isDirectArray) {
+                console.log("✅ Response is direct array, treating as restaurants...");
+                renderRestaurants(response);
+                return;
+            }
             
             if (isSuccess && hasData) {
-                // Check if data has restaurants and foods keys
-                if (typeof response.data === 'object' && (response.data.restaurants || response.data.foods)) {
+                // Check if data has restaurants and foods keys (even if they're empty arrays)
+                if (typeof response.data === 'object' && ('restaurants' in response.data || 'foods' in response.data)) {
                     console.log("✅ Rendering search results...");
-                    console.log("Restaurants:", response.data.restaurants?.length || 0);
-                    console.log("Foods:", response.data.foods?.length || 0);
-                    renderSearchResults(response.data);
+                    const restaurants = response.data.restaurants || [];
+                    const foods = response.data.foods || [];
+                    console.log("Restaurants:", restaurants.length);
+                    console.log("Foods:", foods.length);
+                    
+                    // Always render, even if arrays are empty (will show "no results" message)
+                    renderSearchResults({
+                        restaurants: Array.isArray(restaurants) ? restaurants : [],
+                        foods: Array.isArray(foods) ? foods : []
+                    });
                 } else if (Array.isArray(response.data)) {
                     // If data is array, treat as restaurants
                     console.log("⚠️ Data is array, treating as restaurants...");
@@ -154,6 +170,7 @@ function performSearch() {
                 }
             } else {
                 console.warn("⚠️ Response not successful or no data");
+                console.warn("Response object:", response);
                 showNoResults();
             }
         })
@@ -163,7 +180,24 @@ function performSearch() {
             console.error("Error:", error);
             console.error("XHR:", xhr);
             console.error("Response text:", xhr.responseText);
-            showNoResults();
+            console.error("Status code:", xhr.status);
+            
+            // Show appropriate error message
+            let errorMessage = 'Không thể tìm kiếm. Vui lòng thử lại sau.';
+            
+            if (status === 'timeout') {
+                errorMessage = 'Yêu cầu tìm kiếm quá thời gian chờ. Vui lòng thử lại.';
+            } else if (status === 'error' && xhr.readyState === 0) {
+                errorMessage = 'Không thể kết nối đến server. Vui lòng kiểm tra kết nối mạng.';
+            } else if (xhr.status === 404) {
+                errorMessage = 'API tìm kiếm không tìm thấy. Vui lòng liên hệ quản trị viên.';
+            } else if (xhr.status >= 500) {
+                errorMessage = 'Lỗi server. Vui lòng thử lại sau.';
+            } else if (xhr.status === 400) {
+                errorMessage = 'Từ khóa tìm kiếm không hợp lệ.';
+            }
+            
+            showSearchError(errorMessage);
         });
 }
 
@@ -186,9 +220,9 @@ function performAdvancedSearch() {
                     showNoResults();
                 }
             })
-            .fail(function(xhr) {
+            .fail(function(xhr, status, error) {
                 console.error('Error in advanced restaurant search:', xhr);
-                showNoResults();
+                showSearchError('Không thể tìm kiếm nhà hàng. Vui lòng thử lại sau.');
             });
     } else if (searchType === 'food') {
         const categoryId = $('#filter-category').val();
@@ -204,9 +238,9 @@ function performAdvancedSearch() {
                     showNoResults();
                 }
             })
-            .fail(function(xhr) {
+            .fail(function(xhr, status, error) {
                 console.error('Error in advanced food search:', xhr);
-                showNoResults();
+                showSearchError('Không thể tìm kiếm món ăn. Vui lòng thử lại sau.');
             });
     }
 }
@@ -225,38 +259,42 @@ function renderSearchResults(results) {
     console.log("Results.restaurants:", results?.restaurants);
     console.log("Results.foods:", results?.foods);
     
+    // Ensure we have valid arrays
+    const restaurants = (results && Array.isArray(results.restaurants)) ? results.restaurants : [];
+    const foods = (results && Array.isArray(results.foods)) ? results.foods : [];
+    
     let html = '';
     let hasResults = false;
     
     // Restaurants section
-    if (results && results.restaurants && Array.isArray(results.restaurants) && results.restaurants.length > 0) {
-        console.log("✅ Rendering", results.restaurants.length, "restaurants");
+    if (restaurants.length > 0) {
+        console.log("✅ Rendering", restaurants.length, "restaurants");
         html += '<h5 class="mt-4 mb-3">Nhà hàng</h5>';
         html += '<div class="row">';
-        results.restaurants.forEach(function(restaurant) {
+        restaurants.forEach(function(restaurant) {
             html += renderRestaurantCard(restaurant);
         });
         html += '</div>';
         hasResults = true;
     } else {
-        console.log("⚠️ No restaurants found or invalid format");
+        console.log("⚠️ No restaurants found");
     }
     
     // Foods section
-    if (results && results.foods && Array.isArray(results.foods) && results.foods.length > 0) {
-        console.log("✅ Rendering", results.foods.length, "foods");
+    if (foods.length > 0) {
+        console.log("✅ Rendering", foods.length, "foods");
         html += '<h5 class="mt-4 mb-3">Món ăn</h5>';
         html += '<div class="row">';
-        results.foods.forEach(function(food) {
+        foods.forEach(function(food) {
             html += renderFoodCard(food);
         });
         html += '</div>';
         hasResults = true;
     } else {
-        console.log("⚠️ No foods found or invalid format");
+        console.log("⚠️ No foods found");
     }
     
-    if (!hasResults || !html) {
+    if (!hasResults) {
         console.warn("⚠️ No results to display");
         showNoResults();
         return;
@@ -399,6 +437,22 @@ function showNoResults() {
                 <i class="mdi mdi-magnify mb-3" style="font-size: 48px;"></i>
                 <h5>Không tìm thấy kết quả</h5>
                 <p class="text-muted">Vui lòng thử lại với từ khóa khác hoặc sử dụng tìm kiếm nâng cao.</p>
+            </div>
+        `);
+    }
+}
+
+function showSearchError(message) {
+    const container = $('#search-results');
+    if (container.length > 0) {
+        container.html(`
+            <div class="alert alert-danger text-center py-5">
+                <i class="mdi mdi-alert-circle mb-3" style="font-size: 48px; color: #dc3545;"></i>
+                <h5>Lỗi tìm kiếm</h5>
+                <p class="text-muted">${escapeHtml(message || 'Không thể tìm kiếm. Vui lòng thử lại sau.')}</p>
+                <button class="btn btn-primary mt-3" onclick="performSearch()">
+                    <i class="mdi mdi-refresh"></i> Thử lại
+                </button>
             </div>
         `);
     }
@@ -553,9 +607,9 @@ function applyFilters() {
                         showNoResults();
                     }
                 })
-                .fail(function(xhr) {
+                .fail(function(xhr, status, error) {
                     console.error('Error in filtered restaurant search:', xhr);
-                    showNoResults();
+                    showSearchError('Không thể tìm kiếm với bộ lọc. Vui lòng thử lại.');
                 });
         } else {
             // Fallback to regular search
@@ -571,9 +625,9 @@ function applyFilters() {
                         showNoResults();
                     }
                 })
-                .fail(function(xhr) {
+                .fail(function(xhr, status, error) {
                     console.error('Error in filtered food search:', xhr);
-                    showNoResults();
+                    showSearchError('Không thể tìm kiếm với bộ lọc. Vui lòng thử lại.');
                 });
         } else {
             // Fallback to regular search

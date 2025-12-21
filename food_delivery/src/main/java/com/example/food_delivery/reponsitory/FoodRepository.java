@@ -13,9 +13,10 @@ public interface FoodRepository extends JpaRepository<Food, Integer> {
     // Search foods by title
     List<Food> findByTitleContainingIgnoreCase(String keyword);
     
-    // Search foods by title or description
-    @Query("SELECT f FROM food f WHERE LOWER(f.title) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-           "OR LOWER(f.desc) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    // Search foods by title or description (supports Vietnamese)
+    @Query("SELECT f FROM food f WHERE " +
+           "(f.title IS NOT NULL AND f.title LIKE CONCAT('%', :keyword, '%')) " +
+           "OR (f.desc IS NOT NULL AND f.desc LIKE CONCAT('%', :keyword, '%'))")
     List<Food> searchFoods(@Param("keyword") String keyword);
     
     // Find all foods with category and menu restaurant relationships loaded
